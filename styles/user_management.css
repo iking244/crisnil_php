@@ -1,0 +1,130 @@
+/* Similar to orders.css for consistency */
+
+.main-content {
+    margin-left: 150px;
+    background: #f8f9fa;
+    min-height: 45vh;
+}
+
+.page-title {
+    color: #d1484c;
+    font-weight: 600;
+    padding-top: 80px;
+    padding-left: 12px;
+}
+
+.search-wrapper {
+    position: relative;
+    max-width: 450px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 20px 12px 50px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    font-size: 1rem;
+}
+.export-btn{
+    margin-top: 50px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.orders-table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+
+.orders-table thead {
+    background: #f1f1f1;
+}
+
+.orders-table th {
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #444;
+}
+
+.orders-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.orders-table tr:hover {
+    background: #fff9f9;
+}
+
+.edit-icon, .archive-icon {
+    color: #d1484c;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+.edit-icon:hover, .archive-icon:hover {
+    color: #b33;
+}
+
+/* Floating Button */
+.floating-add-btn {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 65px;
+    height: 65px;
+    background: #d1484c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 28px;
+    box-shadow: 0 6px 20px rgba(209, 72, 76, 0.5);
+    z-index: 100;
+    transition: all 0.3s;
+}
+
+.floating-add-btn:hover {
+    transform: scale(1.1);
+    background: #c13;
+}
+
+/* Cards (for stats) */
+.card.blue {
+    background: #2f5bd3;
+}
+
+.card.green {
+    background: #2f8a5b;
+}
+
+.card.red {
+    background: #d83b3b;
+}
+
+.card .h3  {
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+
+.card:hover {
+    transform: translateY(-5px);
+}

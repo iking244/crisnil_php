@@ -1,0 +1,424 @@
+body, html {
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    height: 100%; 
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+header {
+    justify-content: space-between; 
+    align-items: flex-start; 
+    background-color: #d1484c;
+    padding: 10px;
+    color: white;
+    height: 100px; 
+    width: 100%; 
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left .logo {
+    width: 150px;
+    height: auto;
+    margin-top: -40px; 
+    margin-left: 630px;
+    margin-right: -15px;
+}
+
+.header-left h1 {
+    color: white;
+    font-size: 1.8rem;
+    margin-top: -17px;
+}
+
+.header-right {
+    position: relative;
+}
+
+.notification-container {
+    position: relative;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.notification-icon {
+    font-size: 28px !important;
+    width: 100px;
+    margin-right: -45px;
+    margin-bottom: 26px;
+    cursor: pointer;
+    color: black;
+}
+
+.notification-popup h1 {
+    font-size: 20px;
+    color: black;
+    margin-left: 18px;
+    font-family: Ara Hamah Homs;
+}
+.notification-popup {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fef3ea;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 10;
+    width: 550px;
+    
+}
+
+.today-label h1{
+    font-family: Ara Hamah Homs;
+    color: black;
+    font-weight: bold;
+}
+
+.today-label {
+    background-color: #d3d3d3;
+    padding: 2px 5px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+
+.notification-popup ul {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    color: black;
+}
+
+
+.notification-popup li:last-child {
+    border-bottom: none; 
+}
+
+.notification-popup li:hover {
+    background-color: #d1484c; 
+}
+
+.view-all-notifications {
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+.view-all-notifications a {
+    color: #007bff; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.view-all-notifications a:hover {
+    text-decoration: underline;
+}
+
+
+
+.menu-icon {
+    font-size: 32px;
+    cursor: pointer;
+    color: white;
+    margin-left: 17px; 
+}
+
+
+
+.sidenav {
+    height: calc(100vh - 120px); 
+    width: 0;
+    position: fixed; 
+    top: 120px;
+    left: 0;
+    background-color: #fef3ea;
+    overflow-y: auto; /* Enable scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    transition: 0.5s;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav a {
+    padding: 33px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+
+
+.sidenav a:hover {
+    color: red;
+    font-weight: bold;
+    transition: none;
+}
+
+
+
+
+#main {
+    transition: margin-left 0.3s;
+    padding: 16px; 
+}
+
+
+.toggle-btn {
+    position: fixed;
+    top: 30px;
+    left: -5px;
+    z-index: 1; 
+    padding: 10px 30px; 
+    color: black;
+    cursor: pointer;
+    font-size: 30px;
+}
+
+
+.logout-link {
+    margin-top: auto;  
+    padding-bottom: 20px;
+}
+
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+
+.user_data {
+    position: fixed;
+    top: 118px;
+    right: 25px;
+    padding: 10px;
+}
+
+.user_data p {
+    font-size: 21px;
+    margin: 5px 0;
+    color: black;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    header, .listside_up, .listside_logout, .admin_dashboard_main_ui, .user_data {
+        width: 100%;
+        padding: 0px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .listside_up ul li, .listside_logout ul li {
+        padding: 10px 0;
+    }
+    
+    .listside_up, .listside_logout {
+        position: static;
+    }
+
+    .admin_dashboard_main_ui {
+        margin: 0;
+    }
+}
+
+.inbound-product-container {
+    position: fixed;
+    top: 23%; /* 50% from the top */
+    left: 15%; /* 50% from the left */
+    padding: 20px;
+    width: 80%;
+    border: 1px solid #000;
+    border-radius: 10px;
+ 
+}
+
+.inbound-product-container h1 {
+    text-align: left;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.inbound-product-form fieldset {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.inbound-product-form legend {
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    flex: 1;
+    font-weight: bold;
+margin-left: 20px;
+}
+
+.form-row input,
+.form-row textarea {
+    flex: 2;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: -70px; /* Adjust as needed */
+}
+
+textarea {
+    resize: none;
+    height: 50px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.add-item-btn,
+.clear-fields-btn,
+.save-return-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.add-item-btn {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.clear-fields-btn {
+    background-color: #f8d7da;
+    color: #000;
+}
+
+.save-return-btn {
+    background-color: #d1484c;
+    color: #fff;
+}
+
+.add-item-btn:hover {
+    background-color: #5a6268;
+}
+
+.clear-fields-btn:hover {
+    background-color: #e9c9cc;
+}
+
+.save-return-btn:hover {
+    background-color: #b03040;
+}
+
+
+
+.add_new_button {
+    margin-left: 68px;
+    font-size: 2em;
+    background-color: transparent;
+    border: 2px solid #000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.add_new_button:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-container {
+    display: none;
+    background-color: #fef3ea;
+    padding-left: 8px;
+    text-indent: 2em;
+  }
+
+button.logistics-dropdown, button.inventory-dropdown, button.sales-dropdown, button.settings-dropdown{
+    border: none;
+    background-color: #fef3ea;
+    padding-left: 8px;
+    padding: 33px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Adjust button hover effect */
+button.logistics-dropdown:hover, button.inventory-dropdown:hover, button.sales-dropdown:hover, button.settings-dropdown:hover {
+    color: red; /* Highlight on hover */
+}
+
+/* Expanded dropdown content */
+.dropdown-container a {
+    padding: 8px 15px; /* Inner links padding */
+    text-decoration: none;
+    font-size: 16px;
+    color: black;
+    display: block;
+}
+
+.dropdown-container a:hover {
+    background-color: #d1484c; /* Highlight background */
+    color: white; /* Change text color */
+}
+
+.textmove{
+    padding-right: 750px;
+}
+
+.textmove input{
+    width: 520px;
+}
+
+.textmove2{
+    padding-left: 265px;
+}
+
+.textmove2 input{
+    width: 520px;
+}

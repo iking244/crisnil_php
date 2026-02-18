@@ -1,0 +1,395 @@
+body, html {
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    height: 100%; 
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+header {
+    justify-content: space-between; 
+    align-items: flex-start; 
+    background-color: #d1484c;
+    padding: 10px;
+    color: white;
+    height: 100px; 
+    width: 100%; 
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left .logo {
+    width: 150px;
+    height: auto;
+    margin-top: -40px; 
+    margin-left: 630px;
+    margin-right: -15px;
+}
+
+.header-left h1 {
+    color: white;
+    font-size: 1.8rem;
+    margin-top: -17px;
+}
+
+.header-right {
+    position: relative;
+}
+
+.notification-container {
+    position: relative;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.notification-icon {
+    font-size: 28px !important;
+    width: 100px;
+    margin-right: -45px;
+    margin-bottom: 26px;
+    cursor: pointer;
+    color: black;
+}
+
+.notification-popup h1 {
+    font-size: 20px;
+    color: black;
+    margin-left: 18px;
+    font-family: Ara Hamah Homs;
+}
+.notification-popup {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fef3ea;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 10;
+    width: 550px;
+    
+}
+
+.today-label h1{
+    font-family: Ara Hamah Homs;
+    color: black;
+    font-weight: bold;
+}
+
+.today-label {
+    background-color: #d3d3d3;
+    padding: 2px 5px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+
+.notification-popup ul {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    color: black;
+}
+
+
+.notification-popup li:last-child {
+    border-bottom: none; 
+}
+
+.notification-popup li:hover {
+    background-color: #d1484c; 
+}
+
+.view-all-notifications {
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+.view-all-notifications a {
+    color: #007bff; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.view-all-notifications a:hover {
+    text-decoration: underline;
+}
+
+
+
+.menu-icon {
+    font-size: 32px;
+    cursor: pointer;
+    color: white;
+    margin-left: 17px; 
+}
+
+
+
+.sidenav {
+    height: calc(100vh - 120px); 
+    width: 0;
+    position: fixed; 
+    top: 120px;
+    left: 0;
+    background-color: #fef3ea;
+    overflow-y: auto; /* Enable scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    transition: 0.5s;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav a {
+    padding: 33px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+
+
+.sidenav a:hover {
+    color: red;
+    font-weight: bold;
+    transition: none;
+}
+
+
+
+
+#main {
+    transition: margin-left 0.3s;
+    padding: 16px; 
+}
+
+
+.toggle-btn {
+    position: fixed;
+    top: 30px;
+    left: -5px;
+    z-index: 1; 
+    padding: 10px 30px; 
+    color: black;
+    cursor: pointer;
+    font-size: 30px;
+}
+
+
+.logout-link {
+    margin-top: auto;  
+    padding-bottom: 20px;
+}
+
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+
+.user_data {
+    position: fixed;
+    top: 118px;
+    right: 25px;
+    padding: 10px;
+}
+
+.user_data p {
+    font-size: 21px;
+    margin: 5px 0;
+    color: black;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    header, .listside_up, .listside_logout, .admin_dashboard_main_ui, .user_data {
+        width: 100%;
+        padding: 0px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .listside_up ul li, .listside_logout ul li {
+        padding: 10px 0;
+    }
+    
+    .listside_up, .listside_logout {
+        position: static;
+    }
+
+    .admin_dashboard_main_ui {
+        margin: 0;
+    }
+}
+
+
+ /* Sidebar styling */
+
+ .employee-settings-box {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: -180px;
+    margin-left: 650px;
+    text-align: left;
+    width: 950px;
+    height: 350px;
+}
+
+ .user_management_side {
+    width: 250px;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    margin-left: 350px;
+    margin-top: 130px;
+}
+
+.user_management_side a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    z-index: 2;
+}
+
+.user_management_side a:hover {
+    background-color: #e3e3e3;
+    color: #d63031;
+}
+
+.user_management_side .delete-account {
+    color: #d63031;
+}
+
+
+.admin_dashboard_main_ui h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+.user_list {
+    width: 50%;
+    border-collapse: collapse;
+    margin-top: -280px;
+    margin-left: 680px;
+}
+
+.user_list th,
+.user_list td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+.user_list th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.user_list tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Account Actions icons */
+.account-actions i {
+    cursor: pointer;
+    margin-right: 10px;
+    color: #555;
+    font-size: 18px;
+}
+
+.account-actions i:hover {
+    color: #d32f2f;
+}
+
+.active {
+    color: #ffffff;
+}
+
+
+.add_new_button {
+    margin-left: 68px;
+    font-size: 2em;
+    background-color: transparent;
+    border: 2px solid #000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.add_new_button:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-container {
+    display: none;
+    background-color: #fef3ea;
+    padding-left: 8px;
+    text-indent: 2em;
+  }
+
+button.logistics-dropdown, button.inventory-dropdown, button.sales-dropdown, button.settings-dropdown{
+    border: none;
+    background-color: #fef3ea;
+    padding-left: 8px;
+    padding: 33px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Adjust button hover effect */
+button.logistics-dropdown:hover, button.inventory-dropdown:hover, button.sales-dropdown:hover, button.settings-dropdown:hover {
+    color: red; /* Highlight on hover */
+}
+
+/* Expanded dropdown content */
+.dropdown-container a {
+    padding: 8px 15px; /* Inner links padding */
+    text-decoration: none;
+    font-size: 16px;
+    color: black;
+    display: block;
+}
+
+.dropdown-container a:hover {
+    background-color: #d1484c; /* Highlight background */
+    color: white; /* Change text color */
+}

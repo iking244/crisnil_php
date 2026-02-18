@@ -1,0 +1,125 @@
+/*Main body styling*/
+body {
+    background: #96eeee;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Main container for splitting the screen in half */
+.container {
+    display: flex;
+    width: 100vw; 
+    height: 100vh; 
+}
+
+/* Image on the left half */
+.left_half {
+    width: 120%; 
+    background-color: #f0f0f0;
+}
+
+.left_half img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+/* Admin login container (right half) */
+.adminlogin {
+    width: 50%; 
+    background-color: #fef3ea;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Logo image styling */
+.logo {
+    display: block;
+    max-width: 250px;
+    margin: 0 auto 40px auto; 
+}
+
+/* Form header */
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Input fields */
+input[type="text"], input[type="password"] {
+    width: 85%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Button styles */
+button {
+    width: 85%;
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #333;
+}
+
+/* Container for the show password and forgot password */
+.forgot_password {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%; 
+    margin-top: 10px; 
+}
+
+/* Checkbox label styling */
+.show_password_label {
+    font-size: 14px; 
+    color: #333; 
+    display: flex; 
+    align-items: center; 
+}
+
+/* Checkbox styling*/
+.show_password_label input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+
+/* Adjusting for hyperlink forgotpassword */
+.forgot_password a {
+    text-align: justify;
+    font-size: 14px; 
+    color: #006BFF; 
+    text-decoration: none; 
+}
+
+.forgot_password a:hover {
+    color: red; /* Darker color on hover */
+}
+
+a:hover {
+    color: #333;
+}
+
+

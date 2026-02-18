@@ -1,0 +1,156 @@
+.main-content {
+    margin-left: 150px;
+    padding-top: 110px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.page-title {
+    margin-top: 50px;
+    color: #d1484c;
+    font-weight: 600;
+}
+
+.export-btn{
+    margin-top: 100px;
+    margin-right: 20px;
+
+}
+
+.search-wrapper {
+    position: relative;
+    max-width: 450px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 20px 12px 50px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    font-size: 1rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+}
+
+.orders-table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.orders-table thead {
+    background: #f1f1f1;
+}
+
+.orders-table th {
+    background: #f8f9fa;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 14px 16px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.orders-table td {
+    padding: 14px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+.orders-table tbody tr {
+    transition: background 0.15s;
+}
+
+.orders-table tbody tr:hover {
+    background: #fff5f5;
+}
+
+.orders-table tr:hover {
+    background: #fff9f9;
+}
+
+.edit-icon, .edit-product {
+    transition: color 0.2s;
+    color: #d1484c;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.edit-icon:hover , .edit-product:hover {
+    color: #b33;
+}
+
+/* Floating Action Button (FAB) - red circle with + icon */
+.floating-add-btn {
+    position: fixed;
+    bottom: 30px;           /* distance from bottom */
+    right: 30px;            /* distance from right edge */
+    width: 60px;
+    height: 60px;
+    background-color: #d1484c;   /* CRISNIL red */
+    color: white;
+    border: none;
+    border-radius: 50%;     /* perfect circle */
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(209, 72, 76, 0.45);   /* nice shadow */
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.floating-add-btn:hover {
+    background-color: #b33d40;   /* slightly darker red on hover */
+    transform: scale(1.1);       /* subtle grow effect */
+    box-shadow: 0 10px 25px rgba(209, 72, 76, 0.55);
+}
+
+.floating-add-btn:active {
+    transform: scale(0.95);      /* press-down feedback */
+}
+
+/* Fix alignment in create/edit item tables */
+#createItemsTable th, #createItemsTable td,
+#itemsTable th, #itemsTable td {
+    vertical-align: middle;
+}
+
+#createItemsTable .remove-row,
+#itemsTable .remove-row {
+    padding: 4px 8px;
+    font-size: 0.875rem;
+    line-height: 1;
+    min-width: 32px;
+}
+
+#createItemsTable .form-control,
+#createItemsTable .form-select,
+#itemsTable .form-control,
+#itemsTable .form-select {
+    height: calc(1.5em + 0.5rem + 2px); /* consistent height */
+}
+
+.text-center {
+    text-align: center !important;
+}

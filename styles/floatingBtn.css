@@ -1,0 +1,77 @@
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+}
+
+/* Main button */
+.fab-main {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #1e3fa3;
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease;
+}
+
+.fab-main:hover {
+    transform: scale(1.05);
+}
+
+/* Options container */
+.fab-options {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+}
+
+.fab-options.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Option buttons */
+.fab-option {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease;
+}
+
+.fab-option:hover {
+    transform: scale(1.1);
+}
+
+.fab-green {
+    background: #28a745;
+}
+
+.fab-blue {
+    background: #0d6efd;
+}
+
+.fab-main i {
+    font-size: 30px;
+}
+
+.fab-option i {
+    font-size: 30px;
+}

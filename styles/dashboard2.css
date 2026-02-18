@@ -1,0 +1,1149 @@
+body, html {
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    height: 100%; 
+}
+
+.app-wrapper {
+    width: 100%;
+
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background-color: #d1484c;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    color: white;
+    z-index: 9999;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-left .logo {
+    width: 90px;
+    height: auto;
+    margin: 0;
+}
+
+.header-left h1 {
+    color: white;
+    font-size: 1.6rem;
+    margin: 0;
+    font-weight: bold;
+}
+
+
+.header-right {
+    position: relative;
+}
+
+.notification-container {
+    position: relative;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.notification-icon {
+    font-size: 26px !important;
+    cursor: pointer;
+    color: white;
+}
+
+.notification-popup h1 {
+    font-size: 20px;
+    color: black;
+    margin-left: 18px;
+    font-family: Ara Hamah Homs;
+}
+.notification-popup {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fef3ea;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 10;
+    width: 550px;
+    
+}
+
+.today-label h1{
+    font-family: Ara Hamah Homs;
+    color: black;
+    font-weight: bold;
+}
+
+.today-label {
+    background-color: #d3d3d3;
+    padding: 2px 5px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+
+.notification-popup ul {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    color: black;
+}
+
+
+.notification-popup li:last-child {
+    border-bottom: none; 
+}
+
+.notification-popup li:hover {
+    background-color: #d1484c; 
+}
+
+.view-all-notifications {
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+.view-all-notifications a {
+    color: #007bff; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.view-all-notifications a:hover {
+    text-decoration: underline;
+}
+.main-content {
+    margin-top: 60px; /* Adjust to your header height - measure in DevTools */
+}
+
+.menu-icon {
+    font-size: 32px;
+    cursor: pointer;
+    color: white;
+    margin-left: 17px; 
+}
+
+.sidenav {
+    height: calc(100vh - 100px); 
+    width: 0;
+    position: fixed; 
+    top: 100px;
+    left: 0;
+    background-color: #fef3ea;
+    overflow-y: auto; /* Enable scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    transition: 0.5s;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    z-index: 900;
+}
+
+.sidenav a {
+    padding: 33px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+
+.sidenav a:hover {
+    color: red;
+    font-weight: bold;
+    transition: none;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 0;
+}
+
+
+.toggle-btn {
+    position: absolute;
+    top: 30px;
+    left: -5px;
+    z-index: 1; 
+    padding: 10px 30px; 
+    color: black;
+    cursor: pointer;
+    font-size: 30px;
+}
+
+
+.logout-link {
+    margin-top: auto;  
+    padding-bottom: 20px;
+}
+
+
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+
+
+
+@media (max-width: 768px) {
+    header, .listside_up, .listside_logout, .admin_dashboard_main_ui {
+        width: 100%;
+        padding: 0px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .listside_up ul li, .listside_logout ul li {
+        padding: 10px 0;
+    }
+    
+    .listside_up, .listside_logout {
+        position: static;
+    }
+
+    .admin_dashboard_main_ui {
+        margin: 0;
+    }
+}
+
+
+.admin_dashboard_main_ui {
+    width: 100%;
+    max-width: 100%;           /* ← very important */
+    margin: 0 auto;            /* center it, but allow full width */
+    padding: 0 16px;           /* or 0 24px — small side padding */
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+
+.admin_staff_new_load h2, p{
+right: -30px;
+font-size: 20px;
+position: relative;
+}
+
+.sort-container {
+    display: flex;
+    align-items: center; 
+    margin-bottom: 10px; 
+}
+
+
+
+
+.add_new_button {
+    margin-left: 68px;
+    font-size: 2em;
+    background-color: transparent;
+    border: 2px solid #000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.add_new_button:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-container {
+    display: none;
+    background-color: #fef3ea;
+    padding-left: 8px;
+    text-indent: 2em;
+  }
+
+button.logistics-dropdown, button.inventory-dropdown, button.sales-dropdown, button.settings-dropdown{
+    border: none;
+    background-color: #fef3ea;
+    padding-left: 8px;
+    padding: 33px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Adjust button hover effect */
+button.logistics-dropdown:hover, button.inventory-dropdown:hover, button.sales-dropdown:hover, button.settings-dropdown:hover {
+    color: red; /* Highlight on hover */
+}
+
+/* Expanded dropdown content */
+.dropdown-container a {
+    padding: 8px 15px; /* Inner links padding */
+    text-decoration: none;
+    font-size: 16px;
+    color: black;
+    display: block;
+}
+
+.dropdown-container a:hover {
+    background-color: #d1484c; /* Highlight background */
+    color: white; /* Change text color */
+}
+
+/* Dashboard stat cards */
+.dashboard-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;               /* 16–24px is usually nice */
+    margin: 0 0 40px 0;      /* remove left/right margin or make very small */
+    padding: 0 16px;         /* small breathing room on sides — or 0 */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.card {
+    flex: 1 1 340px;           /* grow + shrink + base/min width */
+    min-width: 340px;          /* never smaller than this on wide screens */
+    /* remove or increase max-width significantly */
+    max-width: none;           /* ← key change: let them grow */
+    
+    border-radius: 16px;
+    padding: 28px 32px;        /* a bit more generous padding */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    transition: all 0.22s ease;
+}
+
+.dashboard-cards .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.14);
+}
+
+/* Force cards to have similar height */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card.blue { background: #1e63d6; }
+.card.red { background: #d63031; }
+.card.green { background: #1e8449; }
+
+.dashboard-cards h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.dashboard-cards p {
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* HERO SECTION */
+/* HERO SECTION */
+.dashboard-hero {
+    width: 100%;
+    height: 260px;
+    background:  url('../imgs/herocover.jpg') center/cover no-repeat;
+    background-color: #6b7280;
+    position: relative;
+    margin-top: 100px;
+}
+
+/* Dark overlay */
+.hero-overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 60px;
+    box-sizing: border-box;
+}
+
+/* Floating boxes */
+.hero-left,
+.hero-right {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    padding: 20px 25px;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* LEFT SIDE */
+.hero-left h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.hero-left p {
+    margin: 4px 0;
+    font-size: 15px;
+    opacity: 0.9;
+}
+
+/* RIGHT SIDE */
+.hero-right {
+    min-width: 260px;
+}
+
+.hero-right h3 {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.hero-activity {
+    list-style: disc;
+    padding-left: 18px;
+    margin: 0;
+}
+
+.hero-activity li {
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+
+.dashboard-body {
+    padding: 30px;
+}
+
+
+
+
+/* TOTAL PRODUCTS CARD */
+.total-products-card {
+    width: 520px;          /* bigger like your red box */
+    height: 240px;
+    padding: 26px 28px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: 'Poppins', sans-serif;
+}
+
+.product-name {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* header */
+.total-header {
+    margin-bottom: 10px;
+}
+
+.total-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: white;
+    margin: 0;
+}
+
+/* main body */
+.total-body {
+    display: flex;
+    align-items: center;
+    gap: 28px;           /* space between donut and bars */
+}
+
+/* donut container */
+.donut-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 130px;
+    height: 130px;
+}
+
+/* donut */
+.donut {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(
+        white 0% 65%,
+        rgba(255,255,255,0.25) 65% 100%
+    );
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.donut::after {
+    content: "";
+    position: absolute;
+    inset: 20px;
+    background: #2d63c8;
+    border-radius: 50%;
+}
+
+.donut-value {
+    position: relative;
+    font-size: 34px;
+    font-weight: 700;
+    color: white;
+    z-index: 2;
+}
+
+/* bars container */
+.product-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+/* each row */
+.chart-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
+/* thicker bars */
+.bar {
+    flex: 1;
+    height: 18px;
+    background: rgba(255,255,255,0.28);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bar div {
+    height: 100%;
+    background: white;
+    border-radius: 12px;
+}
+
+/* button area */
+.total-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.see-products-btn {
+    padding: 8px 18px;
+    margin-top: 10px;
+    font-size: 13px;
+    border-radius: 8px;
+    background: white;
+    color: #2d63c8;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.see-products-btn:hover {
+    background: #f2f2f2;
+}
+
+/* Each product row */
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: white;
+}
+
+.bar-quantity {
+    font-size: 1.05rem;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: right;
+}
+
+.bar-label {
+    flex: 0 0 220px;               /* enough space for name + quantity */
+    font-size: 0.98rem;
+    font-weight: 600;
+}
+
+/* Product label text */
+.bar-row span {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+}
+
+/* Progress bar background */
+.bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    overflow: hidden;
+    width: 0;                       /* start at 0 */
+    animation: fillBar 1.4s ease-out forwards;
+    animation-delay: 0.6s;          /* start after card fade-in */    
+}
+
+/* Progress fill */
+
+
+/* ── LOW STOCK CARD (RED) ─────────────────────────────────────────────── */
+
+.low-stock-card {
+    background: #d63031;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px 28px;              /* slightly less padding than before */
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    min-height: 260px;               /* minimum to match blue card feel */
+}
+
+/* Header */
+.low-stock-card .total-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+}
+
+/* ── Meters ───────────────────────────────────────────────────────────── */
+.low-stock-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;                       /* tighter gap → less width needed */
+    margin: 12px 0 16px 0;
+}
+
+.stock-meter {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 90px;
+}
+
+.meter {
+    width: 100px;                    /* reduced from 120px → better proportion */
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--color) var(--percent),
+        rgba(255,255,255,0.32) var(--percent)
+    );
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.meter::before {
+    content: "";
+    width: 70px;
+    height: 70px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.meter-value {
+    font-size: 1.65rem;              /* smaller than before, still readable */
+    font-weight: 800;
+    color: #111;
+    position: relative;
+    z-index: 2;
+}
+
+.meter-label {
+    margin-top: 8px;
+    font-size: 0.875rem;             /* 14px */
+    font-weight: 600;
+    color: white;
+    text-align: center;
+}
+
+/* ── Footer for LOW STOCK CARD ────────────────────────────────────────── */
+.low-stock-footer {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+}
+
+
+
+/* Button – match exactly the style & alignment of "See Products" */
+.card-button {
+    /* same styles as above */
+    padding: 8px 20px;
+    margin-top: 40px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #c62828;
+    background: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    margin-left: auto;          /* pushes to right edge */
+}
+
+.card-button:hover {
+    background: #fff5f5;
+    transform: translateY(-1px);
+}
+
+/* ── ACTIVE DELIVERIES CARD (GREEN) – Progress Bars ────────────────────── */
+
+.active-deliveries-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 16px 0 20px 0;
+    width: 0;                       /* start at 0 */
+    animation: fillBar 1.4s ease-out forwards;
+    animation-delay: 0.6s;
+}
+
+.status-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    width: 0;                       /* start at 0 */
+    animation: fillBar 1.4s ease-out forwards;
+    animation-delay: 0.6s;
+}
+
+.status-label {
+    flex: 0 0 160px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.status-count {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-left: 6px;
+}
+
+.status-bar {                     /* Changed from ".bar" */
+    flex: 1;
+    height: 18px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.status-fill {                    /* Changed from ".fill" */
+    height: 100%;
+    background: #ffffff;          /* Fallback – inline color overrides this */
+    border-radius: 12px;
+ 
+}
+
+.percent-label {
+    flex: 0 0 50px;
+    text-align: right;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* Footer */
+.active-deliveries-footer {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    
+}
+/* Unified reminder style for red & green cards */
+.low-stock-footer .reminder,
+.active-deliveries-footer .reminder {
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.78);
+    opacity: 0.88;
+    margin: 0;
+    max-width: 62%;
+}
+
+
+
+
+.active-deliveries-footer .card-button {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e8449;
+    background: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: auto;
+    text-decoration: none;
+}
+
+.active-deliveries-footer .card-button:hover {
+    background: #f0fff0;
+    transform: translateY(-1px);
+}
+
+/* ── Card entry animation ─────────────────────────────────────────────── */
+.dashboard-cards .card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: cardEntry 0.8s ease-out forwards;
+}
+
+/* Stagger the cards so they don't appear all at once */
+.dashboard-cards .card:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-cards .card:nth-child(2) { animation-delay: 0.25s; }
+.dashboard-cards .card:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes cardEntry {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Blue card bars */
+.product-bars .bar .fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 20px;
+    transition: width 1.2s ease-out;   /* ← optional nice fill effect */
+}
+
+.fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    transition: width 1.2s ease-out;
+}
+
+/* Optional: subtle glow on the fill for better visibility */
+.fill {
+    box-shadow: 0 0 8px rgba(255,255,255,0.4) inset;
+}
+
+/* Green card bars */
+
+/* Keyframes – clean version */
+@keyframes fillBar {
+    from { width: 0%; }
+    to   { width: 100%; }   /* will be overridden by inline width anyway */
+}
+
+/* ── DONUT ANIMATION – STRONG VERSION ──────────────────────────────────── */
+.donut-animated {
+    background: conic-gradient(
+        #e0e0e0 0deg,
+        #e0e0e0 0deg
+    ) !important;
+    animation: fillDonut 1.2s ease-out forwards !important;
+    animation-delay: 0.8s !important;
+}
+
+@keyframes fillDonut {
+    to {
+        background: conic-gradient(
+            var(--donut-color, #43a047) 0deg,
+            var(--donut-color, #43a047) calc(var(--donut-percent, 100) * 3.6deg),
+            #e0e0e0 calc(var(--donut-percent, 100) * 3.6deg)
+        ) !important;
+    }
+}
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.stat-card {
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.bg-products {
+    background: #0d6efd;
+}
+
+.bg-stock {
+    background: #dc3545;
+}
+
+.bg-delivery {
+    background: #198754;
+}
+
+.bg-users {
+    background: #6f42c1;
+}
+
+.stat-title {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+
+/* Force card layout for trip page */
+.trip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Restore card appearance */
+.trip-grid > div {
+    border-radius: 14px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Card colors */
+.trip-grid > div:nth-child(1) {
+    background: linear-gradient(135deg, #2563eb, #1e3a8a);
+}
+
+.trip-grid > div:nth-child(2) {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+}
+
+.trip-grid > div:nth-child(3) {
+    background: linear-gradient(135deg, #16a34a, #166534);
+}
+
+/* Inner white panels */
+.trip-grid table,
+.trip-grid form {
+    background: white;
+    color: #333;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+/* Table styling */
+.trip-grid table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.trip-grid th,
+.trip-grid td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Inputs */
+.trip-grid select,
+.trip-grid input {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* Improve card proportions */
+.trip-grid > div {
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 260px;
+}
+
+/* Header spacing */
+.trip-grid h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+/* Inner white panels */
+.trip-grid form,
+.trip-grid table {
+    background: white;
+    color: #333;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+/* Make tables look modern */
+.trip-grid table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.trip-grid th {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #666;
+    padding-bottom: 6px;
+}
+
+.trip-grid td {
+    padding: 10px 6px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Better spacing for form */
+.trip-grid form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Inputs */
+.trip-grid select,
+.trip-grid input {
+    padding: 7px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* Button */
+.trip-grid button {
+    padding: 7px 14px;
+    background: #1d4ed8;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.trip-grid button:hover {
+    background: #1e40af;
+}
+
+/* Modern table styling */
+.trip-grid table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+/* Table header */
+.trip-grid thead {
+    background: #f8fafc;
+}
+
+.trip-grid th {
+    text-align: left;
+    padding: 12px 10px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Table rows */
+.trip-grid td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Last row fix */
+.trip-grid tr:last-child td {
+    border-bottom: none;
+}
+
+/* Row hover effect */
+.trip-grid tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Status badge */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-assigned {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.status-transit {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-delayed {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Action links */
+.action-link {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.action-link:hover {
+    text-decoration: underline;
+}
+

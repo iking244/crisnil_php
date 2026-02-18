@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tracking Map</title>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Truck Tracking Map (Static)</h2>
+    <div id="map"></div>
+
+    <script>
+        let map;
+        let directionsService;
+        let directionsRenderers = [];
+        let markers = [];
+        let animations = [];
+        let truckIcon;
+
+
+        // Route colors
+        let routeColors = [
+            "#007bff", // blue
+            "#28a745", // green
+            "#dc3545", // red
+            "#ffc107", // yellow
+            "#6f42c1", // purple
+            "#fd7e14", // orange
+            "#20c997"  // teal
+        ];
+
+        let truckColorMap = {};
+        let colorIndex = 0;
+
+        function getTruckColor(plateNumber) {
+            if (!truckColorMap[plateNumber]) {
+                truckColorMap[plateNumber] =
+                    routeColors[colorIndex % routeColors.length];
+                colorIndex++;
+            }
+            return truckColorMap[plateNumber];
+        }
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: { lat: 14.55, lng: 121.00 }
+            });
+
+            directionsService = new google.maps.DirectionsService();
+
+            truckIcon = {
+                url: "https://cdn-icons-png.flaticon.com/512/1995/1995504.png",
+                scaledSize: new google.maps.Size(40, 40)
+            };
+
+            loadTrackingData();
+            setInterval(loadTrackingData, 20000);
+        }
+
+        function loadTrackingData() {
+            clearMap();
+            fetch("/CRISNIL_APP/api/get_tracking_map.php")
+                .then(response => response.json())
+                .then(data => {
+
+                    data.forEach(truck => {
+
+                        if (!truck.origin_lat || !truck.destination_lat) return;
+
+                        const origin = {
+                            lat: parseFloat(truck.origin_lat),
+                            lng: parseFloat(truck.origin_lng)
+                        };
+
+                        const destination = {
+                            lat: parseFloat(truck.destination_lat),
+                            lng: parseFloat(truck.destination_lng)
+                        };
+
+                        // markers
+                        let originMarker = new google.maps.Marker({
+                            position: origin,
+                            map: map,
+                            label: "O",
+                            title: truck.origin_name
+                        });
+                        markers.push(originMarker);
+
+                        let destinationMarker = new google.maps.Marker({
+                            position: destination,
+                            map: map,
+                            label: "D",
+                            title: truck.destination_name
+                        });
+                        markers.push(destinationMarker);
+
+
+                        // colored route
+                        // colored route
+                        const color = getTruckColor(truck.plate_number);
+                        drawRoute(origin, destination, color);
+
+                        // place truck at real GPS location
+                        if (truck.current_lat && truck.current_lng) {
+                            let truckMarker = new google.maps.Marker({
+                                position: {
+                                    lat: parseFloat(truck.current_lat),
+                                    lng: parseFloat(truck.current_lng)
+                                },
+                                map: map,
+                                icon: truckIcon,
+                                title: "Truck: " + truck.plate_number
+                            });
+                            markers.push(truckMarker);
+                        }
+
+                    });
+                })
+                .catch(error => console.error("API error:", error));
+        }
+
+        function drawRoute(origin, destination, color) {
+            const directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true,
+                polylineOptions: {
+                    strokeColor: color,
+                    strokeWeight: 5
+                }
+            });
+
+            directionsService.route(
+                {
+                    origin: origin,
+                    destination: destination,
+                    travelMode: google.maps.TravelMode.DRIVING
+                },
+                (result, status) => {
+                    if (status === "OK") {
+                        directionsRenderer.setDirections(result);
+                        directionsRenderers.push(directionsRenderer);
+                    } else {
+                        console.error("Directions request failed:", status);
+                    }
+                }
+            );
+        }
+
+
+        function clearMap() {
+            // stop animations
+            animations.forEach(anim => clearInterval(anim));
+            animations = [];
+
+            // remove route lines
+            directionsRenderers.forEach(renderer => {
+                renderer.setMap(null);
+            });
+            directionsRenderers = [];
+
+            // remove markers
+            markers.forEach(marker => {
+                marker.setMap(null);
+            });
+            markers = [];
+        }
+
+
+    </script>
+
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0yZHj2xllQIw4A1IgnsEedEiKnSly640&callback=initMap">
+        </script>
+
+</body>
+
+</html>
