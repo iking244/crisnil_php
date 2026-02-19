@@ -11,9 +11,13 @@ include "../controllers/dashboard_controller.php";
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Crisnil</title>
-    <link rel="stylesheet" href="../styles/dashboard2.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/base.css">
+    <link rel="stylesheet" href="../styles/layout.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/dashboard/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="icon" href="../imgs/imgsroles/logocrisnil.png" type="image/x-icon">
 </head>
@@ -22,148 +26,195 @@ include "../controllers/dashboard_controller.php";
     <?php include '../includes/sidenav.php'; ?>
     <?php include '../includes/header.php'; ?>
 
-    <div class="app-wrapper">
-        <div class=" main">
+    <div class="main">
+        <div class="admin_dashboard_main_ui container-fluid">
 
-
-
-            <div class="dashboard-hero">
-                <div class="hero-overlay">
-                    <div class="hero-left">
-                        <h1 id="greeting">Welcome, Admin</h1>
-                        <p id="currentDate">Monday, Feb 10, 2026</p>
-                        <p id="currentTime">10:42 AM</p>
-                    </div>
-
-                    <div class="hero-right">
-                        <h3>Recent Activity</h3>
-                        <ul class="hero-activity">
-                            <?php
-                            if ($activity_result && mysqli_num_rows($activity_result) > 0) {
-                                while ($activity = mysqli_fetch_assoc($activity_result)) {
-                                    echo "<li><strong>" . htmlspecialchars($activity['notif_title']) . ":</strong> "
-                                        . htmlspecialchars($activity['notif_desc']) . "</li>";
-                                }
-                            } else {
-                                echo "<li>No recent activity.</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                </div>
+            <!-- PAGE HEADER -->
+            <div class="dashboard-title mt-3">
+                <h2>Dashboard Overview</h2>
+                <p class="text-muted">Summary of today’s operations</p>
             </div>
 
-            <div class="admin_dashboard_main_ui">
-                <!-- Dashboard Title -->
-                <!-- DASHBOARD STAT CARDS -->
-                <div class="dashboard-cards">
+            <!-- KPI ROW -->
+            <div class="dashboard-kpi-row mt-3">
+                <div class="row g-3">
 
-                    <!-- Blue - Total Products -->
-                    <div class="card blue total-products-card">
-                        <div class="total-header">
-                            <h3>TOTAL PRODUCTS</h3>
-                        </div>
-                        <div class="total-body">
-                            <div class="donut-wrapper">
-                                <div class="donut donut-animated" style="--donut-percent: 100;">
-                                    <div class="donut-value"><?= $total_products; ?></div>
-                                </div>
-                            </div>
-                            <div class="product-bars">
-                                <?php foreach ($product_distribution as $prod): ?>
-                                    <div class="bar-row">
-                                        <span><?= htmlspecialchars($prod['product']); ?></span>
-                                        <div class="bar">
-                                            <div class="fill" style="width: <?= $prod['percent']; ?>%"></div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                        <div class="total-footer">
-                            <a href="product_management.php" class="see-products-btn">See Products</a>
+                    <div class="col-md-2">
+                        <div class="kpi-card blue">
+                            <h6>Sales Today</h6>
+                            <h3>₱ 0.00</h3>
+                            <span class="kpi-sub">+0% vs yesterday</span>
                         </div>
                     </div>
 
-                    <!-- Red - Low Stock -->
-                    <div class="card red low-stock-card">
-                        <div class="total-header">
-                            <h3>LOW STOCK ITEMS</h3>
-                        </div>
-                        <div class="low-stock-body">
-                            <?php foreach ($product_distribution as $prod): ?>
-                                <div class="stock-meter">
-                                    <div class="meter"
-                                        style="--color: <?= $prod['color']; ?>; --percent: <?= $prod['percent']; ?>%;">
-                                        <span class="meter-value"><?= round($prod['percent']); ?>%</span>
-                                    </div>
-                                    <div class="meter-label"><?= htmlspecialchars($prod['product']); ?></div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <div class="low-stock-footer">
-                            <p class="reminder">Please restock items below safe levels.</p>
-                            <button class="card-button" 
-									type="button"
-									onclick="window.location.href='product_management.php'">
-								View Items
-							</button>
+                    <div class="col-md-2">
+                        <div class="kpi-card dark">
+                            <h6>Orders Today</h6>
+                            <h3>0</h3>
+                            <span class="kpi-sub">0 pending</span>
                         </div>
                     </div>
 
-                    <!-- Green - Active Deliveries -->
-                    <div class="card green active-deliveries-card">
-                        <div class="total-header">
-                            <h3>ACTIVE DELIVERIES</h3>
+                    <div class="col-md-2">
+                        <div class="kpi-card red">
+                            <h6>Low Stock</h6>
+                            <h3><?= $low_stock_count ?? 0 ?></h3>
+                            <span class="kpi-sub">Needs restocking</span>
                         </div>
-                        <div class="active-deliveries-body">
-                            <?php
-                            if (empty($delivery_distribution)) {
-                                echo '<p style="color:white; text-align:center; opacity:0.8; margin: 40px 0;">No active deliveries right now.</p>';
-                            } else {
-                                foreach ($delivery_distribution as $del):
-                                    $percent = round($del['percent']);
-                            ?>
-                                    <div class="status-bar-row">
-                                        <div class="status-label">
-                                            <?= htmlspecialchars($del['status']) ?>
-                                            <span class="status-count">(<?= $del['count'] ?>)</span>
-                                        </div>
-                                        <div class="status-bar"> <!-- Changed from "bar" -->
-                                            <div class="status-fill"
-                                                style="width: <?= $percent ?>%; background: <?= htmlspecialchars($del['color'] ?? '#43a047') ?> !important;">
-                                            </div>
-                                        </div>
-                                        <div class="percent-label"><?= $percent ?>%</div>
-                                    </div>
-                            <?php
-                                endforeach;
-                            } ?>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="kpi-card orange">
+                            <h6>Expiring Soon</h6>
+                            <h3>0</h3>
+                            <span class="kpi-sub">Within 3 days</span>
                         </div>
-                        <div class="active-deliveries-footer">
-                            <p class="reminder">Monitor ongoing deliveries.</p>
-                            <a href="logistics_dashboard.php" class="card-button">View Deliveries</a>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="kpi-card green">
+                            <h6>Active Deliveries</h6>
+                            <h3><?= $total_active_deliveries ?? 0 ?></h3>
+                            <span class="kpi-sub">In progress</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="kpi-card gray">
+                            <h6>Monthly Revenue</h6>
+                            <h3>₱ 0.00</h3>
+                            <span class="kpi-sub">This month</span>
                         </div>
                     </div>
 
                 </div>
             </div>
+
+            <!-- CHARTS -->
+            <div class="row g-4 mt-4">
+
+                <div class="col-lg-8">
+                    <div class="chart-card">
+                        <h5>Sales Trend (Last 7 Days)</h5>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="chart-card">
+                        <h5>Stock Movement</h5>
+                        <canvas id="stockChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- LOWER TABLES -->
+            <div class="row g-4 mt-4">
+
+                <div class="col-lg-6">
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h5>Low Stock Items</h5>
+                            <a href="product_management.php" class="btn btn-sm btn-outline-danger">View All</a>
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">
+                                        No low stock items
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="table-card">
+                        <div class="card-header">
+                            <h5>Recent Deliveries</h5>
+                            <a href="logistics_dashboard.php" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">
+                                        No recent deliveries
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-
-        <script type="text/javascript" src="../scripts/dashboard.js"></script>
-        <script type="text/javascript" src="../scripts/notif.js"></script>
-        <script type="text/javascript" src="../scripts/sidenav.js"></script>
-        <script type="text/javascript" src="../scripts/dropdown2.js"></script>
-
-
-
-
-        <footer>
-            <div class="footer1">
-                <h3></h3>
-            </div>
-        </footer>
     </div>
+
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../scripts/dashboard.js"></script>
+    <script src="../scripts/notif.js"></script>
+    <script src="../scripts/sidenav.js"></script>
+    <script src="../scripts/dropdown2.js"></script>
+
+    <!-- Chart Placeholder Script -->
+    <script>
+        const salesCtx = document.getElementById('salesChart');
+        if (salesCtx) {
+            new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [12, 19, 8, 17, 14, 20, 9],
+                        borderColor: '#d32f2f',
+                        fill: true,
+                        backgroundColor: 'rgba(211,47,47,0.1)',
+                        tension: 0.4
+                    }]
+                }
+            });
+        }
+
+        const stockCtx = document.getElementById('stockChart');
+        if (stockCtx) {
+            new Chart(stockCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Stock In', 'Stock Out'],
+                    datasets: [{
+                        data: [50, 32],
+                        backgroundColor: ['#2e7d32', '#d32f2f']
+                    }]
+                }
+            });
+        }
+    </script>
+
+    <footer>
+        <div class="footer1"></div>
+    </footer>
+    </div>
+
 
 </body>
 
