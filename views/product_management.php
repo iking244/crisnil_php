@@ -50,6 +50,22 @@ include "../controllers/products_controller.php";
                 </div>
             </div>
 
+            <?php if ($stats['low_stock'] > 0): ?>
+                <div class="inventory-banner warning">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <?= $stats['low_stock'] ?> products are low on stock.
+                    <a href="?filter=low" class="btn btn-sm btn-dark ms-2">
+                        View Items
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="inventory-banner success">
+                    <i class="fa fa-check-circle"></i>
+                    Inventory is healthy. No low stock items.
+                </div>
+            <?php endif; ?>
+
+
 
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
