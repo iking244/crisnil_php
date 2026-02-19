@@ -36,6 +36,8 @@ $units = mysqli_query(
     "SELECT unit_id, unit_name FROM tbl_units ORDER BY unit_name"
 );
 
+
+
 /* =========================
    HANDLE ACTIONS
 ========================= */
@@ -126,3 +128,9 @@ $products = getProductsPaginated(
     $limit,
     $offset
 );
+
+
+/* =========================
+   LOAD PRODUCTS
+========================= */
+$productsDropdown = getAllProductsName($databaseconn);

@@ -41,6 +41,12 @@ function getAllProducts($conn)
     return mysqli_query($conn, $query);
 }
 
+function getAllProductsName($conn) {
+    $sql = "SELECT product_id, product_name FROM tbl_products ORDER BY product_name ASC";
+    return mysqli_query($conn, $sql);
+}
+
+
 
 /* =========================
    COUNT PRODUCTS

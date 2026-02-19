@@ -15,7 +15,12 @@ if (!isset($_SESSION['USER_ID'])) {
 /* =========================
    CURRENT WAREHOUSE
 ========================= */
-$warehouse_id = $_SESSION['warehouse_id'] ?? 1;
+$warehouse_id = (int)$_POST['warehouse_id'];
+
+if ($warehouse_id <= 0) {
+    die("Invalid warehouse selected.");
+}
+
 
 /* =========================
    HANDLE ACTIONS
