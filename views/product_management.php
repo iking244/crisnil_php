@@ -16,6 +16,7 @@ include "../controllers/products_controller.php";
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/floatingBtn.css">
     <link rel="stylesheet" href="../styles/modals.css">
+    <link rel="stylesheet" href="../styles/sticky_filter.css">
 
 </head>
 
@@ -27,15 +28,10 @@ include "../controllers/products_controller.php";
     <main class="main-content p-4">
         <div class="container-fluid">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="page-title">Products Database</h1>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="page-title">Products Management</h1>
 
-                <button class="export-btn btn btn-primary">
-                    <i class="fa fa-download"></i> Export
-                </button>
-            </div>
-            <div class="action-bar mb-4">
-                <div class="action-left">
+                <div class="d-flex gap-2">
                     <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#createProductModal">
@@ -46,6 +42,9 @@ include "../controllers/products_controller.php";
                         data-bs-toggle="modal"
                         data-bs-target="#addStockModal">
                         <i class="fa fa-box"></i> Add Stock
+                    </button>
+                    <button class="export-btn btn btn-primary">
+                        <i class="fa fa-download"></i> Export
                     </button>
                 </div>
             </div>
@@ -65,51 +64,55 @@ include "../controllers/products_controller.php";
                 </div>
             <?php endif; ?>
 
+            <!-- Sticky Filter Bar -->
+            <div class="sticky-filters">
+                <div class="filters-inner">
 
-            <!-- Search -->
-            <div class="search-wrapper mb-4">
-                <input type="text" id="searchInput" class="search-input"
-                    placeholder="Search by Product Code or Name...">
-                <i class="fa fa-search search-icon"></i>
+                    <!-- Search -->
+                    <div class="search-wrapper">
+                        <input type="text" id="searchInput" class="search-input"
+                            placeholder="Search by Product Code or Name...">
+                        <i class="fa fa-search search-icon"></i>
+                    </div>
+
+                    <!-- Warehouse filter -->
+                    <form method="GET" class="warehouse-form">
+                        <select name="warehouse_id"
+                            onchange="this.form.submit()"
+                            class="form-select">
+
+                            <option value="0" <?= $warehouse_id == 0 ? 'selected' : '' ?>>
+                                All Warehouses
+                            </option>
+
+                            <?php while ($w = mysqli_fetch_assoc($warehouses)): ?>
+                                <option value="<?= $w['warehouse_id'] ?>"
+                                    <?= $warehouse_id == $w['warehouse_id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($w['warehouse_name']) ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </form>
+
+                    <!-- Page size -->
+                    <div class="page-size">
+                        <label>Show</label>
+                        <select id="pageSize" class="form-select">
+                            <option value="10">10</option>
+                            <option value="25" selected>25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>entries</span>
+                    </div>
+
+                </div>
             </div>
-
-            <form method="GET" class="mb-3">
-                <label><strong>Select Warehouse:</strong></label>
-                <select name="warehouse_id" onchange="this.form.submit()" class="form-control">
-                    <option value="0" <?= $warehouse_id == 0 ? 'selected' : '' ?>>
-                        All Warehouses
-                    </option>FS
-
-                    <?php while ($w = mysqli_fetch_assoc($warehouses)): ?>
-                        <option value="<?= $w['warehouse_id'] ?>"
-                            <?= $warehouse_id == $w['warehouse_id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($w['warehouse_name']) ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
-
-            </form>
 
 
             <!-- Table -->
             <div class="card">
                 <div class="card-body">
-
-                    <div class="d-flex justify-content-between mb-3">
-                        <div>
-                            <label>Show</label>
-                            <select id="pageSize" class="form-control d-inline-block" style="width:auto;">
-                                <option value="10">10</option>
-                                <option value="25" selected>25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                            entries
-                        </div>
-                    </div>
-
-                    <div id="productsTableContainer"></div>
-
+                    <div id="productsTableContainer"></div> 
                 </div>
             </div>
 

@@ -1,0 +1,51 @@
+/* Sticky filter bar */
+.sticky-filters {
+    position: sticky;
+    top: 100px;
+    /* height of your red header */
+    z-index: 50;
+    background: #f6f7fb;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e2e5ec;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.filters-inner {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Search */
+.search-wrapper {
+    position: relative;
+    width: 280px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px 8px 35px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* Page size */
+.page-size {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-size select {
+    width: 80px;
+}
