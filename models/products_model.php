@@ -276,3 +276,23 @@ function getProductsStats($conn)
     $result = mysqli_query($conn, $query);
     return mysqli_fetch_assoc($result);
 }
+
+function getLowStockProducts($conn)
+{
+    $query = "
+        SELECT
+            p.product_id,
+            p.product_name,
+            IFNULL(SUM(ws.quantity), 0) AS quantity
+        FROM tbl_products p
+        LEFT JOIN tbl_warehouse_stock ws
+            ON p.product_id = ws.product_id
+        GROUP BY p.product_id
+        HAVING quantity <= 10
+        ORDER BY quantity ASC
+        LIMIT 5
+    ";
+
+    return mysqli_query($conn, $query);
+}
+

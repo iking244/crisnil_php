@@ -13,7 +13,7 @@ if (!isset($_SESSION['USER_ID'])) {
 }
 
 $stats = getProductsStats($databaseconn);
-
+$lowStockProducts = getLowStockProducts($databaseconn);
 /* =========================
    CURRENT WAREHOUSE
 ========================= */
