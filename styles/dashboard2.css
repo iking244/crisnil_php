@@ -1147,3 +1147,27 @@ body {
     text-decoration: underline;
 }
 
+.stat-card {
+    background: white;
+    padding: 18px 20px;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    border: 1px solid #eef0f5;
+    height: 100%;
+}
+
+.stat-title {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 600;
+    color: #1e3fa3;
+}
+
+.stat-card.warning .stat-value {
+    color: #d97706;
+}

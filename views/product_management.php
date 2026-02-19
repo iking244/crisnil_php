@@ -35,6 +35,47 @@ include "../controllers/products_controller.php";
                 </button>
             </div>
 
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Products</div>
+                        <div class="stat-value">
+                            <?= $stats['total_products'] ?? 0 ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Stock</div>
+                        <div class="stat-value">
+                            <?= number_format($stats['total_stock'] ?? 0) ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="stat-card warning">
+                        <div class="stat-title">Low Stock Items</div>
+                        <div class="stat-value">
+                            <?= $stats['low_stock'] ?? 0 ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Weight</div>
+                        <div class="stat-value">
+                            <?= number_format($stats['total_weight'] ?? 0, 2) ?> kg
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
             <!-- Search -->
             <div class="search-wrapper mb-4">
                 <input type="text" id="searchInput" class="search-input"
@@ -113,8 +154,6 @@ include "../controllers/products_controller.php";
                     </tbody>
                 </table>
             </div>
-
-
             <div class="card-footer mt-4">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                     <a href="?page=<?= $i ?>"
@@ -473,7 +512,18 @@ include "../controllers/products_controller.php";
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>
 
-
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 2000">
+        <div id="appToast" class="toast align-items-center text-white border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Notification
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
 
 
 

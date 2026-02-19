@@ -12,6 +12,8 @@ if (!isset($_SESSION['USER_ID'])) {
     exit();
 }
 
+$stats = getProductsStats($databaseconn);
+
 /* =========================
    CURRENT WAREHOUSE
 ========================= */
