@@ -84,6 +84,7 @@
                                  <td>
                                      <i class="fa fa-pencil edit-icon"
                                          data-id="<?= $row['id'] ?>"
+                                         data-status="<?= $row['status'] ?>"
                                          title="Edit"></i>
 
                                      <i class="fa fa-trash text-danger ms-2 delete-icon"

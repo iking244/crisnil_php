@@ -5,6 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Edit icons → open modal ─────────────────────────────
     document.querySelectorAll('.edit-icon').forEach(icon => {
         icon.addEventListener('click', () => {
+
+            const status = icon.dataset.status;
+
+            // block edit
+            if (status === 'completed' || status === 'cancelled') {
+                const niceStatus = status.charAt(0).toUpperCase() + status.slice(1);
+                alert(`This job order cannot be edited because it is already ${niceStatus}.`);
+                return;
+            }
+
+
             const row = icon.closest('tr');
             const cells = row.querySelectorAll('td');
 
@@ -40,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             editModal.show();
         });
     });
+
 });
 
 
@@ -93,9 +105,9 @@ function addItemRow(tableId = 'itemsTable') {
         <td>
             <select name="product_id[]" class="form-select product-select" required>
                 <option value="">Select Product</option>
-                ${window.productList.map(p => 
-                    `<option value="${p.id}">${p.name}</option>`
-                ).join('')}
+                ${window.productList.map(p =>
+        `<option value="${p.id}">${p.name}</option>`
+    ).join('')}
             </select>
         </td>
         <td>
