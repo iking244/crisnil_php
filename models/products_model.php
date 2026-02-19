@@ -134,6 +134,7 @@ function getProductsPaginated($conn, $warehouse_id, $limit, $offset) {
                 AND ws.expiration_date >= CURDATE() 
             GROUP BY p.product_id
             ORDER BY p.product_name ASC
+            LIMIT $limit OFFSET $offset
         ";
     }
 
