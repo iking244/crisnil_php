@@ -3,7 +3,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 session_start();
-
 include "../config/database_conn.php";
 include "../models/products_model.php";
 
@@ -14,6 +13,7 @@ if (!isset($_SESSION['USER_ID'])) {
 
 $stats = getProductsStats($databaseconn);
 $lowStockProducts = getLowStockProducts($databaseconn);
+$recentStock = getRecentStockActivity($databaseconn);
 /* =========================
    CURRENT WAREHOUSE
 ========================= */

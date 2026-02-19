@@ -1271,3 +1271,82 @@ body {
 .row.mb-4 .card h3.text-warning {
     color: #d97706 !important;
 }
+
+.card-header {
+    background: #f8fafc;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.stat-card {
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+}
+
+.stat-title {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+}
+
+.stat-blue {
+    background: linear-gradient(135deg, #2f5fd7, #244bb5);
+}
+
+.stat-green {
+    background: linear-gradient(135deg, #1f8a43, #187536);
+}
+
+.stat-orange {
+    background: linear-gradient(135deg, #f08c00, #cc7400);
+}
+
+.stat-gray {
+    background: linear-gradient(135deg, #5a6270, #434a57);
+}
+
+
+.card {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.card h6 {
+    font-weight: 600;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.list-group-item {
+    border: none;
+    padding: 12px 16px;
+}
+
+.list-group-item:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+
+.overview-card .card-body {
+    min-height: 220px;
+}
+

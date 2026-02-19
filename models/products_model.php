@@ -296,3 +296,23 @@ function getLowStockProducts($conn)
     return mysqli_query($conn, $query);
 }
 
+function getRecentStockActivity($conn, $limit = 5)
+{
+    $query = "
+        SELECT
+            p.product_name,
+            ws.quantity,
+            ws.created_at
+        FROM tbl_warehouse_stock ws
+        JOIN tbl_products p
+            ON ws.product_id = p.product_id
+        ORDER BY ws.created_at DESC
+        LIMIT $limit
+    ";
+
+    return mysqli_query($conn, $query);
+}
+
+
+
+

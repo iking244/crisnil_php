@@ -67,48 +67,50 @@ include "../controllers/products_controller.php";
 
 
 
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="stat-card stat-blue">
-                        <div class="stat-header">
-                            <i class="fa fa-box"></i>
-                            <span>Total Products</span>
-                        </div>
-                        <div class="stat-value">
-                            <?= $stats['total_products'] ?? 0 ?>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="row mb-4 g-3">
 
                 <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-title">Total Stock</div>
-                        <div class="stat-value">
-                            <?= number_format($stats['total_stock'] ?? 0) ?>
+                    <div class="stat-card stat-blue d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-title">Total Products</div>
+                            <div class="stat-value"><?= $stats['total_products'] ?></div>
                         </div>
+                        <i class="fa fa-box fa-2x text-white opacity-75"></i>
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <div class="stat-card warning">
-                        <div class="stat-title">Low Stock Items</div>
-                        <div class="stat-value">
-                            <?= $stats['low_stock'] ?? 0 ?>
+                    <div class="stat-card stat-green d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-title">Total Stock</div>
+                            <div class="stat-value"><?= number_format($stats['total_stock']) ?></div>
                         </div>
+                        <i class="fa fa-warehouse fa-2x text-white opacity-75"></i>
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-title">Total Weight</div>
-                        <div class="stat-value">
-                            <?= number_format($stats['total_weight'] ?? 0, 2) ?> kg
+                    <div class="stat-card stat-orange d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-title">Low Stock Items</div>
+                            <div class="stat-value"><?= $stats['low_stock'] ?></div>
                         </div>
+                        <i class="fa fa-exclamation-triangle fa-2x text-white opacity-75"></i>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="stat-card stat-gray d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-title">Total Weight</div>
+                            <div class="stat-value"><?= number_format($stats['total_weight']) ?> kg</div>
+                        </div>
+                        <i class="fa fa-weight-hanging fa-2x text-white opacity-75"></i>
                     </div>
                 </div>
 
             </div>
+
 
 
             <!-- Search -->
