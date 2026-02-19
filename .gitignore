@@ -4,6 +4,7 @@
 # Database config
 config/database_conn.php
 database_conn-local.php
+api/debug.txt
 
 # Uploads
 uploads/
