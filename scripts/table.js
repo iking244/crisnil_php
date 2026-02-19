@@ -1,7 +1,7 @@
 // table.js ─ shared table features
 // Used by: orders, products, and any table-based pages
 
-document.addEventListener('DOMContentLoaded', () => {
+function initTableFeatures() {
     const table = document.getElementById('ordersTable');
     if (!table) return;
 
@@ -106,5 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    console.log('Shared table features loaded');
-});
+    console.log('Shared table features initialized');
+}
+
+// run on page load
+document.addEventListener('DOMContentLoaded', initTableFeatures);

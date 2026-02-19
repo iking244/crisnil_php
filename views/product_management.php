@@ -28,7 +28,7 @@ include "../controllers/products_controller.php";
         <div class="container-fluid">
 
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="page-title">Products Management</h1>
+                <h1 class="page-title">Products Database</h1>
 
                 <button class="export-btn btn btn-primary">
                     <i class="fa fa-download"></i> Export
@@ -66,53 +66,6 @@ include "../controllers/products_controller.php";
             <?php endif; ?>
 
 
-
-            <div class="row mb-4 g-3">
-
-                <div class="col-md-3">
-                    <div class="stat-card stat-blue d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Total Products</div>
-                            <div class="stat-value"><?= $stats['total_products'] ?></div>
-                        </div>
-                        <i class="fa fa-box fa-2x text-white opacity-75"></i>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="stat-card stat-green d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Total Stock</div>
-                            <div class="stat-value"><?= number_format($stats['total_stock']) ?></div>
-                        </div>
-                        <i class="fa fa-warehouse fa-2x text-white opacity-75"></i>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="stat-card stat-orange d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Low Stock Items</div>
-                            <div class="stat-value"><?= $stats['low_stock'] ?></div>
-                        </div>
-                        <i class="fa fa-exclamation-triangle fa-2x text-white opacity-75"></i>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="stat-card stat-gray d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="stat-title">Total Weight</div>
-                            <div class="stat-value"><?= number_format($stats['total_weight']) ?> kg</div>
-                        </div>
-                        <i class="fa fa-weight-hanging fa-2x text-white opacity-75"></i>
-                    </div>
-                </div>
-
-            </div>
-
-
-
             <!-- Search -->
             <div class="search-wrapper mb-4">
                 <input type="text" id="searchInput" class="search-input"
@@ -139,66 +92,25 @@ include "../controllers/products_controller.php";
 
 
             <!-- Table -->
-            <div class="table-container">
-                <table class="orders-table" id="ordersTable">
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" id="selectAll"></th>
-                            <th>Product Code</th>
-                            <th>Product Name</th>
-                            <th>Unit</th>
-                            <th>Quantity</th>
-                            <th>Weight</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+            <div class="card">
+                <div class="card-body">
 
-                    <tbody>
-                        <?php while ($row = $products->fetch_assoc()): ?>
-                            <tr>
-                                <td><input type="checkbox" class="row-check"></td>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <label>Show</label>
+                            <select id="pageSize" class="form-control d-inline-block" style="width:auto;">
+                                <option value="10">10</option>
+                                <option value="25" selected>25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            entries
+                        </div>
+                    </div>
 
-                                <td><strong><?= $row['product_code'] ?></strong></td>
-                                <td><?= htmlspecialchars($row['product_name']) ?></td>
-                                <td><?= htmlspecialchars($row['unit']) ?></td>
-                                <td><?= $row['quantity'] ?></td>
-                                <td><?= $row['weight'] ?></td>
+                    <div id="productsTableContainer"></div>
 
-                                <td>
-                                    <?php
-                                    if ($row['quantity'] <= 10) {
-                                        echo '<span class="status-badge pending">Low Stock</span>';
-                                    } else {
-                                        echo '<span class="status-badge completed">Available</span>';
-                                    }
-                                    ?>
-                                </td>
-
-                                <td>
-                                    <i class="fa fa-pencil edit-product"
-                                        data-id="<?= $row['product_id'] ?>"
-                                        data-code="<?= $row['product_code'] ?>"
-                                        data-name="<?= htmlspecialchars($row['product_name']) ?>"
-                                        data-qty="<?= $row['quantity'] ?>"
-                                        data-unit-id="<?= $row['unit_id'] ?>"
-                                        data-weight-per-unit="<?= $row['weight_per_unit'] ?>"
-                                        data-units-per-pallet="<?= $row['units_per_pallet'] ?>"
-                                        title="Edit"></i>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer mt-4">
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?= $i ?>"
-                        class="view-btn"
-                        style="<?= ($i == $page) ? 'background:#1e3fa3;color:white;' : '' ?>">
-                        <?= $i ?>
-                    </a>
-                <?php endfor; ?>
+                </div>
             </div>
 
             <!-- Floating Add Button -->

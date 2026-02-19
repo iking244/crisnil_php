@@ -128,6 +128,14 @@ function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, 
         $code = mysqli_real_escape_string($conn, $code);
         $name = mysqli_real_escape_string($conn, $name);
 
+        // Force numeric types
+        $unit_id = (int)$unit_id;
+        $qty = (int)$qty;
+        $weight_per_unit = (float)$weight_per_unit;
+        $units_per_pallet = (int)$units_per_pallet;
+        $id = (int)$id;
+        $warehouse_id = (int)$warehouse_id;
+
         // Update product
         $query1 = "
             UPDATE tbl_products

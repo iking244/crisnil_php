@@ -205,16 +205,17 @@ function createProduct($conn, $warehouse_id, $code, $name, $unit_id, $qty, $weig
 /* =========================
    UPDATE PRODUCT
 ========================= */
-function updateProduct($conn, $id, $code, $name, $unit_id, $weight_per_unit, $units_per_pallet)
-{
+function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, $weight_per_unit, $units_per_pallet) {
 
     mysqli_begin_transaction($conn);
 
     try {
+        // Escape strings
         $code = mysqli_real_escape_string($conn, $code);
         $name = mysqli_real_escape_string($conn, $name);
 
-        $query = "
+        // Update product
+        $query1 = "
             UPDATE tbl_products
             SET 
                 product_code = '$code',
@@ -225,11 +226,24 @@ function updateProduct($conn, $id, $code, $name, $unit_id, $weight_per_unit, $un
             WHERE product_id = $id
         ";
 
-        if (!mysqli_query($conn, $query)) {
+        if (!mysqli_query($conn, $query1)) {
+            throw new Exception(mysqli_error($conn));
+        }
+
+        // Update stock
+        $query2 = "
+            UPDATE tbl_warehouse_stock
+            SET quantity = $qty
+            WHERE product_id = $id
+            AND warehouse_id = $warehouse_id
+        ";
+
+        if (!mysqli_query($conn, $query2)) {
             throw new Exception(mysqli_error($conn));
         }
 
         mysqli_commit($conn);
+
     } catch (Exception $e) {
         mysqli_rollback($conn);
         die("Product update failed: " . $e->getMessage());

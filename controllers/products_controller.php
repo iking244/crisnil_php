@@ -84,6 +84,7 @@ if ($action) {
         $code = $_POST['product_code'];
         $name = $_POST['product_name'];
         $unit_id = (int)$_POST['unit_id'];
+        $qty = $_POST['quantity'];
         $weight_per_unit = (float)$_POST['weight_per_unit'];
         $units_per_pallet = (int)$_POST['units_per_pallet'];
 
@@ -94,6 +95,7 @@ if ($action) {
             $code,
             $name,
             $unit_id,
+            $qty,
             $weight_per_unit,
             $units_per_pallet
         );
