@@ -154,3 +154,94 @@
 .text-center {
     text-align: center !important;
 }
+
+/* =========================
+   MODERN TABLE DESIGN
+========================= */
+
+.table-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    border: 1px solid #eef0f5;
+    overflow-x: auto;
+}
+
+/* Sticky header (default) */
+.orders-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f7f8fb;
+    z-index: 2;
+}
+
+/* Header */
+.orders-table thead {
+    background: #f7f8fb;
+}
+
+.orders-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Rows */
+.orders-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f3f7;
+    color: #374151;
+}
+
+/* Row hover */
+.orders-table tbody tr:hover {
+    background: #f9fafc;
+    transition: background 0.15s ease;
+}
+
+/* Remove last border */
+.orders-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-badge.completed {
+    background: #e6f4ea;
+    color: #1e8e5a;
+}
+
+.status-badge.pending {
+    background: #fff4e5;
+    color: #d97706;
+}
+
+.edit-product {
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.15s ease;
+}
+
+.edit-product:hover {
+    transform: scale(1.1);
+}
+
+/* Sticky table header */
+.orders-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f7f8fb;
+    z-index: 2;
+}
