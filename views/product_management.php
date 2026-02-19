@@ -34,17 +34,36 @@ include "../controllers/products_controller.php";
                     <i class="fa fa-download"></i> Export
                 </button>
             </div>
+            <div class="action-bar mb-4">
+                <div class="action-left">
+                    <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#createProductModal">
+                        <i class="fa fa-plus"></i> Create Product
+                    </button>
+
+                    <button class="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addStockModal">
+                        <i class="fa fa-box"></i> Add Stock
+                    </button>
+                </div>
+            </div>
+
 
             <div class="row g-3 mb-4">
-
                 <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-title">Total Products</div>
+                    <div class="stat-card stat-blue">
+                        <div class="stat-header">
+                            <i class="fa fa-box"></i>
+                            <span>Total Products</span>
+                        </div>
                         <div class="stat-value">
                             <?= $stats['total_products'] ?? 0 ?>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="col-md-3">
                     <div class="stat-card">

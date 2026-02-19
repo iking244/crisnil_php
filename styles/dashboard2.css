@@ -136,6 +136,7 @@ header {
 }
 .main-content {
     margin-top: 60px; /* Adjust to your header height - measure in DevTools */
+    background: #f5f7fb;
 }
 
 .menu-icon {
@@ -1154,7 +1155,50 @@ body {
     box-shadow: 0 8px 20px rgba(0,0,0,0.06);
     border: 1px solid #eef0f5;
     height: 100%;
+    transition: all 0.2s ease;
 }
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Header */
+.stat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.stat-header i {
+    font-size: 16px;
+}
+
+/* Value */
+.stat-value {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* Color accents */
+.stat-blue {
+    border-left: 5px solid #1e3fa3;
+}
+
+.stat-blue .stat-value {
+    color: #1e3fa3;
+}
+
+.stat-orange {
+    border-left: 5px solid #d97706;
+}
+
+.stat-orange .stat-value {
+    color: #d97706;
+}
+
 
 .stat-title {
     font-size: 13px;
@@ -1171,3 +1215,11 @@ body {
 .stat-card.warning .stat-value {
     color: #d97706;
 }
+
+.action-bar {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+
