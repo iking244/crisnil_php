@@ -1,3 +1,7 @@
+/* =========================
+   FLOATING ACTION BUTTONS
+========================= */
+
 .fab-container {
     position: fixed;
     bottom: 30px;
@@ -13,28 +17,27 @@
     background: #1e3fa3;
     color: white;
     border: none;
-    font-size: 24px;
+    font-size: 22px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .fab-main:hover {
-    transform: scale(1.05);
+    background: #162f7c;
+    transform: translateY(-2px);
 }
 
 /* Options container */
 .fab-options {
-    position: absolute;
-    bottom: 70px;
-    right: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-bottom: 12px;
     opacity: 0;
     pointer-events: none;
     transform: translateY(10px);
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
 }
 
 .fab-options.show {
@@ -45,33 +48,32 @@
 
 /* Option buttons */
 .fab-option {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: none;
     color: white;
     font-size: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
 }
 
-.fab-option:hover {
-    transform: scale(1.1);
-}
-
+/* Color variants */
 .fab-green {
-    background: #28a745;
+    background: #1e8e5a;
+}
+
+.fab-green:hover {
+    background: #16794b;
+    transform: translateY(-2px);
 }
 
 .fab-blue {
-    background: #0d6efd;
+    background: #1e3fa3;
 }
 
-.fab-main i {
-    font-size: 30px;
-}
-
-.fab-option i {
-    font-size: 30px;
+.fab-blue:hover {
+    background: #162f7c;
+    transform: translateY(-2px);
 }

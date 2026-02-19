@@ -141,6 +141,7 @@ include "../controllers/products_controller.php";
                         title="Add Stock">
                         <i class="fa fa-box"></i>
                     </button>
+
                 </div>
 
                 <button class="fab-main" id="fabMain">
