@@ -16,4 +16,4 @@ $job_orders = getActiveJobOrders($databaseconn);
 $unscheduled_jobs = getUnscheduledJobOrders($databaseconn);
 $active_trips = getActiveTrips($databaseconn);
 $intransit_trips = getInTransitTrips($databaseconn);
-
+$route_health = getRouteHealthStats($databaseconn);

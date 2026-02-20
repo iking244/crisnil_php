@@ -83,7 +83,7 @@ include "../controllers/logistics_controller.php";
             <!-- Route Health -->
             <div class="panel-card health">
                 <div class="panel-header">
-                    <h4><i class="fa fa-heartbeat me-2"></i>Route Health</h4>
+                    <h4><i class="fa fa-heartbeat me-2"></i>Daily Route Health</h4>
                 </div>
 
                 <ul class="health-list">
@@ -92,7 +92,7 @@ include "../controllers/logistics_controller.php";
                             <span class="dot green"></span>
                             <span>In Transit</span>
                         </div>
-                        <strong>0</strong>
+                        <strong><?= $route_health['in_transit']; ?></strong>
                     </li>
 
                     <li>
@@ -106,17 +106,17 @@ include "../controllers/logistics_controller.php";
                     <li>
                         <div class="health-left">
                             <span class="dot gray"></span>
-                            <span>Completed Today</span>
+                            <span>Completed Routes</span>
                         </div>
-                        <strong>0</strong>
+                        <strong><?= $route_health['completed_today']; ?></strong>
                     </li>
 
                     <li>
                         <div class="health-left">
                             <span class="dot blue"></span>
-                            <span>Scheduled</span>
+                            <span>Scheduled Routes</span>
                         </div>
-                        <strong>0</strong>
+                        <strong><?= $route_health['scheduled']; ?></strong>
                     </li>
                 </ul>
 

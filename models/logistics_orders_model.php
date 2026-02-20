@@ -419,16 +419,18 @@ function getJobItems($conn, $job_id)
             joi.product_id,
             p.product_code,
             p.product_name,
-            p.unit,
+            u.unit_name AS unit,
             joi.quantity
         FROM tbl_job_orders jo
         INNER JOIN tbl_job_order_items joi
             ON jo.id = joi.job_order_id
         INNER JOIN tbl_products p
             ON joi.product_id = p.product_id
+        INNER JOIN tbl_units u
+            ON p.unit_id = u.unit_id
         WHERE jo.id = ?
         ORDER BY joi.job_item_id ASC
-    ");
+        ");
 
     $stmt->bind_param("i", $job_id);
     $stmt->execute();
