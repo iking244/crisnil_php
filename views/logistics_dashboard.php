@@ -136,11 +136,12 @@ include "../controllers/logistics_controller.php";
                                 <th>Truck</th>
                                 <th>Status</th>
                                 <th>Departed</th>
+                                <th>Focus</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if ($active_trips && $active_trips->num_rows > 0): ?>
-                                <?php while ($trip = $active_trips->fetch_assoc()): ?>
+                            <?php if ($intransit_trips && $intransit_trips->num_rows > 0): ?>
+                                <?php while ($trip = $intransit_trips->fetch_assoc()): ?>
                                     <tr>
                                         <td>#<?= $trip['trip_id']; ?></td>
                                         <td><?= $trip['truck_plate_number']; ?></td>
@@ -153,6 +154,9 @@ include "../controllers/logistics_controller.php";
                                                 echo "-";
                                             }
                                             ?>
+                                        </td>
+                                        <td>
+                                            <button onclick="filterByTrip(<?= $trip['trip_id']; ?>)">Focus</button>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>

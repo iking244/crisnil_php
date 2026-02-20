@@ -5,6 +5,8 @@ let markers = [];
 let infoWindow;
 let truckIcon;
 let SHOW_ROUTES = false;
+let allTrips = [];
+let selectedTripId = null; // null = show all
 
 const routeColors = [
     "#007bff",
@@ -157,6 +159,9 @@ function loadTrackingData() {
                 return;
             }
 
+            allTrips = data; // store everything
+            renderTrips();
+
             const bounds = new google.maps.LatLngBounds();
             let hasData = false;
 
@@ -244,12 +249,12 @@ function addJobMarkers(truck, truckColor, bounds) {
         if (isCompleted) {
             opacity = 0.25;
             zIndex = 200;
-        } 
+        }
         else if (isNext) {
             scale = 11;
             opacity = 1;
             zIndex = 800;
-        } 
+        }
         else {
             opacity = 0.6;
         }
@@ -378,4 +383,35 @@ function clearMap() {
 
     markers.forEach(marker => marker.setMap(null));
     markers = [];
+}
+
+function renderTrips() {
+
+    clearMap();
+
+    const bounds = new google.maps.LatLngBounds();
+    let hasData = false;
+
+    const tripsToRender = selectedTripId
+        ? allTrips.filter(t => t.trip_id == selectedTripId)
+        : allTrips;
+
+    tripsToRender.forEach(truck => {
+        renderTruck(truck, bounds);
+        hasData = true;
+    });
+
+    if (hasData) {
+        map.fitBounds(bounds);
+    }
+}
+
+function filterByTrip(tripId) {
+    selectedTripId = tripId;
+    renderTrips();
+}
+
+function showAllTrips() {
+    selectedTripId = null;
+    renderTrips();
 }
