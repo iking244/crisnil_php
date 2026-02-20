@@ -160,10 +160,11 @@
 }
 
 .logistics-map {
+    flex: 8;
     position: relative;
-    flex: 5;
-    border-radius: 14px;
+    border-radius: 20px;
     overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 #map {
@@ -256,10 +257,24 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     border: none;
     transition: all 0.2s ease;
+    animation: fadeUp 0.4s ease forwards;
+    opacity: 0;
+    transform: translateY(8px);
+
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .panel-card.health {
-    border-left: 4px solid #2563eb;
+    border: 1px solid #e5e7eb;
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.06),
+        0 0 0 2px rgba(37, 99, 235, 0.08);
 }
 
 
@@ -338,6 +353,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    position: relative;
 }
 
 .dot.green {
@@ -354,4 +370,181 @@
 
 .dot.blue {
     background: #2563eb;
+}
+
+/* Pulse effect */
+.dot.green::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #16a34a;
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    70% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* PANEL BACKGROUND */
+.logistics-panel {
+    flex: 4;
+    padding: 24px;
+    background: linear-gradient(to bottom, #f8fafc, #eef2f7);
+    border-radius: 20px;
+}
+
+/* KPI STRIP */
+.panel-kpi-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.mini-kpi {
+    background: white;
+    padding: 16px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+    transition: 0.2s ease;
+}
+
+.mini-kpi:hover {
+    transform: translateY(-3px);
+}
+
+
+/* Variants */
+.mini-kpi.warning {
+    border-top: 4px solid #f59e0b;
+}
+
+.mini-kpi.danger {
+    border-top: 4px solid #dc2626;
+}
+
+.panel-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 26px 34px;
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    margin-bottom: 28px;
+    border: 1px solid #eef2f7;
+}
+
+.summary-item.danger {
+    padding-right: 16px;
+}
+
+.summary-item.danger::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 6px;
+    height: 70%;
+    width: 4px;
+    background: #dc2626;
+    border-radius: 4px;
+}
+
+
+.panel-summary {
+    background: white;
+    padding: 24px 28px;
+    border-radius: 20px;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+    margin-bottom: 32px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* 3-column layout */
+.summary-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    text-align: center;
+    padding: 10px 20px;
+}
+
+/* Each metric */
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding: 0 30px;
+}
+
+/* Vertical separators between columns */
+.summary-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background: #e5e7eb;
+}
+.summary-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748b;
+}
+
+.summary-value {
+    font-size: 38px;   /* slightly bigger */
+    font-weight: 800;
+    margin-top: 8px;
+    letter-spacing: -1px;
+}
+
+/* Delayed highlight */
+.summary-item.alert .summary-value {
+    color: #dc2626;
+}
+
+/* Live status */
+.summary-live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #16a34a;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background: #16a34a;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+/* subtle pulse */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); }
+    70% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
 }

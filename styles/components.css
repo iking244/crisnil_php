@@ -3,7 +3,7 @@
     padding: 18px;
     border-radius: 12px;
     color: white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: 0.2s ease;
 }
 
@@ -27,19 +27,36 @@
 }
 
 /* Colors */
-.kpi-card.blue { background: #2e5cb8; }
-.kpi-card.red { background: #d32f2f; }
-.kpi-card.green { background: #2e7d32; }
-.kpi-card.orange { background: #f57c00; }
-.kpi-card.gray { background: #546e7a; }
-.kpi-card.dark { background: #37474f; }
+.kpi-card.blue {
+    background: #2e5cb8;
+}
+
+.kpi-card.red {
+    background: #d32f2f;
+}
+
+.kpi-card.green {
+    background: #2e7d32;
+}
+
+.kpi-card.orange {
+    background: #f57c00;
+}
+
+.kpi-card.gray {
+    background: #546e7a;
+}
+
+.kpi-card.dark {
+    background: #37474f;
+}
 
 /* Chart containers */
 .chart-card {
     background: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Table containers */
@@ -47,7 +64,7 @@
     background: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
 .card-header {
@@ -61,7 +78,7 @@
     background: white;
     border-radius: 14px;
     padding: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
     margin-bottom: 16px;
     position: relative;
 }
@@ -115,7 +132,7 @@
 }
 
 .card:hover {
-    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
     transform: translateY(-1px);
     transition: 0.2s ease;
 }
@@ -127,11 +144,10 @@
    Status Badges
 ============================= */
 .status-badge {
-    padding: 4px 10px;
-    border-radius: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
-    display: inline-block;
 }
 
 /* Status colors */
@@ -170,4 +186,3 @@
     background: #1ba826;
     color: #92400e;
 }
-

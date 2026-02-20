@@ -52,6 +52,34 @@ include "../controllers/logistics_controller.php";
         <!-- RIGHT: CONTROL PANEL -->
         <div class="logistics-panel">
 
+            <div class="panel-summary">
+
+                <div class="summary-metrics">
+
+                    <div class="summary-item">
+                        <span class="summary-label">Active Routes</span>
+                        <span class="summary-value"><?= $stats['active_routes'] ?></span>
+                    </div>
+
+                    <div class="summary-item">
+                        <span class="summary-label">Orders Today</span>
+                        <span class="summary-value"><?= $stats['orders_today'] ?></span>
+                    </div>
+
+                    <div class="summary-item <?= $stats['delayed'] > 0 ? 'alert' : '' ?>">
+                        <span class="summary-label">Delayed</span>
+                        <span class="summary-value"><?= $stats['delayed'] ?></span>
+                    </div>
+
+                </div>
+
+                <div class="summary-live">
+                    <span class="live-dot"></span>
+                    <span>Live Monitoring</span>
+                </div>
+
+            </div>
+
             <!-- Route Health -->
             <div class="panel-card health">
                 <div class="panel-header">
