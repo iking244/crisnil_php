@@ -4,6 +4,7 @@ let directionsRenderers = [];
 let markers = [];
 let infoWindow;
 let truckIcon;
+let SHOW_ROUTES = false;
 
 const routeColors = [
     "#007bff",
@@ -131,9 +132,9 @@ function initMap() {
     directionsService = new google.maps.DirectionsService();
     infoWindow = new google.maps.InfoWindow();
     truckIcon = {
-    url: "../imgs/red_truck.png",
-    scaledSize: new google.maps.Size(40, 40)
-};
+        url: "../imgs/red_truck.png",
+        scaledSize: new google.maps.Size(40, 40)
+    };
     loadTrackingData();
     setInterval(loadTrackingData, 20000);
 }
@@ -160,109 +161,10 @@ function loadTrackingData() {
             let hasData = false;
 
             data.forEach(truck => {
-
-                if (!truck.origin_lat || !truck.jobs || truck.jobs.length === 0) return;
-
+                renderTruck(truck, bounds);
                 hasData = true;
-
-                const origin = {
-                    lat: parseFloat(truck.origin_lat),
-                    lng: parseFloat(truck.origin_lng)
-                };
-
-                bounds.extend(origin);
-
-                // Origin marker
-                const originMarker = new google.maps.Marker({
-                    position: origin,
-                    map: map,
-                    label: "O",
-                    title: truck.origin_name
-                });
-
-                markers.push(originMarker);
-
-                // Job markers
-                truck.jobs.forEach((job, index) => {
-
-                    const baseLat = parseFloat(job.destination_lat);
-                    const baseLng = parseFloat(job.destination_lng);
-
-                    const position = offsetPosition(
-                        baseLat,
-                        baseLng,
-                        index,
-                        truck.jobs.length
-                    );
-
-                    bounds.extend(position);
-
-                    const marker = new google.maps.Marker({
-                        position: position,
-                        map: map,
-                        label: {
-                            text: (index + 1).toString(),
-                            color: "white",
-                            fontWeight: "bold"
-                        },
-                        title: "Stop " + (index + 1)
-                    });
-
-                    marker.addListener("click", () => {
-                        const content = `
-                    <div style="font-size:14px">
-                        <strong>Truck:</strong> ${truck.plate_number}<br>
-                        <strong>Trip ID:</strong> ${truck.trip_id}<br>
-                        <strong>Stop #:</strong> ${index + 1}<br>
-                        <strong>Destination:</strong> ${job.destination_name}<br>
-                        <strong>Job ID:</strong> ${job.job_id}
-                    </div>
-                `;
-                        infoWindow.setContent(content);
-                        infoWindow.open(map, marker);
-                    });
-
-                    markers.push(marker);
-                });
-
-                // Draw route
-                const color = getTruckColor(truck.plate_number);
-                drawMultiStopRoute(origin, truck.jobs, color);
-                console.log("Truck GPS:", truck.current_lat, truck.current_lng);
-                // Truck marker
-                if (truck.current_lat && truck.current_lng) {
-
-                    const truckPosition = {
-                        lat: parseFloat(truck.current_lat),
-                        lng: parseFloat(truck.current_lng)
-                    };
-
-                    bounds.extend(truckPosition);
-
-                    const truckMarker = new google.maps.Marker({
-                        position: truckPosition,
-                        map: map,
-                        icon: truckIcon,
-                        title: "Truck: " + truck.plate_number
-                    });
-
-                    truckMarker.addListener("click", () => {
-                        const content = `
-                    <div style="font-size:14px">
-                        <strong>Truck:</strong> ${truck.plate_number}<br>
-                        <strong>Trip ID:</strong> ${truck.trip_id}
-                    </div>
-                `;
-                        infoWindow.setContent(content);
-                        infoWindow.open(map, truckMarker);
-                    });
-
-                    markers.push(truckMarker);
-                }
-
             });
 
-            // Auto fit only if we have data
             if (hasData) {
                 map.fitBounds(bounds);
             }
@@ -275,6 +177,7 @@ function loadTrackingData() {
    Render One Truck
 ================================ */
 function renderTruck(truck, bounds) {
+
     if (!truck.origin_lat || !truck.jobs || truck.jobs.length === 0) return;
 
     const origin = {
@@ -284,96 +187,123 @@ function renderTruck(truck, bounds) {
 
     if (isNaN(origin.lat) || isNaN(origin.lng)) return;
 
-    addOriginMarker(origin, truck.origin_name, bounds);
-    addJobMarkers(truck, bounds);
+    const truckColor = getTruckColor(truck.plate_number);
 
-    const color = getTruckColor(truck.plate_number);
-    drawMultiStopRoute(origin, truck.jobs, color);
-
+    addOriginMarker(origin, bounds);
+    addJobMarkers(truck, truckColor, bounds);
     addTruckMarker(truck, bounds);
+
+    if (SHOW_ROUTES) {
+        drawMultiStopRoute(origin, truck.jobs, truckColor);
+    }
 }
 
 /* ================================
    Origin Marker
 ================================ */
-function addOriginMarker(origin, name, bounds) {
+function addOriginMarker(origin, bounds) {
     const marker = new google.maps.Marker({
         position: origin,
         map: map,
-        label: "O",
-        title: name
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 6,
+            fillColor: "#6b7280",
+            fillOpacity: 1,
+            strokeColor: "#111827",
+            strokeWeight: 2
+        },
+        zIndex: 200
     });
 
     markers.push(marker);
-    bounds.extend(marker.getPosition());
+    bounds.extend(origin);
 }
 
 /* ================================
    Job Markers
 ================================ */
-function addJobMarkers(truck, bounds) {
-    truck.jobs.forEach((job, index) => {
-        const baseLat = parseFloat(job.destination_lat);
-        const baseLng = parseFloat(job.destination_lng);
+function addJobMarkers(truck, truckColor, bounds) {
 
-        if (isNaN(baseLat) || isNaN(baseLng)) return;
+    const nextJob = truck.jobs.find(job => job.status !== 'completed');
 
-        const position = offsetPosition(
-            baseLat,
-            baseLng,
-            index,
-            truck.jobs.length
-        );
+    truck.jobs.forEach((job) => {
+
+        const lat = parseFloat(job.destination_lat);
+        const lng = parseFloat(job.destination_lng);
+
+        if (isNaN(lat) || isNaN(lng)) return;
+
+        const isCompleted = job.status === 'completed';
+        const isNext = nextJob && job.job_id === nextJob.job_id;
+
+        let scale = 7;
+        let opacity = 0.4;
+        let zIndex = 400;
+
+        if (isCompleted) {
+            opacity = 0.25;
+            zIndex = 200;
+        } 
+        else if (isNext) {
+            scale = 11;
+            opacity = 1;
+            zIndex = 800;
+        } 
+        else {
+            opacity = 0.6;
+        }
 
         const marker = new google.maps.Marker({
-            position,
+            position: { lat, lng },
             map: map,
-            label: {
-                text: (index + 1).toString(),
-                color: "white",
-                fontWeight: "bold"
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: scale,
+                fillColor: truckColor,
+                fillOpacity: opacity,
+                strokeColor: isNext ? "#ffffff" : "#111827",
+                strokeWeight: isNext ? 3 : 2
             },
-            title: "Stop " + (index + 1)
+            zIndex: zIndex,
+            title: job.destination_name
         });
 
         marker.addListener("click", () => {
             infoWindow.setContent(`
                 <div style="font-size:14px">
                     <strong>Truck:</strong> ${truck.plate_number}<br>
-                    <strong>Trip ID:</strong> ${truck.trip_id}<br>
-                    <strong>Stop #:</strong> ${index + 1}<br>
-                    <strong>Destination:</strong> ${job.destination_name}<br>
-                    <strong>Job ID:</strong> ${job.job_id}
+                    <strong>Status:</strong> ${job.status}<br>
+                    <strong>Destination:</strong> ${job.destination_name}
                 </div>
             `);
             infoWindow.open(map, marker);
         });
 
         markers.push(marker);
-        bounds.extend(marker.getPosition());
+        bounds.extend({ lat, lng });
     });
 }
-
 /* ================================
    Truck Marker
 ================================ */
 function addTruckMarker(truck, bounds) {
-    if (!truck.current_lat || !truck.current_lng) return;
 
-    const position = {
-        lat: parseFloat(truck.current_lat),
-        lng: parseFloat(truck.current_lng)
-    };
+    const lat = parseFloat(truck.current_lat);
+    const lng = parseFloat(truck.current_lng);
 
-    if (isNaN(position.lat) || isNaN(position.lng)) return;
+    if (isNaN(lat) || isNaN(lng)) return;
+
+    const position = { lat, lng };
 
     const marker = new google.maps.Marker({
         position,
         map: map,
         icon: {
             url: "../imgs/red_truck.png",
-            scaledSize: new google.maps.Size(40, 40)
+            scaledSize: new google.maps.Size(48, 48)
         },
+        zIndex: 1000,
         title: "Truck: " + truck.plate_number
     });
 
@@ -388,14 +318,14 @@ function addTruckMarker(truck, bounds) {
     });
 
     markers.push(marker);
-    bounds.extend(marker.getPosition());
+    bounds.extend(position);
 }
-
 /* ================================
    Draw Route
 ================================ */
 function drawMultiStopRoute(origin, jobs, color) {
     if (!jobs || jobs.length === 0) return;
+    if (!SHOW_ROUTES) return; //
 
     const destination = {
         lat: parseFloat(jobs[jobs.length - 1].destination_lat),
