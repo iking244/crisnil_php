@@ -39,4 +39,42 @@ WHERE status = 'in_transit';
     return $stats;
 }
 
+function getRouteHealthStats($conn)
+{
+    $stats = [];
 
+    // In Transit
+    $result = $conn->query("
+        SELECT COUNT(*) as total 
+        FROM tbl_trips 
+        WHERE status = 'in_transit'
+    ");
+    $stats['in_transit'] = $result->fetch_assoc()['total'];
+
+    // Scheduled
+    $result = $conn->query("
+        SELECT COUNT(*) as total 
+        FROM tbl_trips 
+        WHERE status IN ('pending_loading', 'loading')
+    ");
+    $stats['scheduled'] = $result->fetch_assoc()['total'];
+
+    // Completed Today
+      $result = $conn->query("
+           SELECT COUNT(*) as total 
+           FROM tbl_trips 
+           WHERE status = 'completed'
+          AND DATE(completed_at) = CURDATE()
+       ");
+     $stats['completed_today'] = $result->fetch_assoc()['total'];
+
+    // Arrived (optional if you have this status)
+   // $result = $conn->query("
+     //   SELECT COUNT(*) as total 
+    //    FROM tbl_trips 
+   //     WHERE status = 'arrived'
+  //  ");
+  //  $stats['arrived'] = $result->fetch_assoc()['total'];
+
+    return $stats;
+}

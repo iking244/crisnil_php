@@ -54,6 +54,22 @@ function getActiveTrips($conn)
     return $conn->query($sql);
 }
 
+function getInTransitTrips($conn)
+{
+    $sql = "
+        SELECT 
+            trip_id,
+            truck_plate_number,
+            status,
+            departure_time
+        FROM tbl_trips
+        WHERE status = 'in_transit'
+        ORDER BY trip_id ASC
+    ";
+
+    return $conn->query($sql);
+}
+
 function getAllTripsWithStats($conn)
 {
     $sql = "

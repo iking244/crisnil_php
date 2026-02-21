@@ -15,6 +15,8 @@ SELECT
     j.destination_lat,
     j.destination_lng,
     j.destination AS destination_name,
+    j.status AS job_status,
+    j.delivery_sequence,
 
     tl.latitude AS current_lat,
     tl.longitude AS current_lng
@@ -26,7 +28,6 @@ LEFT JOIN tbl_warehouses w
 
 LEFT JOIN tbl_job_orders j 
     ON j.trip_id = t.trip_id
-    AND j.status != 'completed'
 
 LEFT JOIN (
     SELECT trip_id, latitude, longitude
@@ -39,7 +40,8 @@ LEFT JOIN (
 ) tl ON tl.trip_id = t.trip_id
 
 WHERE t.status = 'in_transit'
-ORDER BY t.trip_id, j.id ASC
+
+ORDER BY t.trip_id, j.delivery_sequence ASC
 ";
 
 $result = $databaseconn->query($sql);
@@ -71,7 +73,9 @@ if ($result) {
                 "job_id" => $row['job_id'],
                 "destination_lat" => $row['destination_lat'],
                 "destination_lng" => $row['destination_lng'],
-                "destination_name" => $row['destination_name']
+                "destination_name" => $row['destination_name'],
+                "status" => $row['job_status'],
+                "delivery_sequence" => $row['delivery_sequence']
             ];
         }
     }

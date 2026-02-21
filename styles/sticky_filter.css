@@ -1,8 +1,6 @@
 /* Sticky filter bar */
 .sticky-filters {
     position: sticky;
-    top: 100px;
-    /* height of your red header */
     z-index: 50;
     background: #f6f7fb;
     padding: 10px 0;

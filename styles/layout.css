@@ -1,0 +1,191 @@
+/* ===== HEADER ===== */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background-color: #d1484c;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    color: white;
+    z-index: 9999;
+}
+
+/* ===== PAGE TITLE STANDARD ===== */
+.main h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e293b;
+    letter-spacing: -0.3px;
+}
+
+.toggle-btn {
+    font-size: 30px;
+    cursor: pointer;
+    color: white;
+    position: absolute;
+    left: 20px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-left .logo {
+    width: 90px;
+}
+
+.header-left h1 {
+    font-size: 1.6rem;
+    margin: 0;
+    font-weight: bold;
+    color: white;
+}
+
+/* ===== SIDENAV ===== */
+.sidenav {
+    height: calc(100vh - 100px);
+    width: 0;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    background-color: #fef3ea;
+    overflow-y: auto;
+    transition: 0.4s;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    z-index: 900;
+}
+
+.sidenav a {
+    padding: 30px 20px;
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+    display: block;
+    font-weight: bold;
+}
+
+.sidenav a:hover {
+    color: red;
+    background: rgba(0,0,0,0.03);
+}
+
+.logout-link {
+    margin-top: auto;
+    padding-bottom: 20px;
+}
+
+/* Main content spacing */
+.main {
+    margin-top: 110px;
+    padding: 30px;
+}
+
+/* ===== HEADER RIGHT ===== */
+.header-right {
+    position: relative;
+}
+
+/* ===== NOTIFICATION CONTAINER ===== */
+.notification-container {
+    position: relative;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+/* Bell icon */
+.notification-icon {
+    font-size: 26px !important;
+    cursor: pointer;
+    color: white;
+}
+
+/* ===== NOTIFICATION POPUP ===== */
+.notification-popup {
+    display: none;
+    position: absolute;
+    top: 60px;                 /* below header */
+    right: 0;
+    background-color: #fef3ea;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    z-index: 10000;
+    width: 550px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Popup Title */
+.notification-popup h1 {
+    font-size: 20px;
+    color: black;
+    margin: 15px 18px;
+}
+
+/* Today label */
+.today-label {
+    background-color: #d3d3d3;
+    padding: 8px 15px;
+}
+
+.today-label h1 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+}
+
+/* Scrollable content */
+.notification-popup ul {
+    list-style-type: none;
+    padding: 10px 18px;
+    margin: 0;
+    color: black;
+}
+
+.notification-popup li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-popup li:last-child {
+    border-bottom: none;
+}
+
+/* Hover effect */
+.notification-popup li:hover {
+    background-color: #d1484c;
+    color: white;
+}
+
+/* View All Footer */
+.view-all-notifications {
+    text-align: center;
+    padding: 12px;
+    border-top: 1px solid #eee;
+    background: white;
+}
+
+.view-all-notifications a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.view-all-notifications a:hover {
+    text-decoration: underline;
+}

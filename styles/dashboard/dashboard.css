@@ -1,0 +1,36 @@
+.dashboard-title h2 {
+    font-weight: 600;
+}
+
+.dashboard-title p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.dashboard-kpi-row {
+    margin-bottom: 20px;
+}
+
+/* Main dashboard container */
+.admin_dashboard_main_ui {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px 16px;
+    box-sizing: border-box;
+}
+
+/* KPI spacing */
+.dashboard-kpi-row {
+    margin-bottom: 25px;
+}
+
+.row.g-3 > div {
+    display: flex;
+}
+
+.kpi-card {
+    width: 100%;
+}
+
+

@@ -419,16 +419,18 @@ function getJobItems($conn, $job_id)
             joi.product_id,
             p.product_code,
             p.product_name,
-            p.unit,
+            u.unit_name AS unit,
             joi.quantity
         FROM tbl_job_orders jo
         INNER JOIN tbl_job_order_items joi
             ON jo.id = joi.job_order_id
         INNER JOIN tbl_products p
             ON joi.product_id = p.product_id
+        INNER JOIN tbl_units u
+            ON p.unit_id = u.unit_id
         WHERE jo.id = ?
         ORDER BY joi.job_item_id ASC
-    ");
+        ");
 
     $stmt->bind_param("i", $job_id);
     $stmt->execute();
@@ -711,4 +713,87 @@ function deductWarehouseStock($conn, $job_id)
             AND warehouse_id = $warehouse_id
         ");
     }
+}
+
+/* =========================
+   OVERVIEW STATS
+========================= */
+
+function getLogisticsOverviewStats($conn)
+{
+    $stats = [];
+
+    // Total
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders");
+    $stats['total'] = mysqli_fetch_assoc($result)['total'];
+
+    // Pending
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='pending'");
+    $stats['pending'] = mysqli_fetch_assoc($result)['total'];
+
+    // In Transit
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='in_transit'");
+    $stats['in_transit'] = mysqli_fetch_assoc($result)['total'];
+
+    // Completed Today
+    $result = mysqli_query($conn, "
+        SELECT COUNT(*) as total 
+        FROM tbl_job_orders 
+        WHERE status='completed'
+        AND DATE(updated_at)=CURDATE()
+    ");
+    $stats['completed_today'] = mysqli_fetch_assoc($result)['total'];
+
+    return $stats;
+}
+
+
+/* =========================
+   RECENT ORDERS
+========================= */
+
+function getRecentLogisticsOrders($conn, $limit = 8)
+{
+    return mysqli_query($conn, "
+        SELECT id, origin, destination, status, created_at
+        FROM tbl_job_orders
+        ORDER BY created_at DESC
+        LIMIT $limit
+    ");
+}
+
+
+/* =========================
+   STATUS BREAKDOWN
+========================= */
+
+function getLogisticsStatusBreakdown($conn)
+{
+    return mysqli_query($conn, "
+        SELECT status, COUNT(*) as total
+        FROM tbl_job_orders
+        GROUP BY status
+    ");
+}
+
+/* =========================
+   OPERATIONAL ALERTS
+========================= */
+
+function getLogisticsOperationalAlerts($conn)
+{
+    $alerts = [];
+
+    $statuses = ['pending', 'blocked', 'cancelled', 'in_transit'];
+
+    foreach ($statuses as $status) {
+        $result = mysqli_query($conn, "
+            SELECT COUNT(*) as total 
+            FROM tbl_job_orders 
+            WHERE status = '$status'
+        ");
+        $alerts[$status] = mysqli_fetch_assoc($result)['total'];
+    }
+
+    return $alerts;
 }

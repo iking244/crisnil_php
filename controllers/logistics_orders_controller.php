@@ -207,3 +207,15 @@ $orders = getJobOrdersPaginated($databaseconn, $limit, $offset);
 $warehouses = getActiveWarehouses($databaseconn);
 $clients = getActiveClients($databaseconn);
 $products = getActiveProducts($databaseconn);
+
+/* =========================
+   OVERVIEW DATA
+========================= */
+
+if (basename($_SERVER['PHP_SELF']) === 'logistics_orders_overview.php') {
+
+    $overviewStats = getLogisticsOverviewStats($databaseconn);
+    $overviewRecent = getRecentLogisticsOrders($databaseconn);
+    $overviewBreakdown = getLogisticsStatusBreakdown($databaseconn);
+    $overviewAlerts = getLogisticsOperationalAlerts($databaseconn);
+}
