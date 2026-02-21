@@ -194,29 +194,28 @@ include "../controllers/logistics_orders_controller.php";
 
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Overdue Orders</span>
-                                    <span class="<?= $overviewStats['overdue'] > 0 ? 'text-danger fw-bold' : '' ?>">
+                                    <span class="<?= isset($overviewStats['overdue']) && $overviewStats['overdue'] > 0 ? 'text-danger fw-bold' : '' ?>">
                                         <?= $overviewStats['overdue'] ?? 0 ?>
                                     </span>
                                 </li>
-
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Missing ETA</span>
-                                    <span class="<?= $overviewStats['missing_eta'] > 0 ? 'text-warning fw-bold' : '' ?>">
-                                        <?= $overviewStats['missing_eta'] ?? 0 ?>
+                                    <span class="<?= $missingEta > 0 ? 'text-warning fw-bold' : '' ?>">
+                                        <?= $missingEta ?>
                                     </span>
                                 </li>
 
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Pending Assignment</span>
-                                    <span class="<?= $overviewStats['pending'] > 0 ? 'text-warning fw-bold' : '' ?>">
-                                        <?= $overviewStats['pending'] ?? 0 ?>
+                                    <span class="<?= $pending > 0 ? 'text-warning fw-bold' : '' ?>">
+                                        <?= $pending ?>
                                     </span>
                                 </li>
 
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Blocked Orders</span>
-                                    <span class="<?= $overviewStats['blocked'] > 0 ? 'text-danger fw-bold' : '' ?>">
-                                        <?= $overviewStats['blocked'] ?? 0 ?>
+                                    <span class="<?= $blocked > 0 ? 'text-danger fw-bold' : '' ?>">
+                                        <?= $blocked ?>
                                     </span>
                                 </li>
 
