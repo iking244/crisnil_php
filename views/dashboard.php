@@ -43,7 +43,10 @@ include "../controllers/dashboard_controller.php";
                         <div class="kpi-card blue">
                             <h6>Sales Today</h6>
                             <h3>₱ <?= number_format($sales_today, 2) ?></h3>
-                            <span class="kpi-sub">+0% vs yesterday</span>
+                            <span class="kpi-sub">
+                                <?= $salesComparison >= 0 ? '+' : '' ?>
+                                <?= $salesComparison ?>% vs yesterday
+                            </span>
                         </div>
                     </div>
 

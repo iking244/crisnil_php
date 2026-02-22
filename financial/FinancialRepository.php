@@ -129,8 +129,8 @@ class FinancialRepository
     }
 
     public function getSalesLast7Days()
-{
-    $stmt = $this->db->prepare("
+    {
+        $stmt = $this->db->prepare("
         SELECT 
             DATE(updated_at) AS sale_date,
             IFNULL(SUM(grand_total), 0) AS total
@@ -141,17 +141,34 @@ class FinancialRepository
         ORDER BY DATE(updated_at) ASC
     ");
 
-    $stmt->execute();
-    $result = $stmt->get_result();
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    $data = [];
+        $data = [];
 
-    while ($row = $result->fetch_assoc()) {
-        $data[$row['sale_date']] = (float)$row['total'];
+        while ($row = $result->fetch_assoc()) {
+            $data[$row['sale_date']] = (float)$row['total'];
+        }
+
+        $stmt->close();
+
+        return $data;
     }
 
-    $stmt->close();
+    public function getSalesYesterday()
+    {
+        $stmt = $this->db->prepare("
+        SELECT IFNULL(SUM(grand_total), 0) AS total
+        FROM tbl_job_orders
+        WHERE status = 'completed'
+        AND DATE(updated_at) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+    ");
 
-    return $data;
-}
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        return (float)($row['total'] ?? 0);
+    }
 }

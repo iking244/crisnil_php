@@ -32,9 +32,10 @@ $monthly_revenue  = $metrics['monthly_revenue'];
 ========================= */
 
 $salesTrend = $financialService->getSalesTrend();
-
+$salesComparison = $financialService->getSalesComparison();
 $salesTrendLabels = json_encode($salesTrend['labels']);
 $salesTrendData   = json_encode($salesTrend['data']);
+
 
 $total_products = getTotalProducts($databaseconn);
 $product_distribution = getProductDistribution($databaseconn);

@@ -74,4 +74,16 @@ class FinancialService
             'monthly_revenue'  => $this->repo->getMonthlyRevenue()
         ];
     }
+
+    public function getSalesComparison()
+{
+    $today = $this->repo->getSalesToday();
+    $yesterday = $this->repo->getSalesYesterday();
+
+    if ($yesterday == 0) {
+        return 0;
+    }
+
+    return round((($today - $yesterday) / $yesterday) * 100, 1);
+}
 }
