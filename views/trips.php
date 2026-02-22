@@ -5,13 +5,13 @@ $dispatchStats = [
     // Workload
     'waiting_jobs' => 4,
     'trips_today' => 5,
-    'active_trips' => $active_trips_count    ?? 0,
+    'active_trips' => 6,
     'overdue_trips' => 1,
 
     // Capacity
     'drivers_available' => 2,
     'drivers_assigned' => 3,
-    'trucks_available' => $available_trucks_count ?? 0,
+    'trucks_available' => 7,
     'trucks_in_use' => 5,
     'fleet_utilization' => 50
 ];
