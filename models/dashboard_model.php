@@ -74,8 +74,8 @@ function getLowStockCount($conn) {
 function getActiveDeliveries($conn) {
     $query = mysqli_query($conn, "
         SELECT COUNT(*) as total 
-        FROM tbl_tracking 
-        WHERE track_status != 'DELIVERED'
+        FROM tbl_job_orders 
+        WHERE track_status = 'in_transit'
     ");
     $row = mysqli_fetch_assoc($query);
     return $row['total'] ?? 0;

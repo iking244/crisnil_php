@@ -77,7 +77,7 @@ include "../controllers/dashboard_controller.php";
                     <div class="col-md-2">
                         <div class="kpi-card green">
                             <h6>Active Deliveries</h6>
-                            <h3><?= $total_active_deliveries ?? 0 ?></h3>
+                            <h3><?= $active_deliveries ?? 0 ?></h3>
                             <span class="kpi-sub">In progress</span>
                         </div>
                     </div>
