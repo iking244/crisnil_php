@@ -3,9 +3,10 @@
 $dispatchStats = [
     'waiting_jobs' => 4,
     'trips_today' => 3,
-    'avg_jobs_per_trip' => 2.3,
     'active_trips' => 3,
-    'overdue_trips' => 1
+    'overdue_trips' => 1,
+    'drivers_assigned' => 3,
+    'drivers_available' => 2
 ];
 ?>
 
@@ -53,31 +54,24 @@ $dispatchStats = [
         </div>
     </div>
 
-    <!-- KPI ROW (Orders-style) -->
+    <!-- KPI ROW (3 Clean Cards) -->
     <div class="row g-3 mb-4">
 
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4">
             <div class="kpi-card orange">
                 <h6>Jobs Waiting</h6>
                 <h3><?= $dispatchStats['waiting_jobs'] ?></h3>
             </div>
         </div>
 
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4">
             <div class="kpi-card blue">
                 <h6>Trips Created Today</h6>
                 <h3><?= $dispatchStats['trips_today'] ?></h3>
             </div>
         </div>
 
-        <div class="col-6 col-md-3">
-            <div class="kpi-card green">
-                <h6>Avg Jobs / Trip</h6>
-                <h3><?= $dispatchStats['avg_jobs_per_trip'] ?></h3>
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4">
             <div class="kpi-card dark">
                 <h6>Active Trips</h6>
                 <h3><?= $dispatchStats['active_trips'] ?></h3>
@@ -109,7 +103,6 @@ $dispatchStats = [
                         </thead>
                         <tbody>
 
-                            <!-- Placeholder Row 1 -->
                             <tr>
                                 <td><strong>#T001</strong></td>
                                 <td>3</td>
@@ -123,7 +116,6 @@ $dispatchStats = [
                                 <td>Jun 21, 2026 14:00</td>
                             </tr>
 
-                            <!-- Placeholder Row 2 -->
                             <tr class="table-danger fw-semibold">
                                 <td><strong>#T002</strong></td>
                                 <td>2</td>
@@ -140,7 +132,6 @@ $dispatchStats = [
                                 <td>Jun 21, 2026 10:00</td>
                             </tr>
 
-                            <!-- Placeholder Row 3 -->
                             <tr>
                                 <td><strong>#T003</strong></td>
                                 <td>4</td>
@@ -178,9 +169,16 @@ $dispatchStats = [
                         </li>
 
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>Trips Without Driver</span>
-                            <span class="text-danger fw-bold">
-                                1
+                            <span>Drivers Assigned</span>
+                            <span>
+                                <?= $dispatchStats['drivers_assigned'] ?>
+                            </span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Drivers Available</span>
+                            <span class="text-success fw-bold">
+                                <?= $dispatchStats['drivers_available'] ?>
                             </span>
                         </li>
 
@@ -188,13 +186,6 @@ $dispatchStats = [
                             <span>Overdue Trips</span>
                             <span class="text-danger fw-bold">
                                 <?= $dispatchStats['overdue_trips'] ?>
-                            </span>
-                        </li>
-
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>Manual Trips Created</span>
-                            <span>
-                                1
                             </span>
                         </li>
 
