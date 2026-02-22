@@ -1,10 +1,13 @@
+let unassignedJobs = [];
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const modal = document.getElementById("dispatchActionModal");
     const addBtn = document.getElementById("addJobBtn");
     const tableBody = document.querySelector("#tripJobsTable tbody");
+    const warehouseSelect = document.querySelector("select[name='warehouse_id']");
 
-    if (!modal || !addBtn || !tableBody) return;
+    if (!modal || !addBtn || !tableBody || !warehouseSelect) return;
 
     function getSelectedJobIds() {
         return Array.from(
@@ -14,6 +17,43 @@ document.addEventListener("DOMContentLoaded", function () {
             .filter(v => v !== "");
     }
 
+    // =============================
+    // Fetch jobs when warehouse changes
+    // =============================
+    warehouseSelect.addEventListener("change", function () {
+
+        const warehouseId = this.value;
+
+        // Reset table & jobs if nothing selected
+        if (!warehouseId) {
+            unassignedJobs = [];
+            tableBody.innerHTML = "";
+            return;
+        }
+
+        fetch(`../controllers/trips_controller.php?ajax=get_jobs&warehouse_id=${warehouseId}`)
+            .then(res => res.json())
+            .then(data => {
+
+                unassignedJobs = Array.isArray(data) ? data : [];
+
+                // Clear current rows
+                tableBody.innerHTML = "";
+
+                if (unassignedJobs.length > 0) {
+                    addJobRow();
+                }
+            })
+            .catch(err => {
+                console.error("Failed to fetch jobs:", err);
+                unassignedJobs = [];
+                tableBody.innerHTML = "";
+            });
+    });
+
+    // =============================
+    // Rebuild dropdown options
+    // =============================
     function rebuildDropdownOptions() {
 
         const selected = getSelectedJobIds();
@@ -25,9 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             select.innerHTML = '<option value="">Select Unassigned Job</option>';
 
-            if (!window.unassignedJobs) return;
-
-            window.unassignedJobs.forEach(job => {
+            unassignedJobs.forEach(job => {
 
                 if (!selected.includes(String(job.id)) || String(job.id) === currentValue) {
 
@@ -42,10 +80,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // =============================
+    // Add Job Row
+    // =============================
     function addJobRow() {
 
-        if (!window.unassignedJobs || 
-            getSelectedJobIds().length >= window.unassignedJobs.length) {
+        if (!unassignedJobs ||
+            getSelectedJobIds().length >= unassignedJobs.length) {
             return;
         }
 
@@ -70,8 +111,14 @@ document.addEventListener("DOMContentLoaded", function () {
             .addEventListener("change", rebuildDropdownOptions);
     }
 
+    // =============================
+    // Button click
+    // =============================
     addBtn.addEventListener("click", addJobRow);
 
+    // =============================
+    // Remove row
+    // =============================
     document.addEventListener("click", function (e) {
         if (e.target.closest(".remove-row")) {
             e.target.closest("tr").remove();
@@ -79,8 +126,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // =============================
+    // When modal opens
+    // =============================
     modal.addEventListener("shown.bs.modal", function () {
-        if (tableBody.children.length === 0) {
+
+        // Only auto-add if warehouse already selected
+        if (warehouseSelect.value && tableBody.children.length === 0) {
             addJobRow();
         }
     });

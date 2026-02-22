@@ -28,6 +28,43 @@ function countActiveTrips($conn)
 }
 
 /* =========================
+   AJAX: GET UNSCHEDULED JOBS
+========================= */
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
+
+    $warehouse_id = $_GET['warehouse_id'] ?? null;
+
+    if (!$warehouse_id) {
+        echo json_encode([]);
+        exit();
+    }
+
+    $stmt = $databaseconn->prepare("
+        SELECT id, destination
+        FROM tbl_job_orders
+        WHERE trip_id IS NULL
+        AND status = 'pending'
+        AND warehouse_id = ?
+    ");
+
+    $stmt->bind_param("i", $warehouse_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $jobs = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $jobs[] = [
+            "id" => $row["id"],
+            "label" => "#{$row['id']} - {$row['destination']}"
+        ];
+    }
+
+    echo json_encode($jobs);
+    exit();
+}
+
+/* =========================
    HANDLE POST ACTIONS
 ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
