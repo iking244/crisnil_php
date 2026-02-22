@@ -4,18 +4,22 @@ $dispatchStats = [
     // Workload
     'waiting_jobs' => 4,
     'trips_today' => 3,
-    'active_trips' => 3,
+    'active_trips' => $active_trips_count    ?? 0,
     'overdue_trips' => 1,
 
     // Capacity
     'drivers_available' => 2,
     'drivers_assigned' => 3,
-    'trucks_available' => 5,
+    'trucks_available' => $available_trucks_count ?? 0,
     'trucks_in_use' => 5,
     'fleet_utilization' => 50
 ];
 
 include "../controllers/trips_controller.php";
+
+$active_count    = $active_trips_count    ?? 0;
+$available_truck = $available_trucks_count ?? 0;
+$pending_count   = $pending_jobs_count    ?? 0;
 ?>
 
 <!DOCTYPE html>
