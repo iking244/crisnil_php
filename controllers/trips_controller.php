@@ -30,6 +30,20 @@ function countActiveTrips($conn)
     return 0;
 }
 
+function countTripsToday($conn)
+{
+    $sql = "SELECT COUNT(*) as total 
+            FROM tbl_trips 
+            WHERE DATE(created_at) = CURDATE()";
+
+    $result = $conn->query($sql);
+    if ($result) {
+        $row = $result->fetch_assoc();
+        return (int)$row['total'];
+    }
+    return 0;
+}
+
 /* =========================
    AJAX: GET UNSCHEDULED JOBS
 ========================= */
@@ -259,6 +273,7 @@ $totalPages = ceil($totalTrips / $limit);
 
 $all_trips = getTripsPaginated($databaseconn, $limit, $offset);
 $active_trips_count = countActiveTrips($databaseconn);
+$trips_today_count = countTripsToday($databaseconn);
 $unscheduled_jobs = getUnscheduledJobOrders($databaseconn);
 $unscheduled_jobs_count = getUnscheduledJobOrdersCount($databaseconn);
 $available_trucks = getAvailableTrucks($databaseconn);
