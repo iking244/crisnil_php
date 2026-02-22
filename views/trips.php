@@ -3,8 +3,8 @@ include "../controllers/trips_controller.php";
 // TEMP PLACEHOLDER DATA (replace with controller later)
 $dispatchStats = [
     // Workload
-    'waiting_jobs' => $unscheduled_jobs_count ?? 0,
-    'trips_today' => $today_trips_count ?? 0,
+    'waiting_jobs' => 4,
+    'trips_today' => 5,
     'active_trips' => $active_trips_count    ?? 0,
     'overdue_trips' => 1,
 
