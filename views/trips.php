@@ -540,22 +540,22 @@ include "../controllers/trips_controller.php";
     <script src="../scripts/notif.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>
+
     <script>
-        window.unassignedJobs = [{
-                id: 101,
-                label: "#101 - SM Masinag Construction"
-            },
-            {
-                id: 102,
-                label: "#102 - Antipolo City Hall"
-            },
-            {
-                id: 103,
-                label: "#103 - Ayala Feliz Site"
+        window.unassignedJobs = [
+            <?php
+            if ($unscheduled_jobs && $unscheduled_jobs->num_rows > 0) {
+                mysqli_data_seek($unscheduled_jobs, 0);
+                while ($j = $unscheduled_jobs->fetch_assoc()) {
+                    echo "{
+            id: {$j['id']},
+            label: '#{$j['id']} - " . addslashes($j['destination']) . "'
+        },";
+                }
             }
+            ?>
         ];
     </script>
-
     <script>
         function getSelectedJobIds() {
             const selects = document.querySelectorAll('#tripJobsTable select');
