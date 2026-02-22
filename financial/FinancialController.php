@@ -13,7 +13,12 @@ try {
 
     $service->addItem(69, 12, 5);
 
-    echo "Test executed.";
+        echo json_encode([
+        "success" => true,
+        "message" => "Manual test executed"
+    ]);
+
+    exit; // VERY IMPORTANT
 
     $action = $_POST['action'] ?? null;
 
