@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 include "../config/database_conn.php";
 include "../models/trips_model.php";
 include "../models/job_order_model.php";
+require_once '../includes/helpers.php';
 
 if (!isset($_SESSION['USER_ID'])) {
     header("Location: ../index.php");
@@ -73,6 +74,23 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
 
     $jobs = [];
 
+    if ($trip_id) {
+        log_activity(
+            'create_trip',
+            'Successfully created trip ID ' . $trip_id .
+            ' with truck ' . $plate_num . ' (Driver ID: ' . $driver_id . ')' .
+            ' from warehouse ' . $warehouse_id
+        );
+        header("Location: ../views/trips.php");
+        exit();
+    } else {
+        log_activity(
+            'create_trip_failed',
+            'createTrip() failed for truck ID ' . $truck_id .
+            ' (Warehouse: ' . $warehouse_id . ')'
+        );
+        echo "Error creating trip.";
+        exit();
     while ($row = $result->fetch_assoc()) {
         $jobs[] = [
             "id" => $row["id"],
@@ -86,7 +104,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
 
 /* =========================
    HANDLE POST ACTIONS
-========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $action = $_POST['action'] ?? null;

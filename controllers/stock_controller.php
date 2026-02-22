@@ -6,6 +6,7 @@ session_start();
 
 include "../config/database_conn.php";
 include "../models/products_model.php";
+require_once '../includes/helpers.php';
 
 if (!isset($_SESSION['USER_ID'])) {
     header("Location: ../index.php");
@@ -36,6 +37,12 @@ if ($action === 'add') {
 
     // Basic validation
     if ($product_id <= 0 || $quantity <= 0) {
+        
+        log_activity(
+            'add_stock_failed',
+            'Invalid input for stock add - Product ID: ' . $product_id . ', Qty: ' . $quantity
+        );
+
         header("Location: ../views/product_management.php?error=invalid_input");
         exit;
     }
@@ -50,7 +57,21 @@ if ($action === 'add') {
         $expiration_date
     );
 
-    if (!$result) {
+    if ($result) {  // assuming addStockBatch() returns true/false or similar
+        log_activity(
+            'add_stock',
+            'Added stock: ' . $quantity . ' units to Product ID ' . $product_id . 
+            ' in Warehouse ' . $warehouse_id . 
+            ' (Prod date: ' . $production_date . ', Exp: ' . $expiration_date . ')'
+        );
+        header("Location: ../views/product_management.php?warehouse_id=" . $warehouse_id);
+        exit;
+    } else {
+        log_activity(
+            'add_stock_failed',
+            'Failed to add stock for Product ID ' . $product_id . 
+            ' - Error: ' . mysqli_error($databaseconn)
+        );
         die("Stock insert failed: " . mysqli_error($databaseconn));
     }
 
