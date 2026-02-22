@@ -104,40 +104,50 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
     mysqli_begin_transaction($conn);
 
     try {
-        // Get warehouse data
+
+        /* =========================
+           INIT FINANCIAL LAYER
+        ========================== */
+        require_once "../financial/FinancialRepository.php";
+        require_once "../financial/FinancialService.php";
+
+        $financialRepo = new FinancialRepository($conn);
+        $financialService = new FinancialService($financialRepo);
+
+        /* =========================
+           GET WAREHOUSE
+        ========================== */
         $warehouseQuery = mysqli_query($conn, "
             SELECT warehouse_name, latitude, longitude
             FROM tbl_warehouses 
             WHERE warehouse_id = $warehouse_id
         ");
+
         $warehouseData = mysqli_fetch_assoc($warehouseQuery);
 
         if (!$warehouseData) {
             throw new Exception("Warehouse not found");
         }
 
-        $warehouse_name = $warehouseData['warehouse_name'];
-        $origin_lat = $warehouseData['latitude'];
-        $origin_lng = $warehouseData['longitude'];
-
-        // Get client data
+        /* =========================
+           GET CLIENT
+        ========================== */
         $clientQuery = mysqli_query($conn, "
             SELECT client_name, latitude, longitude
             FROM tbl_clients 
             WHERE client_id = $client_id
         ");
+
         $clientData = mysqli_fetch_assoc($clientQuery);
 
         if (!$clientData) {
             throw new Exception("Client not found");
         }
 
-        $client_name = $clientData['client_name'];
-        $destination_lat = $clientData['latitude'];
-        $destination_lng = $clientData['longitude'];
-
-        // Insert job order
-        $insertOrder = mysqli_query($conn, "
+        /* =========================
+           INSERT JOB ORDER
+        ========================== */
+        $stmt = $conn->prepare("
             INSERT INTO tbl_job_orders (
                 origin,
                 origin_lat,
@@ -148,43 +158,44 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
                 status,
                 created_at
             )
-            VALUES (
-                '$warehouse_name',
-                '$origin_lat',
-                '$origin_lng',
-                '$client_name',
-                '$destination_lat',
-                '$destination_lng',
-                'pending',
-                NOW()
-            )
+            VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())
         ");
 
-        if (!$insertOrder) {
-            throw new Exception("Failed to insert job order");
-        }
+        $stmt->bind_param(
+            "sdd sdd",
+            $warehouseData['warehouse_name'],
+            $warehouseData['latitude'],
+            $warehouseData['longitude'],
+            $clientData['client_name'],
+            $clientData['latitude'],
+            $clientData['longitude']
+        );
 
-        $job_id = mysqli_insert_id($conn);
+        $stmt->execute();
+        $job_id = $stmt->insert_id;
+        $stmt->close();
 
-        // Insert items
+        /* =========================
+           INSERT ITEMS VIA FINANCIAL SERVICE
+        ========================== */
         foreach ($product_ids as $index => $product_id) {
+
             $product_id = (int)$product_id;
             $qty = (int)$quantities[$index];
 
             if ($product_id > 0 && $qty > 0) {
-                $insertItem = mysqli_query($conn, "
-                    INSERT INTO tbl_job_order_items 
-                    (job_order_id, product_id, quantity)
-                    VALUES ($job_id, $product_id, $qty)
-                ");
-
-                if (!$insertItem) {
-                    throw new Exception("Failed to insert job order item");
-                }
+                $financialService->addItemWithoutRecompute($job_id, $product_id, $qty);
             }
         }
 
-        // Reserve stock after inserting items
+        /* =========================
+           RECOMPUTE TOTALS ONCE
+        ========================== */
+        $financialService->recomputeTotals($job_id);
+
+        /* =========================
+           RESERVE STOCK
+        ========================== */
         reserveStock(
             $conn,
             $job_id,
@@ -192,17 +203,17 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
             $product_ids,
             $quantities
         );
-        
+
         mysqli_commit($conn);
-        return $job_id;
 
         return $job_id;
+
     } catch (Exception $e) {
+
         mysqli_rollback($conn);
         return false;
     }
 }
-
 function updateLogisticsOrder($conn, $job_id, $status, $eta)
 {
     $eta_sql = $eta ? "'$eta'" : "NULL";

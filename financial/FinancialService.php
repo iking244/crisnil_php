@@ -9,7 +9,7 @@ class FinancialService
         $this->repo = $repo;
     }
 
-    public function addItem($jobOrderId, $productId, $quantity)
+    public function  addItem($jobOrderId, $productId, $quantity)
     {
 
         $product = $this->repo->getProductById($productId);
@@ -85,5 +85,28 @@ class FinancialService
     }
 
     return round((($today - $yesterday) / $yesterday) * 100, 1);
+}
+
+public function addItemWithoutRecompute($jobOrderId, $productId, $quantity)
+{
+    $product = $this->repo->getProductById($productId);
+
+    $unitPrice = $product['unit_price'];
+    $costPrice = $product['cost_price'];
+
+    $totalPrice = $unitPrice * $quantity;
+    $totalCost  = $costPrice * $quantity;
+    $profit     = $totalPrice - $totalCost;
+
+    $this->repo->insertOrderItem([
+        'job_order_id' => $jobOrderId,
+        'product_id'   => $productId,
+        'quantity'     => $quantity,
+        'unit_price'   => $unitPrice,
+        'cost_price'   => $costPrice,
+        'total_price'  => $totalPrice,
+        'total_cost'   => $totalCost,
+        'profit'       => $profit
+    ]);
 }
 }
