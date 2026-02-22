@@ -153,6 +153,18 @@ include "../controllers/products_controller.php";
     </button>
 </div>
 
+<?php if (isset($_SESSION['toast'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast(
+                "<?= addslashes($_SESSION['toast']['message']) ?>",
+                "<?= $_SESSION['toast']['type'] ?>"
+            );
+        });
+    </script>
+    <?php unset($_SESSION['toast']); ?>
+<?php endif; ?>
+
 <!-- Modals -->
 <?php include 'modals/create_product_modal.php'; ?>
 <?php include 'modals/edit_product_modal.php'; ?>

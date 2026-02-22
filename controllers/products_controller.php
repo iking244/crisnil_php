@@ -76,6 +76,13 @@ if ($action) {
                 'create_product',
                 'Created product: ' . $name . ' (Code: ' . $code . ', Qty: ' . $qty . ', Warehouse ID: ' . $warehouse_id . ')'
             );
+        
+            //Alert after successfull operation
+            $_SESSION['toast'] = [
+            'message' => 'Product created successfully!',
+            'type'    => 'success'
+        ];
+
         } else {
             // Optional: log failure too
             log_activity(
@@ -118,12 +125,22 @@ if ($action) {
                 'update_product',
                 'Updated product ID ' . $id . ': ' . $name . ' (Code: ' . $code . ', New qty: ' . $qty . ')'
             );
+
+            $_SESSION['toast'] = [
+            'message' => 'Product updated successfully!',
+            'type'    => 'success'
+            ];
+
         } else {
             log_activity(
                 'update_product_failed',
                 'Failed to update product ID ' . $id . ': ' . $result['error']
             );
         }
+            $_SESSION['toast'] = [
+            'message' => 'Failed to update product.',
+            'type'    => 'danger'   // or 'warning', 'info'
+        ];
 
         header("Location: ../views/product_management.php?warehouse_id=" . $warehouse_id);
         exit;

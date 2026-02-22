@@ -254,6 +254,18 @@ $roles = ['Admin', 'Staff', 'Driver'];  // For filters/modals
         </div>
     </div>
 </div>
+    
+    <?php if (isset($_SESSION['toast'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast(
+                "<?= addslashes($_SESSION['toast']['message']) ?>",
+                "<?= $_SESSION['toast']['type'] ?>"
+            );
+        });
+    </script>
+    <?php unset($_SESSION['toast']); ?>
+    <?php endif; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../scripts/user_management.js"></script>
