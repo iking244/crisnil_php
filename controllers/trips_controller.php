@@ -32,6 +32,8 @@ function countActiveTrips($conn)
 ========================= */
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
 
+    header('Content-Type: application/json');
+
     $warehouse_id = $_GET['warehouse_id'] ?? null;
 
     if (!$warehouse_id) {
