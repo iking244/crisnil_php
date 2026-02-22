@@ -89,18 +89,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             try {
 
-                $truck_id = $_POST['truck_id'] ?? null;
-                $warehouse_id = $_POST['warehouse_id'] ?? null;
+                $truck_id       = $_POST['truck_id'] ?? null;
+                $driver_id      = $_POST['driver_id'] ?? null;
+                $warehouse_id   = $_POST['warehouse_id'] ?? null;
                 $departure_time = $_POST['departure_time'] ?? null;
-                $job_ids = $_POST['job_ids'] ?? [];
+                $job_ids        = $_POST['job_ids'] ?? [];
 
-                if (!$truck_id || !$warehouse_id) {
+                if (!$truck_id || !$warehouse_id || !$driver_id) {
                     throw new Exception("Missing required fields.");
                 }
 
+                // Get truck plate number only (NOT driver anymore)
                 $stmt = $databaseconn->prepare("
-            SELECT driver_id, plate_num 
-            FROM tbl_fleetlist 
+            SELECT plate_num
+            FROM tbl_fleetlist
             WHERE PK_FLEET = ?
         ");
                 $stmt->bind_param("i", $truck_id);
@@ -112,9 +114,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new Exception("Truck not found.");
                 }
 
-                $driver_id = $truck['driver_id'];
                 $plate_num = $truck['plate_num'];
 
+                // Optional: validate driver exists
+                $stmt = $databaseconn->prepare("
+            SELECT USER_ID
+            FROM crisnil_users
+            WHERE USER_ID = ?
+            AND USER_BIO = 'RIDER'
+        ");
+                $stmt->bind_param("i", $driver_id);
+                $stmt->execute();
+                $driver = $stmt->get_result()->fetch_assoc();
+                $stmt->close();
+
+                if (!$driver) {
+                    throw new Exception("Invalid driver selected.");
+                }
+
+                // Create trip using manually selected driver
                 $trip_id = createTrip(
                     $databaseconn,
                     $driver_id,
@@ -127,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new Exception("Trip creation failed.");
                 }
 
+                // Attach selected jobs
                 if (!empty($job_ids)) {
 
                     $ids = implode(",", array_map('intval', $job_ids));

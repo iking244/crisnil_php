@@ -342,7 +342,11 @@ include "../controllers/trips_controller.php";
                                         <label class="form-label">Driver</label>
                                         <select name="driver_id" class="form-select" required>
                                             <option value="">Select Driver</option>
-                                            <?php while ($d = $drivers->fetch_assoc()): ?>
+
+                                            <?php
+                                            mysqli_data_seek($drivers, 0);
+                                            while ($d = $drivers->fetch_assoc()):
+                                            ?>
                                                 <option value="<?= $d['USER_ID'] ?>">
                                                     <?= $d['USER_NAME'] ?>
                                                 </option>
