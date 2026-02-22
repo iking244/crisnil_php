@@ -622,7 +622,7 @@ include "../controllers/trips_controller.php";
         });
 
         // Auto-add first row when modal opens
-        document.getElementById('createTripModal')
+        document.getElementById('dispatchActionModal')
             .addEventListener('shown.bs.modal', function() {
                 const tbody = document.querySelector('#tripJobsTable tbody');
                 if (tbody.children.length === 0) {
