@@ -233,6 +233,104 @@ include "../controllers/logistics_orders_controller.php";
         </div>
     </div>
 
+    <!-- =========================
+     CREATE JOB ORDER MODAL
+========================= -->
+    <div class="modal fade" id="createOrderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <br><br><br><br><br>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Job Order</h5>
+                    <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="../controllers/logistics_orders_controller.php?action=create"
+                        method="POST">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Origin Warehouse</label>
+                                <select name="warehouse_id" class="form-select" required>
+                                    <option value="">Select Warehouse</option>
+                                    <?php while ($w = $warehouses->fetch_assoc()): ?>
+                                        <option value="<?= $w['warehouse_id'] ?>">
+                                            <?= $w['warehouse_name'] ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Destination Client</label>
+                                <select name="client_id" class="form-select" required>
+                                    <option value="">Select Client</option>
+                                    <?php while ($c = $clients->fetch_assoc()): ?>
+                                        <option value="<?= $c['client_id'] ?>">
+                                            <?= $c['client_name'] ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Cargo Details</h6>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="createItemsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th width="120">Quantity</th>
+                                        <th width="80">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select name="product_id[]" class="form-control">
+                                                <?php
+                                                mysqli_data_seek($products, 0);
+                                                while ($p = $products->fetch_assoc()):
+                                                ?>
+                                                    <option value="<?= $p['product_id'] ?>">
+                                                        <?= $p['product_name'] ?> (<?= $p['unit'] ?>)
+                                                    </option>
+                                                <?php endwhile; ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number"
+                                                name="quantity[]"
+                                                class="form-control"
+                                                value="1" min="1">
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-danger remove-row" title="Remove">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-primary" onclick="addItemRow('createItemsTable')">
+                            + Add Item
+                        </button>
+
+                        <button type="submit"
+                            class="btn btn-success w-100 mt-3">
+                            Create Job Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- KEEP YOUR EXISTING MODAL AND SCRIPTS BELOW UNCHANGED -->
     <!-- ================= SCRIPTS ================= -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
