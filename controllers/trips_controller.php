@@ -277,7 +277,9 @@ $trips_today_count = countTripsToday($databaseconn);
 $unscheduled_jobs = getUnscheduledJobOrders($databaseconn);
 $unscheduled_jobs_count = getUnscheduledJobOrdersCount($databaseconn);
 $available_trucks = getAvailableTrucks($databaseconn);
+$unavailable_trucks = getUnavailableTrucks($databaseconn);
 
 $available_trucks_count = $available_trucks ? $available_trucks->num_rows : 0;
+$unavailable_trucks_count = $unavailable_trucks ? $unavailable_trucks->num_rows : 0;
 $pending_jobs_count     = $unscheduled_jobs ? $unscheduled_jobs->num_rows : 0;
 $available_drivers = $drivers ? $drivers->num_rows : 0;

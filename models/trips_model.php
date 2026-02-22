@@ -163,6 +163,23 @@ function getAvailableTrucks($conn)
     return $conn->query($sql);
 }
 
+function getUnavailableTrucks($conn)
+{
+    $sql = "
+        SELECT f.PK_FLEET, f.PLATE_NUM, f.MODEL
+        FROM tbl_fleetlist f
+        WHERE f.FLEET_STATUS = 'ACTIVE'
+        AND f.PLATE_NUM NOT IN (
+            SELECT t.truck_plate_number
+            FROM tbl_trips t
+            WHERE t.status NOT IN ('pending_loading','loading','ready_to_depart','in_transit')
+        )
+        ORDER BY f.PLATE_NUM ASC
+    ";
+
+    return $conn->query($sql);
+}
+
 function startTrip($conn, $trip_id)
 {
     $conn->begin_transaction();

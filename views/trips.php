@@ -7,14 +7,13 @@ $dispatchStats = [
     'waiting_jobs' => $pending_jobs_count ?? 0,
     'trips_today' => $trips_today_count ?? 0,
     'active_trips' => $active_trips_count ?? 0,
-    'overdue_trips' => 1,
-
+    'overdue_trips' => 0,
     // Capacity
     'drivers_available' => $available_drivers ?? 0,
-    'drivers_assigned' => 3,
+    'drivers_assigned' => 0,
     'trucks_available' => $available_trucks_count ?? 0,
-    'trucks_in_use' => 5,
-    'fleet_utilization' => 50
+    'trucks_in_use' =>$navailable_trucks_count ?? 0,
+    'fleet_utilization' => 0
 ];
 ?>
 
