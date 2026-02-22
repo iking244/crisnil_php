@@ -321,20 +321,6 @@ $dispatchStats = [
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <select name="job_ids[]" class="form-select">
-                                                <option value="">Select Unassigned Job</option>
-                                                <option value="101">#101 - SM Masinag Construction</option>
-                                                <option value="102">#102 - Antipolo City Hall</option>
-                                            </select>
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-sm btn-danger remove-row">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -356,6 +342,21 @@ $dispatchStats = [
     <script src="../scripts/notif.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>
+    <script>
+        window.unassignedJobs = [{
+                id: 101,
+                label: "#101 - SM Masinag Construction"
+            },
+            {
+                id: 102,
+                label: "#102 - Antipolo City Hall"
+            },
+            {
+                id: 103,
+                label: "#103 - Ayala Feliz Site"
+            }
+        ];
+    </script>
 
 </body>
 
