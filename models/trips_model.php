@@ -290,7 +290,8 @@ function completeTrip($conn, $trip_id)
     // Update trip status
     $stmt = $conn->prepare("
         UPDATE tbl_trips
-        SET status = 'completed'
+        SET status = 'completed',
+        completed_at = CURTIME()  
         WHERE trip_id = ?
         AND status = 'in_transit'
     ");
