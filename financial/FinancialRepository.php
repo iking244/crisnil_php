@@ -126,9 +126,8 @@ class FinancialRepository
         $row = $result->fetch_assoc();
         $stmt->close();
 
-        return (int) ($row['total'] ?? 0);
+        return (int) ($row['pending'] ?? 0);
     }
-
 
 
     public function getMonthlyRevenue()
