@@ -88,10 +88,33 @@ class FinancialRepository
     public function getOrdersToday()
     {
         $stmt = $this->db->prepare("
-        SELECT COUNT(*) AS total
+        SELECT 
+            COUNT(*) AS total,
+            SUM(status NOT IN ('blocked', 'cancelled')) AS pending
         FROM tbl_job_orders
-        WHERE status = 'completed'
-        AND DATE(updated_at) = CURDATE()
+        WHERE DATE(created_at) = CURDATE()
+    ");
+
+
+
+        if (!$stmt) {
+            return 0;
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+
+        return (int) ($row['total'] ?? 0);
+    }
+
+    public function getPendingOrders()
+    {
+        $stmt = $this->db->prepare("
+        SELECT COUNT(*) AS pending
+        FROM tbl_job_orders
+        WHERE status NOT IN ('completed', 'cancelled', 'blocked')
     ");
 
         if (!$stmt) {
@@ -105,6 +128,8 @@ class FinancialRepository
 
         return (int) ($row['total'] ?? 0);
     }
+
+
 
     public function getMonthlyRevenue()
     {

@@ -71,7 +71,8 @@ class FinancialService
         return [
             'sales_today'      => $this->repo->getSalesToday(),
             'orders_today'     => $this->repo->getOrdersToday(),
-            'monthly_revenue'  => $this->repo->getMonthlyRevenue()
+            'monthly_revenue'  => $this->repo->getMonthlyRevenue(),
+            'pending_orders'     => $this->repo->getPendingOrders()
         ];
     }
 

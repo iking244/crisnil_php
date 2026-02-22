@@ -54,7 +54,7 @@ include "../controllers/dashboard_controller.php";
                         <div class="kpi-card dark">
                             <h6>Orders Today</h6>
                             <h3><?= $orders_today ?></h3>
-                            <span class="kpi-sub">0 pending</span>
+                            <span class="kpi-sub"><?= $pending_orders ?> pending</span>
                         </div>
                     </div>
 
