@@ -449,99 +449,10 @@ include "../controllers/trips_controller.php";
     <script src="../scripts/notif.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>
-
     <script>
-        window.unassignedJobs = [
-            <?php
-            if ($unscheduled_jobs && $unscheduled_jobs->num_rows > 0) {
-                mysqli_data_seek($unscheduled_jobs, 0);
-                while ($j = $unscheduled_jobs->fetch_assoc()) {
-
-                    $label = addslashes($j['destination']);
-
-                    echo "{
-            id: {$j['id']},
-            label: '#{$j['id']} - {$label}'
-        },";
-                }
-            }
-            ?>
-        ];
+        window.unassignedJobs = <?= json_encode($unscheduledJobsArray); ?>;
     </script>
-    <script>
-        function getSelectedJobIds() {
-            const selects = document.querySelectorAll('#tripJobsTable select');
-            return Array.from(selects)
-                .map(s => s.value)
-                .filter(v => v !== "");
-        }
-
-        function rebuildDropdownOptions() {
-            const selected = getSelectedJobIds();
-            const selects = document.querySelectorAll('#tripJobsTable select');
-
-            selects.forEach(select => {
-                const currentValue = select.value;
-
-                select.innerHTML = '<option value="">Select Unassigned Job</option>';
-
-                window.unassignedJobs.forEach(job => {
-                    if (!selected.includes(String(job.id)) || String(job.id) === currentValue) {
-                        const option = document.createElement('option');
-                        option.value = job.id;
-                        option.textContent = job.label;
-                        select.appendChild(option);
-                    }
-                });
-
-                select.value = currentValue;
-            });
-        }
-
-        function addJobRow() {
-            const table = document.querySelector('#tripJobsTable tbody');
-
-            if (getSelectedJobIds().length >= window.unassignedJobs.length) {
-                return; // no more jobs available
-            }
-
-            const row = document.createElement('tr');
-            row.innerHTML = `
-        <td>
-            <select name="job_ids[]" class="form-select"></select>
-        </td>
-        <td class="text-center">
-            <button type="button" class="btn btn-sm btn-danger remove-row">
-                <i class="fas fa-trash"></i>
-            </button>
-        </td>
-    `;
-
-            table.appendChild(row);
-
-            rebuildDropdownOptions();
-
-            row.querySelector('select').addEventListener('change', rebuildDropdownOptions);
-        }
-
-        document.getElementById('addJobBtn').addEventListener('click', addJobRow);
-
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.remove-row')) {
-                e.target.closest('tr').remove();
-                rebuildDropdownOptions();
-            }
-        });
-
-        // Auto-add first row when modal opens
-        document.getElementById('dispatchActionModal')
-            .addEventListener('shown.bs.modal', function() {
-                const tbody = document.querySelector('#tripJobsTable tbody');
-                if (tbody.children.length === 0) {
-                    addJobRow();
-                }
-            });
-    </script>
+    <script src="../scripts/trips.js"></script>
 
 </body>
 
