@@ -255,97 +255,6 @@ include "../controllers/trips_controller.php";
     </div>
 
     <!-- =========================
-     CREATE MANUAL TRIP MODAL
-========================= -->
-    <div class="modal fade" id="createTripModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Create Manual Trip</h5>
-                    <button type="button" class="btn-close"
-                        data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form action="../controllers/dispatch_controller.php?action=create_trip"
-                        method="POST">
-
-                        <!-- Basic Trip Info -->
-                        <div class="row">
-
-                            <!-- Warehouse -->
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Origin Warehouse</label>
-                                <select name="warehouse_id" class="form-select" required>
-                                    <option value="">Select Warehouse</option>
-                                    <!-- Loop warehouses here -->
-                                </select>
-                            </div>
-
-                            <!-- Truck -->
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Truck</label>
-                                <select name="truck_plate_number" class="form-select" required>
-                                    <option value="">Select Available Truck</option>
-                                    <!-- Loop available trucks here -->
-                                </select>
-                            </div>
-
-                            <!-- Driver -->
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Driver</label>
-                                <select name="driver_id" class="form-select" required>
-                                    <option value="">Select Available Driver</option>
-                                    <!-- Loop available drivers here -->
-                                </select>
-                            </div>
-
-                        </div>
-
-                        <!-- Optional Departure Time -->
-                        <div class="mb-3">
-                            <label class="form-label">Departure Time (Optional)</label>
-                            <input type="datetime-local"
-                                name="departure_time"
-                                class="form-control">
-                        </div>
-
-                        <!-- Attach Jobs Section -->
-                        <h6 class="mt-4">Attach Jobs</h6>
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="tripJobsTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Job</th>
-                                        <th width="80">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- JS will populate rows -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <button type="button"
-                            class="btn btn-sm btn-primary"
-                            id="addJobBtn">
-                            + Add Job
-                        </button>
-
-                        <button type="submit"
-                            class="btn btn-success w-100 mt-3">
-                            Create Trip
-                        </button>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- =========================
      DISPATCH ACTION CENTER
 ========================= -->
 
@@ -549,12 +458,13 @@ include "../controllers/trips_controller.php";
                 while ($j = $unscheduled_jobs->fetch_assoc()) {
                     echo "{
             id: {$j['id']},
-            label: '#{$j['id']} - " . addslashes($j['destination']) . "'
+            label: '#{$j['id']} - Job {$j['id']}'
         },";
                 }
             }
             ?>
         ];
+        console.log(window.unassignedJobs);
     </script>
     <script>
         function getSelectedJobIds() {
