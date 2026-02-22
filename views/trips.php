@@ -52,7 +52,7 @@ include "../controllers/trips_controller.php";
                 <h1 class="page-title">Dispatch Overview</h1>
 
                 <div class="d-flex gap-2">
-                    <a href="dispatch_trips.php" class="btn btn-outline-dark">
+                    <a href="trips_management.php" class="btn btn-outline-dark">
                         <i class="fa fa-road"></i> View All Trips
                     </a>
 
