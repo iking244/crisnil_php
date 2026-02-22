@@ -1,5 +1,8 @@
 <?php
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 include "../config/database_conn.php";
 include "../models/trips_model.php";
 include "../models/job_order_model.php";
@@ -64,7 +67,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
 
     echo json_encode($jobs);
     exit();
-}
+}   
 
 /* =========================
    HANDLE POST ACTIONS
