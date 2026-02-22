@@ -449,9 +449,6 @@ include "../controllers/trips_controller.php";
     <script src="../scripts/notif.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>
-    <script>
-        window.unassignedJobs = <?= json_encode($unscheduledJobsArray); ?>;
-    </script>
     <script src="../scripts/trips.js"></script>
 
 </body>
