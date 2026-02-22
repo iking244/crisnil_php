@@ -1,5 +1,6 @@
 <?php
 include "../controllers/trips_controller.php";
+
 // TEMP PLACEHOLDER DATA (replace with controller later)
 $dispatchStats = [
     // Workload
@@ -11,7 +12,7 @@ $dispatchStats = [
     // Capacity
     'drivers_available' => 2,
     'drivers_assigned' => 3,
-    'trucks_available' => 7,
+    'trucks_available' => $available_trucks_count ?? 0,
     'trucks_in_use' => 5,
     'fleet_utilization' => 50
 ];
