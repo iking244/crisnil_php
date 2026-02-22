@@ -256,21 +256,6 @@ $dispatchStats = [
      CREATE MANUAL TRIP MODAL
 ========================= -->
     <div class="modal fade" id="createTripModal" tabindex="-1">
-        <script>
-            window.unassignedJobs = [{
-                    id: 101,
-                    label: "#101 - SM Masinag Construction"
-                },
-                {
-                    id: 102,
-                    label: "#102 - Antipolo City Hall"
-                },
-                {
-                    id: 103,
-                    label: "#103 - Ayala Feliz Site"
-                }
-            ];
-        </script>
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
@@ -325,7 +310,7 @@ $dispatchStats = [
                         </div>
 
                         <!-- Attach Jobs Section -->
-                        <h6 class="mt-4">Attach Jobs (Optional)</h6>
+                        <h6 class="mt-4">Attach Jobs</h6>
 
                         <div class="table-responsive">
                             <table class="table table-bordered" id="tripJobsTable">
@@ -336,14 +321,20 @@ $dispatchStats = [
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!-- JS will populate rows -->
                                 </tbody>
                             </table>
                         </div>
 
                         <button type="button"
                             class="btn btn-sm btn-primary"
-                            onclick="addJobRow()">
+                            id="addJobBtn">
                             + Add Job
+                        </button>
+
+                        <button type="submit"
+                            class="btn btn-success w-100 mt-3">
+                            Create Trip
                         </button>
 
                     </form>
@@ -371,6 +362,81 @@ $dispatchStats = [
                 label: "#103 - Ayala Feliz Site"
             }
         ];
+    </script>
+
+    <script>
+        function getSelectedJobIds() {
+            const selects = document.querySelectorAll('#tripJobsTable select');
+            return Array.from(selects)
+                .map(s => s.value)
+                .filter(v => v !== "");
+        }
+
+        function rebuildDropdownOptions() {
+            const selected = getSelectedJobIds();
+            const selects = document.querySelectorAll('#tripJobsTable select');
+
+            selects.forEach(select => {
+                const currentValue = select.value;
+
+                select.innerHTML = '<option value="">Select Unassigned Job</option>';
+
+                window.unassignedJobs.forEach(job => {
+                    if (!selected.includes(String(job.id)) || String(job.id) === currentValue) {
+                        const option = document.createElement('option');
+                        option.value = job.id;
+                        option.textContent = job.label;
+                        select.appendChild(option);
+                    }
+                });
+
+                select.value = currentValue;
+            });
+        }
+
+        function addJobRow() {
+            const table = document.querySelector('#tripJobsTable tbody');
+
+            if (getSelectedJobIds().length >= window.unassignedJobs.length) {
+                return; // no more jobs available
+            }
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td>
+            <select name="job_ids[]" class="form-select"></select>
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn btn-sm btn-danger remove-row">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    `;
+
+            table.appendChild(row);
+
+            rebuildDropdownOptions();
+
+            row.querySelector('select').addEventListener('change', rebuildDropdownOptions);
+        }
+
+        document.getElementById('addJobBtn').addEventListener('click', addJobRow);
+
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('tr').remove();
+                rebuildDropdownOptions();
+            }
+        });
+
+        // Auto-add first row when modal opens
+        document.getElementById('createTripModal')
+            .addEventListener('shown.bs.modal', function() {
+                const tbody = document.querySelector('#tripJobsTable tbody');
+                if (tbody.children.length === 0) {
+                    addJobRow();
+                }
+            });
     </script>
 
 </body>
