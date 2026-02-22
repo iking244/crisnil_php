@@ -5,7 +5,7 @@ include "../controllers/trips_controller.php";
 $dispatchStats = [
     // Workload
     'waiting_jobs' => $pending_jobs_count ?? 0,
-    'trips_today' => 5,
+    'trips_today' => $$active_trips_count ?? 0,
     'active_trips' => 6,
     'overdue_trips' => 1,
 
