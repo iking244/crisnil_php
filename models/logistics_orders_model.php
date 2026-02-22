@@ -162,7 +162,7 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
         ");
 
         $stmt->bind_param(
-            "sdd sdd",
+            "sddsdd",
             $warehouseData['warehouse_name'],
             $warehouseData['latitude'],
             $warehouseData['longitude'],
