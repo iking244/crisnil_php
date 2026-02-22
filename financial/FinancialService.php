@@ -1,13 +1,16 @@
 <?php
-class FinancialService {
+class FinancialService
+{
 
     private $repo;
 
-    public function __construct($repo) {
+    public function __construct($repo)
+    {
         $this->repo = $repo;
     }
 
-    public function addItem($jobOrderId, $productId, $quantity) {
+    public function addItem($jobOrderId, $productId, $quantity)
+    {
 
         $product = $this->repo->getProductById($productId);
 
@@ -32,7 +35,8 @@ class FinancialService {
         $this->recomputeTotals($jobOrderId);
     }
 
-    public function recomputeTotals($jobOrderId) {
+    public function recomputeTotals($jobOrderId)
+    {
 
         $items = $this->repo->getItemsByOrderId($jobOrderId);
 
@@ -40,5 +44,34 @@ class FinancialService {
         $grandTotal = $subtotal;
 
         $this->repo->updateOrderTotals($jobOrderId, $subtotal, $grandTotal);
+    }
+
+    public function getSalesTrend()
+    {
+        $rawData = $this->repo->getSalesLast7Days();
+
+        $trend = [];
+        $labels = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+
+            $date = date('Y-m-d', strtotime("-$i days"));
+            $labels[] = date('D', strtotime($date));
+            $trend[] = $rawData[$date] ?? 0;
+        }
+
+        return [
+            'labels' => $labels,
+            'data'   => $trend
+        ];
+    }
+
+    public function getDashboardMetrics()
+    {
+        return [
+            'sales_today'      => $this->repo->getSalesToday(),
+            'orders_today'     => $this->repo->getOrdersToday(),
+            'monthly_revenue'  => $this->repo->getMonthlyRevenue()
+        ];
     }
 }

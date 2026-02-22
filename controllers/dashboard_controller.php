@@ -8,6 +8,32 @@ if (!isset($_SESSION['USER_ID'])) {
     exit();
 }
 
+/* =========================
+   INIT FINANCIAL LAYER
+========================= */
+
+$financialRepo = new FinancialRepository($databaseconn);
+$financialService = new FinancialService($financialRepo);
+
+/* =========================
+   DASHBOARD METRICS
+========================= */
+
+$metrics = $financialService->getDashboardMetrics();
+
+$sales_today      = $metrics['sales_today'];
+$orders_today     = $metrics['orders_today'];
+$monthly_revenue  = $metrics['monthly_revenue'];
+
+/* =========================
+   SALES TREND (7 DAYS)
+========================= */
+
+$salesTrend = $financialService->getSalesTrend();
+
+$salesTrendLabels = json_encode($salesTrend['labels']);
+$salesTrendData   = json_encode($salesTrend['data']);
+
 $total_products = getTotalProducts($databaseconn);
 $product_distribution = getProductDistribution($databaseconn);
 $low_stock = getLowStockCount($databaseconn);

@@ -17,7 +17,7 @@ include "../controllers/dashboard_controller.php";
     <link rel="stylesheet" href="../styles/components.css">
     <link rel="stylesheet" href="../styles/dashboard/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="icon" href="../imgs/imgsroles/logocrisnil.png" type="image/x-icon">
 </head>
@@ -42,7 +42,7 @@ include "../controllers/dashboard_controller.php";
                     <div class="col-md-2">
                         <div class="kpi-card blue">
                             <h6>Sales Today</h6>
-                            <h3>₱ 0.00</h3>
+                            <h3>₱ <?= number_format($sales_today, 2) ?></h3>
                             <span class="kpi-sub">+0% vs yesterday</span>
                         </div>
                     </div>
@@ -50,7 +50,7 @@ include "../controllers/dashboard_controller.php";
                     <div class="col-md-2">
                         <div class="kpi-card dark">
                             <h6>Orders Today</h6>
-                            <h3>0</h3>
+                            <h3><?= $orders_today ?></h3>
                             <span class="kpi-sub">0 pending</span>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ include "../controllers/dashboard_controller.php";
                     <div class="col-md-2">
                         <div class="kpi-card gray">
                             <h6>Monthly Revenue</h6>
-                            <h3>₱ 0.00</h3>
+                            <h3>₱ <?= number_format($monthly_revenue, 2) ?></h3>
                             <span class="kpi-sub">This month</span>
                         </div>
                     </div>
@@ -182,10 +182,10 @@ include "../controllers/dashboard_controller.php";
             new Chart(salesCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    labels: <?= $salesTrendLabels ?>,
                     datasets: [{
                         label: 'Sales',
-                        data: [12, 19, 8, 17, 14, 20, 9],
+                        data: <?= $salesTrendData ?>,
                         borderColor: '#d32f2f',
                         fill: true,
                         backgroundColor: 'rgba(211,47,47,0.1)',
