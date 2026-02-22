@@ -338,6 +338,18 @@ include "../controllers/trips_controller.php";
                                         </select>
                                     </div>
 
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Driver</label>
+                                        <select name="driver_id" class="form-select" required>
+                                            <option value="">Select Driver</option>
+                                            <?php while ($d = $drivers->fetch_assoc()): ?>
+                                                <option value="<?= $d['USER_ID'] ?>">
+                                                    <?= $d['USER_NAME'] ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        </select>
+                                    </div>
+
                                     <!-- Departure Time -->
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Departure Time</label>
