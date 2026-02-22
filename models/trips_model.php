@@ -170,10 +170,12 @@ function startTrip($conn, $trip_id)
     try {
         // Update trip
         $stmt = $conn->prepare("
-            UPDATE tbl_trips
-            SET status = 'in_transit'
+            UPDATE tbl_trips     
+            SET status = 'in_transit',
+            departure_time = CURTIME()     
             WHERE trip_id = ?
             AND status = 'ready_to_depart'
+            
         ");
         $stmt->bind_param("i", $trip_id);
         $stmt->execute();
@@ -181,9 +183,11 @@ function startTrip($conn, $trip_id)
         // Update only assigned jobs
         $stmt = $conn->prepare("
             UPDATE tbl_job_orders
-            SET status = 'in_transit'
+            SET status = 'in_transit',
+            updated_at = CURTIME()   
             WHERE trip_id = ?
             AND status = 'assigned'
+            AND departure_time <= NOW();
         ");
         $stmt->bind_param("i", $trip_id);
         $stmt->execute();
