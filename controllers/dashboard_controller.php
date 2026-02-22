@@ -2,6 +2,8 @@
 session_start();
 include "../config/database_conn.php";
 include "../models/dashboard_model.php";
+require_once "../financial/FinancialRepository.php";
+require_once "../financial/FinancialService.php";
 
 if (!isset($_SESSION['USER_ID'])) {
     header("Location: ../index.php");
