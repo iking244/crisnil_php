@@ -14,6 +14,8 @@ $dispatchStats = [
     'trucks_in_use' => 5,
     'fleet_utilization' => 50
 ];
+
+include "../controllers/trips_controller.php";
 ?>
 
 <!DOCTYPE html>
@@ -346,6 +348,7 @@ $dispatchStats = [
     <!-- =========================
      DISPATCH ACTION CENTER
 ========================= -->
+
     <div class="modal fade" id="dispatchActionModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
