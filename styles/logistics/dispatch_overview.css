@@ -1,0 +1,4 @@
+/* Stabilize Dispatch Action Modal height */
+#dispatchActionModal .modal-body {
+    min-height: 500px;
+}

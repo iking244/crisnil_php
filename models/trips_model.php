@@ -1,19 +1,30 @@
 <?php
-function createTrip($conn, $driver_id, $truck_plate, $warehouse_id)
+function createTrip($conn, $driver_id, $truck_plate, $warehouse_id, $departure_time = null)
 {
+    $conn->begin_transaction();
 
-    $sql = "INSERT INTO tbl_trips
-            (truck_plate_number, warehouse_id, status)
-            VALUES
-            ('$truck_plate', '$warehouse_id', 'pending_loading')";
+    try {
 
-    if ($conn->query($sql)) {
-        return $conn->insert_id;
+        $stmt = $conn->prepare("
+            INSERT INTO tbl_trips
+            (driver_id, truck_plate_number, warehouse_id, status, departure_time, created_at)
+            VALUES (?, ?, ?, 'pending_loading', ?, NOW())
+        ");
+
+        $stmt->bind_param("isis", $driver_id, $truck_plate, $warehouse_id, $departure_time);
+        $stmt->execute();
+
+        $trip_id = $stmt->insert_id;
+        $stmt->close();
+
+        $conn->commit();
+        return $trip_id;
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        return false;
     }
-
-    return false;
 }
-
 
 function getActiveDrivers($conn)
 {
@@ -152,6 +163,23 @@ function getAvailableTrucks($conn)
     return $conn->query($sql);
 }
 
+function getUnavailableTrucks($conn)
+{
+    $sql = "
+        SELECT f.PK_FLEET, f.PLATE_NUM, f.MODEL
+        FROM tbl_fleetlist f
+        WHERE f.FLEET_STATUS = 'ACTIVE'
+        AND f.PLATE_NUM NOT IN (
+            SELECT t.truck_plate_number
+            FROM tbl_trips t
+            WHERE t.status NOT IN ('pending_loading','loading','ready_to_depart','in_transit')
+        )
+        ORDER BY f.PLATE_NUM ASC
+    ";
+
+    return $conn->query($sql);
+}
+
 function startTrip($conn, $trip_id)
 {
     $conn->begin_transaction();
@@ -159,10 +187,12 @@ function startTrip($conn, $trip_id)
     try {
         // Update trip
         $stmt = $conn->prepare("
-            UPDATE tbl_trips
-            SET status = 'in_transit'
+            UPDATE tbl_trips     
+            SET status = 'in_transit',
+            departure_time = CURTIME()     
             WHERE trip_id = ?
             AND status = 'ready_to_depart'
+            
         ");
         $stmt->bind_param("i", $trip_id);
         $stmt->execute();
@@ -170,7 +200,8 @@ function startTrip($conn, $trip_id)
         // Update only assigned jobs
         $stmt = $conn->prepare("
             UPDATE tbl_job_orders
-            SET status = 'in_transit'
+            SET status = 'in_transit',
+            updated_at = CURTIME()   
             WHERE trip_id = ?
             AND status = 'assigned'
         ");
@@ -275,7 +306,8 @@ function completeTrip($conn, $trip_id)
     // Update trip status
     $stmt = $conn->prepare("
         UPDATE tbl_trips
-        SET status = 'completed'
+        SET status = 'completed',
+        completed_at = CURTIME()  
         WHERE trip_id = ?
         AND status = 'in_transit'
     ");

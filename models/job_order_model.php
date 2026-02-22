@@ -65,6 +65,17 @@ function getUnscheduledJobOrders($conn) {
 
     return $conn->query($sql);
 }
+function getUnscheduledJobOrdersCount($conn) {
+    $sql = "
+        SELECT 
+            COUNT(*)
+        FROM tbl_job_orders
+        WHERE status = 'pending'
+        ORDER BY id ASC
+    ";
+
+    return $conn->query($sql);
+}
 
 function getJobsByTrip($conn, $trip_id) {
     $sql = "
