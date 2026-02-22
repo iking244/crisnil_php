@@ -392,34 +392,79 @@ $dispatchStats = [
                         <!-- ================= CREATE TAB ================= -->
                         <div class="tab-pane fade show active" id="createTab">
 
-                            <h6 class="mb-3">Manual Trip Creation</h6>
+                            <form action="../controllers/trips_controller.php" method="POST">
 
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Warehouse</label>
-                                    <select class="form-select">
-                                        <option>Select Warehouse</option>
-                                    </select>
+                                <input type="hidden" name="action" value="create">
+
+                                <h6 class="mb-3">Manual Trip Creation</h6>
+
+                                <div class="row">
+
+                                    <!-- Warehouse -->
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Warehouse</label>
+                                        <select name="warehouse_id" class="form-select" required>
+                                            <option value="">Select Warehouse</option>
+                                            <?php while ($w = $warehouses->fetch_assoc()): ?>
+                                                <option value="<?= $w['warehouse_id'] ?>">
+                                                    <?= $w['warehouse_name'] ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        </select>
+                                    </div>
+
+                                    <!-- Truck -->
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Truck</label>
+                                        <select name="truck_id" class="form-select" required>
+                                            <option value="">Select Available Truck</option>
+                                            <?php while ($t = $available_trucks->fetch_assoc()): ?>
+                                                <option value="<?= $t['PK_FLEET'] ?>">
+                                                    <?= $t['PLATE_NUM'] ?> - <?= $t['MODEL'] ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        </select>
+                                    </div>
+
+                                    <!-- Departure Time -->
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Departure Time</label>
+                                        <input type="datetime-local"
+                                            name="departure_time"
+                                            class="form-control">
+                                    </div>
+
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Truck</label>
-                                    <select class="form-select">
-                                        <option>Select Truck</option>
-                                    </select>
+                                <!-- Attach Jobs -->
+                                <h6 class="mt-3">Attach Jobs</h6>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="tripJobsTable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Job</th>
+                                                <th width="80">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- JS will populate -->
+                                        </tbody>
+                                    </table>
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Driver</label>
-                                    <select class="form-select">
-                                        <option>Select Driver</option>
-                                    </select>
-                                </div>
-                            </div>
+                                <button type="button"
+                                    class="btn btn-sm btn-primary"
+                                    id="addJobBtn">
+                                    + Add Job
+                                </button>
 
-                            <button class="btn btn-success">
-                                Create Trip
-                            </button>
+                                <button type="submit"
+                                    class="btn btn-success w-100 mt-3">
+                                    Create Trip
+                                </button>
+
+                            </form>
 
                         </div>
 

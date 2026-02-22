@@ -9,10 +9,14 @@ if (!isset($_SESSION['USER_ID'])) {
     exit();
 }
 
+/* =========================
+   UTILITY
+========================= */
 function countActiveTrips($conn) {
     $sql = "SELECT COUNT(*) as total 
             FROM tbl_trips 
-            WHERE status IN ('assigned', 'in_transit', 'loading', 'pending_loading', 'ready_to_depart')";
+            WHERE status IN 
+            ('assigned', 'in_transit', 'loading', 'pending_loading', 'ready_to_depart')";
     
     $result = $conn->query($sql);
     if ($result) {
@@ -23,57 +27,160 @@ function countActiveTrips($conn) {
 }
 
 /* =========================
-   HANDLE TRIP CREATION
+   HANDLE POST ACTIONS
 ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $truck_id = $_POST['truck_id'];
-    $warehouse_id = $_POST['warehouse_id'];
+    $action = $_POST['action'] ?? null;
 
-    // Get driver automatically from truck
-    $sql = "SELECT driver_id, plate_num FROM tbl_fleetlist WHERE PK_FLEET = $truck_id";
-    $result = $databaseconn->query($sql);
-    $truck = $result->fetch_assoc();
+    switch ($action) {
 
-    if (!$truck) {
-        echo "Truck not found.";
-        exit();
-    }
+        /* =========================
+           CREATE TRIP (Manual)
+        ========================== */
+        case 'create':
 
-    $driver_id = $truck['driver_id'];
-    $plate_num = $truck['plate_num'];
+            $truck_id = $_POST['truck_id'] ?? null;
+            $warehouse_id = $_POST['warehouse_id'] ?? null;
+            $departure_time = $_POST['departure_time'] ?? null;
+            $job_ids = $_POST['job_ids'] ?? [];
 
-    // Create trip
-    $trip_id = createTrip(
-        $databaseconn,
-        $driver_id,
-        $plate_num,
-        $warehouse_id
-    );
+            if (!$truck_id || !$warehouse_id) {
+                exit("Missing required fields.");
+            }
 
-    if ($trip_id) {
-        header("Location: ../views/trips.php");
-        exit();
-    } else {
-        echo "Error creating trip.";
-        exit();
+            // Get driver automatically from truck
+            $stmt = $databaseconn->prepare("
+                SELECT driver_id, plate_num 
+                FROM tbl_fleetlist 
+                WHERE PK_FLEET = ?
+            ");
+            $stmt->bind_param("i", $truck_id);
+            $stmt->execute();
+            $truck = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            if (!$truck) {
+                exit("Truck not found.");
+            }
+
+            $driver_id = $truck['driver_id'];
+            $plate_num = $truck['plate_num'];
+
+            // Create trip
+            $trip_id = createTrip(
+                $databaseconn,
+                $driver_id,
+                $plate_num,
+                $warehouse_id,
+                $departure_time
+            );
+
+            if (!$trip_id) {
+                exit("Error creating trip.");
+            }
+
+            // Attach jobs
+            if (!empty($job_ids)) {
+
+                $ids = implode(",", array_map('intval', $job_ids));
+
+                $databaseconn->query("
+                    UPDATE tbl_job_orders
+                    SET trip_id = $trip_id,
+                        status = 'assigned'
+                    WHERE id IN ($ids)
+                ");
+            }
+
+            header("Location: ../views/trips.php");
+            exit();
+
+
+        /* =========================
+           EDIT TRIP
+        ========================== */
+        case 'edit':
+
+            $trip_id = $_POST['trip_id'] ?? null;
+            $truck_id = $_POST['truck_id'] ?? null;
+            $departure_time = $_POST['departure_time'] ?? null;
+            $job_ids = $_POST['job_ids'] ?? [];
+
+            if (!$trip_id || !$truck_id) {
+                exit("Missing required fields.");
+            }
+
+            // Get driver + plate from truck
+            $stmt = $databaseconn->prepare("
+                SELECT driver_id, plate_num 
+                FROM tbl_fleetlist 
+                WHERE PK_FLEET = ?
+            ");
+            $stmt->bind_param("i", $truck_id);
+            $stmt->execute();
+            $truck = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            if (!$truck) {
+                exit("Truck not found.");
+            }
+
+            $driver_id = $truck['driver_id'];
+            $plate_num = $truck['plate_num'];
+
+            // Update trip info
+            $stmt = $databaseconn->prepare("
+                UPDATE tbl_trips
+                SET driver_id = ?,
+                    truck_plate_number = ?,
+                    departure_time = ?
+                WHERE trip_id = ?
+            ");
+            $stmt->bind_param("issi", $driver_id, $plate_num, $departure_time, $trip_id);
+            $stmt->execute();
+            $stmt->close();
+
+            // Reset all current jobs in this trip
+            $databaseconn->query("
+                UPDATE tbl_job_orders
+                SET trip_id = NULL,
+                    status = 'pending'
+                WHERE trip_id = $trip_id
+            ");
+
+            // Reassign selected jobs
+            if (!empty($job_ids)) {
+
+                $ids = implode(",", array_map('intval', $job_ids));
+
+                $databaseconn->query("
+                    UPDATE tbl_job_orders
+                    SET trip_id = $trip_id,
+                        status = 'assigned'
+                    WHERE id IN ($ids)
+                ");
+            }
+
+            header("Location: ../views/trips.php");
+            exit();
     }
 }
 
 /* =========================
-   LOAD DATA FOR FORM
+   LOAD DATA FOR PAGE
 ========================= */
+
 $drivers = getActiveDrivers($databaseconn);
 $warehouses = getActiveWarehouses($databaseconn);
+
 /* =========================
-   PAGINATION FOR TRIPS
+   PAGINATION
 ========================= */
+
 $limit = 4;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-
-if ($page < 1) {
-    $page = 1;
-}
+$page = max($page, 1);
 
 $offset = ($page - 1) * $limit;
 

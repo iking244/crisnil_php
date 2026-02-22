@@ -1,19 +1,30 @@
 <?php
-function createTrip($conn, $driver_id, $truck_plate, $warehouse_id)
+function createTrip($conn, $driver_id, $truck_plate, $warehouse_id, $departure_time = null)
 {
+    $conn->begin_transaction();
 
-    $sql = "INSERT INTO tbl_trips
-            (truck_plate_number, warehouse_id, status)
-            VALUES
-            ('$truck_plate', '$warehouse_id', 'pending_loading')";
+    try {
 
-    if ($conn->query($sql)) {
-        return $conn->insert_id;
+        $stmt = $conn->prepare("
+            INSERT INTO tbl_trips
+            (driver_id, truck_plate_number, warehouse_id, status, departure_time, created_at)
+            VALUES (?, ?, ?, 'pending_loading', ?, NOW())
+        ");
+
+        $stmt->bind_param("isis", $driver_id, $truck_plate, $warehouse_id, $departure_time);
+        $stmt->execute();
+
+        $trip_id = $stmt->insert_id;
+        $stmt->close();
+
+        $conn->commit();
+        return $trip_id;
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        return false;
     }
-
-    return false;
 }
-
 
 function getActiveDrivers($conn)
 {
