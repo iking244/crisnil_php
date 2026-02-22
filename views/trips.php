@@ -256,6 +256,21 @@ $dispatchStats = [
      CREATE MANUAL TRIP MODAL
 ========================= -->
     <div class="modal fade" id="createTripModal" tabindex="-1">
+        <script>
+            window.unassignedJobs = [{
+                    id: 101,
+                    label: "#101 - SM Masinag Construction"
+                },
+                {
+                    id: 102,
+                    label: "#102 - Antipolo City Hall"
+                },
+                {
+                    id: 103,
+                    label: "#103 - Ayala Feliz Site"
+                }
+            ];
+        </script>
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
