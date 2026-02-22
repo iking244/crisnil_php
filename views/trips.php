@@ -10,7 +10,7 @@ $dispatchStats = [
     'overdue_trips' => 1,
 
     // Capacity
-    'drivers_available' => 2,
+    'drivers_available' => $available_drivers ?? 0,
     'drivers_assigned' => 3,
     'trucks_available' => $available_trucks_count ?? 0,
     'trucks_in_use' => 5,

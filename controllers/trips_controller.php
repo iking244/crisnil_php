@@ -265,3 +265,4 @@ $available_trucks = getAvailableTrucks($databaseconn);
 
 $available_trucks_count = $available_trucks ? $available_trucks->num_rows : 0;
 $pending_jobs_count     = $unscheduled_jobs ? $unscheduled_jobs->num_rows : 0;
+$available_drivers = $drivers ? $drivers->num_rows : 0;
