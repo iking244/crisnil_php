@@ -1,12 +1,18 @@
 <?php
-// TEMP PLACEHOLDER DATA (replace with controller logic later)
+// TEMP PLACEHOLDER DATA (replace with controller later)
 $dispatchStats = [
+    // Workload
     'waiting_jobs' => 4,
     'trips_today' => 3,
     'active_trips' => 3,
     'overdue_trips' => 1,
+
+    // Capacity
+    'drivers_available' => 2,
     'drivers_assigned' => 3,
-    'drivers_available' => 2
+    'trucks_available' => 5,
+    'trucks_in_use' => 5,
+    'fleet_utilization' => 50
 ];
 ?>
 
@@ -39,7 +45,7 @@ $dispatchStats = [
 <div class="main">
 <div class="container-fluid">
 
-    <!-- Header -->
+    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="page-title">Dispatch Overview</h1>
 
@@ -54,33 +60,94 @@ $dispatchStats = [
         </div>
     </div>
 
-    <!-- KPI ROW (3 Clean Cards) -->
+    <!-- ===================== -->
+    <!-- WORKLOAD SECTION -->
+    <!-- ===================== -->
+
+    <h5 class="mb-3">Dispatch Workload</h5>
+
     <div class="row g-3 mb-4">
 
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-4 col-lg-3">
             <div class="kpi-card orange">
                 <h6>Jobs Waiting</h6>
                 <h3><?= $dispatchStats['waiting_jobs'] ?></h3>
+                <small class="text-muted">Pending grouping</small>
             </div>
         </div>
 
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-4 col-lg-3">
             <div class="kpi-card blue">
                 <h6>Trips Created Today</h6>
                 <h3><?= $dispatchStats['trips_today'] ?></h3>
+                <small class="text-muted">Auto & manual</small>
             </div>
         </div>
 
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-4 col-lg-3">
             <div class="kpi-card dark">
                 <h6>Active Trips</h6>
                 <h3><?= $dispatchStats['active_trips'] ?></h3>
+                <small class="text-muted">Currently in progress</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="kpi-card red">
+                <h6>Overdue Trips</h6>
+                <h3><?= $dispatchStats['overdue_trips'] ?></h3>
+                <small class="text-muted">Requires attention</small>
             </div>
         </div>
 
     </div>
 
+    <!-- ===================== -->
+    <!-- FLEET CAPACITY SECTION -->
+    <!-- ===================== -->
+
+    <h5 class="mb-3">Fleet Capacity</h5>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="kpi-card green">
+                <h6>Drivers Available</h6>
+                <h3><?= $dispatchStats['drivers_available'] ?></h3>
+                <small class="text-muted">Ready for assignment</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="kpi-card gray">
+                <h6>Drivers Assigned</h6>
+                <h3><?= $dispatchStats['drivers_assigned'] ?></h3>
+                <small class="text-muted">On active trips</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="kpi-card blue">
+                <h6>Trucks Available</h6>
+                <h3><?= $dispatchStats['trucks_available'] ?></h3>
+                <small class="text-muted">Ready for dispatch</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="kpi-card dark">
+                <h6>Fleet Utilization</h6>
+                <h3><?= $dispatchStats['fleet_utilization'] ?>%</h3>
+                <small class="text-muted">Trucks in use</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===================== -->
     <!-- MAIN CONTENT -->
+    <!-- ===================== -->
+
     <div class="row g-4">
 
         <!-- Recent Dispatch Trips -->
@@ -132,19 +199,6 @@ $dispatchStats = [
                                 <td>Jun 21, 2026 10:00</td>
                             </tr>
 
-                            <tr>
-                                <td><strong>#T003</strong></td>
-                                <td>4</td>
-                                <td>Mitsubishi L300 CXU 914</td>
-                                <td>John Cruz</td>
-                                <td>
-                                    <span class="status-badge scheduled">
-                                        Scheduled
-                                    </span>
-                                </td>
-                                <td>Jun 22, 2026 09:00</td>
-                            </tr>
-
                         </tbody>
                     </table>
 
@@ -152,12 +206,12 @@ $dispatchStats = [
             </div>
         </div>
 
-        <!-- Dispatch Status Panel -->
+        <!-- Dispatch Alerts -->
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body">
 
-                    <h3 class="mb-3">Dispatch Status</h3>
+                    <h3 class="mb-3">Dispatch Alerts</h3>
 
                     <ul class="list-group list-group-flush">
 
@@ -169,17 +223,13 @@ $dispatchStats = [
                         </li>
 
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>Drivers Assigned</span>
-                            <span>
-                                <?= $dispatchStats['drivers_assigned'] ?>
-                            </span>
+                            <span>Trips Without Driver</span>
+                            <span class="text-danger fw-bold">1</span>
                         </li>
 
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>Drivers Available</span>
-                            <span class="text-success fw-bold">
-                                <?= $dispatchStats['drivers_available'] ?>
-                            </span>
+                            <span>Low Fleet Availability</span>
+                            <span class="text-warning fw-bold">1</span>
                         </li>
 
                         <li class="list-group-item d-flex justify-content-between align-items-center">
