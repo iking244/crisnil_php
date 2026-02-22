@@ -456,15 +456,17 @@ include "../controllers/trips_controller.php";
             if ($unscheduled_jobs && $unscheduled_jobs->num_rows > 0) {
                 mysqli_data_seek($unscheduled_jobs, 0);
                 while ($j = $unscheduled_jobs->fetch_assoc()) {
+
+                    $label = addslashes($j['destination']);
+
                     echo "{
             id: {$j['id']},
-            label: '#{$j['id']} - Job {$j['id']}'
+            label: '#{$j['id']} - {$label}'
         },";
                 }
             }
             ?>
         ];
-        console.log(window.unassignedJobs);
     </script>
     <script>
         function getSelectedJobIds() {
