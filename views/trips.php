@@ -256,7 +256,7 @@ $dispatchStats = [
      CREATE MANUAL TRIP MODAL
 ========================= -->
     <div class="modal fade" id="createTripModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
                 <div class="modal-header">
