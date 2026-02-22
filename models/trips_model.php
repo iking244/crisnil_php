@@ -187,7 +187,6 @@ function startTrip($conn, $trip_id)
             updated_at = CURTIME()   
             WHERE trip_id = ?
             AND status = 'assigned'
-            AND departure_time <= NOW();
         ");
         $stmt->bind_param("i", $trip_id);
         $stmt->execute();
