@@ -20,7 +20,7 @@ function countActiveTrips($conn)
     $sql = "SELECT COUNT(*) as total 
             FROM tbl_trips 
             WHERE status IN 
-            ('assigned', 'in_transit', 'loading', 'pending_loading', 'completed')";
+            ('assigned', 'in_transit', 'loading', 'pending_loading', 'ready_to_depart')";
 
     $result = $conn->query($sql);
     if ($result) {
