@@ -259,7 +259,9 @@ $totalPages = ceil($totalTrips / $limit);
 
 $all_trips = getTripsPaginated($databaseconn, $limit, $offset);
 $active_trips_count = countActiveTrips($databaseconn);
+$today_trips_count = countTodayTrips($databaseconn);
 $unscheduled_jobs = getUnscheduledJobOrders($databaseconn);
+$unscheduled_jobs_count = getUnscheduledJobOrdersCount($databaseconn);
 $available_trucks = getAvailableTrucks($databaseconn);
 
 $available_trucks_count = $available_trucks ? $available_trucks->num_rows : 0;

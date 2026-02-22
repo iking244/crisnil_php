@@ -65,6 +65,18 @@ function getActiveTrips($conn)
     return $conn->query($sql);
 }
 
+function countTodayTrips($conn)
+{
+    $sql = "
+        SELECT 
+        COUNT(*)
+        FROM tbl_trips
+        WHERE DATE(created_at) = CURDATE()
+    ";
+
+    return $conn->query($sql);
+}
+
 function getInTransitTrips($conn)
 {
     $sql = "
