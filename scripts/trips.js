@@ -3,11 +3,19 @@ let unassignedJobs = [];
 document.addEventListener("DOMContentLoaded", function () {
 
     const modal = document.getElementById("dispatchActionModal");
+    const createTab = document.getElementById("createTab");
     const addBtn = document.getElementById("addJobBtn");
     const tableBody = document.querySelector("#tripJobsTable tbody");
-    const warehouseSelect = document.querySelector("select[name='warehouse_id']");
 
-    if (!modal || !addBtn || !tableBody || !warehouseSelect) return;
+    if (!modal || !createTab || !addBtn || !tableBody) return;
+
+    // 🔥 Scope warehouse select to CREATE TAB ONLY
+    const warehouseSelect = createTab.querySelector("select[name='warehouse_id']");
+
+    if (!warehouseSelect) {
+        console.error("Warehouse select not found inside Create tab.");
+        return;
+    }
 
     function getSelectedJobIds() {
         return Array.from(
@@ -24,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const warehouseId = this.value;
 
-        // Reset table & jobs if nothing selected
         if (!warehouseId) {
             unassignedJobs = [];
             tableBody.innerHTML = "";
@@ -37,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 unassignedJobs = Array.isArray(data) ? data : [];
 
-                // Clear current rows
                 tableBody.innerHTML = "";
 
                 if (unassignedJobs.length > 0) {
@@ -85,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // =============================
     function addJobRow() {
 
-        if (!unassignedJobs ||
+        if (!unassignedJobs.length ||
             getSelectedJobIds().length >= unassignedJobs.length) {
             return;
         }
@@ -111,14 +117,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .addEventListener("change", rebuildDropdownOptions);
     }
 
-    // =============================
-    // Button click
-    // =============================
     addBtn.addEventListener("click", addJobRow);
 
-    // =============================
-    // Remove row
-    // =============================
     document.addEventListener("click", function (e) {
         if (e.target.closest(".remove-row")) {
             e.target.closest("tr").remove();
@@ -126,12 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // =============================
-    // When modal opens
-    // =============================
     modal.addEventListener("shown.bs.modal", function () {
-
-        // Only auto-add if warehouse already selected
         if (warehouseSelect.value && tableBody.children.length === 0) {
             addJobRow();
         }
