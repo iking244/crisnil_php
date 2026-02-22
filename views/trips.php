@@ -56,8 +56,8 @@ $dispatchStats = [
 
                     <button class="btn btn-primary"
                         data-bs-toggle="modal"
-                        data-bs-target="#createTripModal">
-                        <i class="fa fa-plus"></i> Create Manual Trip
+                        data-bs-target="#dispatchActionModal">
+                        <i class="fa fa-cogs"></i> Dispatch Actions
                     </button>
                 </div>
             </div>
@@ -339,6 +339,150 @@ $dispatchStats = [
 
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================
+     DISPATCH ACTION CENTER
+========================= -->
+    <div class="modal fade" id="dispatchActionModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Dispatch Action Center</h5>
+                    <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- NAV TABS -->
+                    <ul class="nav nav-tabs mb-4" id="dispatchTab" role="tablist">
+
+                        <li class="nav-item">
+                            <button class="nav-link active"
+                                data-bs-toggle="tab"
+                                data-bs-target="#createTab">
+                                Create Trip
+                            </button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#editTab">
+                                Edit Trip
+                            </button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#smartTab">
+                                Smart Assign
+                            </button>
+                        </li>
+
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <!-- ================= CREATE TAB ================= -->
+                        <div class="tab-pane fade show active" id="createTab">
+
+                            <h6 class="mb-3">Manual Trip Creation</h6>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Warehouse</label>
+                                    <select class="form-select">
+                                        <option>Select Warehouse</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Truck</label>
+                                    <select class="form-select">
+                                        <option>Select Truck</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Driver</label>
+                                    <select class="form-select">
+                                        <option>Select Driver</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-success">
+                                Create Trip
+                            </button>
+
+                        </div>
+
+                        <!-- ================= EDIT TAB ================= -->
+                        <div class="tab-pane fade" id="editTab">
+
+                            <h6 class="mb-3">Modify Existing Trip</h6>
+
+                            <div class="mb-3">
+                                <label class="form-label">Select Trip</label>
+                                <select class="form-select">
+                                    <option>Select Trip</option>
+                                </select>
+                            </div>
+
+                            <div class="alert alert-secondary">
+                                Trip details will load here.
+                            </div>
+
+                            <button class="btn btn-primary">
+                                Update Trip
+                            </button>
+
+                        </div>
+
+                        <!-- ================= SMART ASSIGN TAB ================= -->
+                        <div class="tab-pane fade" id="smartTab">
+
+                            <h6 class="mb-3">Automated Smart Assignment</h6>
+
+                            <div class="mb-3">
+                                <label class="form-label">Warehouse</label>
+                                <select class="form-select">
+                                    <option>Select Warehouse</option>
+                                </select>
+                            </div>
+
+                            <div class="alert alert-info">
+                                This will automatically group nearby unassigned jobs
+                                into optimized trips.
+                            </div>
+
+                            <button class="btn btn-dark">
+                                Run Smart Assignment
+                            </button>
+
+                            <hr>
+
+                            <div class="mt-3">
+                                <strong>Last Run Summary</strong>
+                                <ul class="mt-2">
+                                    <li>Jobs Grouped: 5</li>
+                                    <li>Trips Created: 2</li>
+                                    <li>Unassigned Remaining: 1</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </div>
