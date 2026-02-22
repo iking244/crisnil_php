@@ -26,6 +26,7 @@ $metrics = $financialService->getDashboardMetrics();
 $sales_today      = $metrics['sales_today'];
 $orders_today     = $metrics['orders_today'];
 $monthly_revenue  = $metrics['monthly_revenue'];
+$pending_orders = $metrics['pending_orders'];
 
 /* =========================
    SALES TREND (7 DAYS)
