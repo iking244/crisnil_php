@@ -9,25 +9,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!modal || !createTab || !addBtn || !tableBody) return;
 
-    // 🔥 Scope warehouse select to CREATE TAB ONLY
     const warehouseSelect = createTab.querySelector("select[name='warehouse_id']");
-
-    if (!warehouseSelect) {
-        console.error("Warehouse select not found inside Create tab.");
-        return;
-    }
+    if (!warehouseSelect) return;
 
     function getSelectedJobIds() {
-        return Array.from(
-            document.querySelectorAll("#tripJobsTable select")
-        )
+        return Array.from(tableBody.querySelectorAll("select"))
             .map(s => s.value)
-            .filter(v => v !== "");
+            .filter(Boolean);
     }
 
-    // =============================
-    // Fetch jobs when warehouse changes
-    // =============================
+    async function loadJobsByWarehouse(warehouseId) {
+
+        try {
+            const response = await fetch(
+                `../controllers/trips_controller.php?ajax=get_jobs&warehouse_id=${encodeURIComponent(warehouseId)}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Network response not OK");
+            }
+
+            const data = await response.json();
+
+            unassignedJobs = Array.isArray(data) ? data : [];
+
+            tableBody.innerHTML = "";
+
+            if (unassignedJobs.length > 0) {
+                addJobRow();
+            }
+
+        } catch (error) {
+            console.error("Failed to fetch jobs:", error);
+            unassignedJobs = [];
+            tableBody.innerHTML = "";
+        }
+    }
+
     warehouseSelect.addEventListener("change", function () {
 
         const warehouseId = this.value;
@@ -38,37 +56,17 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch(`../controllers/trips_controller.php?ajax=get_jobs&warehouse_id=${warehouseId}`)
-            .then(res => res.json())
-            .then(data => {
-
-                unassignedJobs = Array.isArray(data) ? data : [];
-
-                tableBody.innerHTML = "";
-
-                if (unassignedJobs.length > 0) {
-                    addJobRow();
-                }
-            })
-            .catch(err => {
-                console.error("Failed to fetch jobs:", err);
-                unassignedJobs = [];
-                tableBody.innerHTML = "";
-            });
+        loadJobsByWarehouse(warehouseId);
     });
 
-    // =============================
-    // Rebuild dropdown options
-    // =============================
     function rebuildDropdownOptions() {
 
         const selected = getSelectedJobIds();
-        const selects = document.querySelectorAll("#tripJobsTable select");
+        const selects = tableBody.querySelectorAll("select");
 
         selects.forEach(select => {
 
             const currentValue = select.value;
-
             select.innerHTML = '<option value="">Select Unassigned Job</option>';
 
             unassignedJobs.forEach(job => {
@@ -86,9 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // =============================
-    // Add Job Row
-    // =============================
     function addJobRow() {
 
         if (!unassignedJobs.length ||
@@ -128,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     modal.addEventListener("shown.bs.modal", function () {
         if (warehouseSelect.value && tableBody.children.length === 0) {
-            addJobRow();
+            loadJobsByWarehouse(warehouseSelect.value);
         }
     });
 

@@ -45,13 +45,14 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
     }
 
     $stmt = $databaseconn->prepare("
-        SELECT id, destination
-        FROM tbl_job_orders
-        WHERE trip_id IS NULL
-        AND status = 'pending'
-        AND warehouse_id = ?
-    ");
-
+        SELECT j.id, j.destination
+        FROM tbl_job_orders j
+        INNER JOIN tbl_warehouses w
+            ON j.origin = w.warehouse_name
+        WHERE j.trip_id IS NULL
+        AND j.status = 'pending'
+        AND w.warehouse_id = ?
+        ");
     $stmt->bind_param("i", $warehouse_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -67,7 +68,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
 
     echo json_encode($jobs);
     exit();
-}   
+}
 
 /* =========================
    HANDLE POST ACTIONS
