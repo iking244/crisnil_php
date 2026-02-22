@@ -313,47 +313,36 @@ $dispatchStats = [
                         <h6 class="mt-4">Attach Jobs (Optional)</h6>
 
                         <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
+                            <table class="table table-bordered" id="tripJobsTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th width="40"></th>
-                                        <th>Job ID</th>
-                                        <th>Destination</th>
-                                        <th>Status</th>
+                                        <th>Job</th>
+                                        <th width="80">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
-                                    <!-- Example Placeholder -->
                                     <tr>
                                         <td>
-                                            <input type="checkbox"
-                                                name="job_ids[]"
-                                                value="101">
+                                            <select name="job_ids[]" class="form-select">
+                                                <option value="">Select Unassigned Job</option>
+                                                <option value="101">#101 - SM Masinag Construction</option>
+                                                <option value="102">#102 - Antipolo City Hall</option>
+                                            </select>
                                         </td>
-                                        <td>#101</td>
-                                        <td>SM Masinag Construction</td>
-                                        <td>Pending</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox"
-                                                name="job_ids[]"
-                                                value="102">
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-danger remove-row">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </td>
-                                        <td>#102</td>
-                                        <td>Antipolo City Hall</td>
-                                        <td>Pending</td>
                                     </tr>
-
                                 </tbody>
                             </table>
                         </div>
 
-                        <button type="submit"
-                            class="btn btn-success w-100 mt-3">
-                            Create Trip
+                        <button type="button"
+                            class="btn btn-sm btn-primary"
+                            onclick="addJobRow()">
+                            + Add Job
                         </button>
 
                     </form>
