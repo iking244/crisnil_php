@@ -35,11 +35,12 @@ include "../controllers/logistics_orders_controller.php";
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="page-title">Logistics Orders Overview</h1>
 
-                <a href="logistics_orders.php" class="btn btn-outline-dark">
-                    <i class="fa fa-list"></i> View All Jobs
-                </a>
+
 
                 <div class="d-flex gap-2">
+                    <a href="logistics_orders.php" class="btn btn-outline-dark">
+                        <i class="fa fa-list"></i> View All Jobs
+                    </a>
                     <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#createOrderModal">
