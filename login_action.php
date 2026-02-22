@@ -41,6 +41,14 @@
                 if ($row['USER_NAME'] === $validate_username && $row['USER_PASSWORD']){
                     $_SESSION['USER_ID'] = $row['USER_ID'];
                     $_SESSION['USER_NAME'] = $row['USER_NAME'];
+
+                    require_once __DIR__ . '/models/ActionLogModel.php';
+                        $actionLog = new ActionLog($databaseconn);
+                        $actionLog->create(
+                            (int)$_SESSION['USER_ID'],
+                            'login',
+                            'User logged in successfully');
+
                     header('Location: views/dashboard.php');
                 }
     

@@ -1,7 +1,11 @@
 <?php
  session_start();
+ error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 include "../config/database_conn.php";
 include "../models/logistics_orders_model.php";
+require_once '../includes/helpers.php';
 
 if (!isset($_SESSION['USER_ID'])) {
     header("Location: ../index.php");
@@ -96,6 +100,13 @@ if ($action) {
 
         updateLogisticsOrder($databaseconn, $job_id, $status, $eta);
         replaceLogisticsOrderItems($databaseconn, $job_id, $product_ids, $quantities);
+        
+        log_activity(
+        'update_order',
+        'Updated order ID ' . $job_id .
+        ' to status: ' . $status .
+        ' (ETA: ' . $eta . ', ' . count($product_ids) . ' items affected)'
+        );
 
         header("Location: ../views/logistics_orders.php");
         exit;
@@ -110,24 +121,51 @@ if ($action) {
         $client_id = (int)$_POST['client_id'];
         $product_ids = $_POST['product_id'] ?? [];
         $quantities = $_POST['quantity'] ?? [];
+
+        log_activity(
+        'create_order_attempt',
+        'Attempted to create logistics order for client ID ' . $client_id .
+        ' from warehouse ' . $warehouse_id .
+        ' with ' . count($product_ids) . ' items'
+    );
         
 
         // Check stock first
     if (!checkStockAvailability($databaseconn, $warehouse_id, $product_ids, $quantities)) {
+        log_activity(
+            'create_order_failed',
+            'Failed to create order for client ID ' . $client_id .
+            ' - Insufficient stock (warehouse: ' . $warehouse_id . ')'
+        );
         $_SESSION['error'] = "Insufficient stock for one or more products.";
         header("Location: ../views/logistics_orders.php");
         exit;
     }
 
-        createLogisticsOrder(
+        $order_id = createLogisticsOrder(
             $databaseconn,
             $warehouse_id,
             $client_id,
             $product_ids,
             $quantities
         );
-
-
+if ($order_id) {
+        log_activity(
+            'create_order',
+            'Created logistics order ID ' . $order_id .
+            ' for client ID ' . $client_id .
+            ' from warehouse ' . $warehouse_id .
+            ' (' . count($product_ids) . ' items)'
+        );
+        header("Location: ../views/logistics_orders.php");
+        exit;
+    } else {
+        log_activity(
+            'create_order_failed',
+            'createLogisticsOrder() failed for client ID ' . $client_id .
+            ' - No order ID returned'
+        );
+        $_SESSION['error'] = "Failed to create order.";
         header("Location: ../views/logistics_orders.php");
         exit;
     }
@@ -164,6 +202,8 @@ if ($action) {
                 trip_id = NULL
             WHERE id = $job_id
         ");
+            
+            log_activity('cancel_order', 'Cancelled order ID ' . $job_id . ' (was pending/assigned)');
 
             header("Location: ../views/logistics_orders.php?msg=order_cancelled");
             exit;
@@ -176,6 +216,8 @@ if ($action) {
             DELETE FROM tbl_job_orders
             WHERE id = $job_id
         ");
+
+            log_activity('delete_order', 'Deleted order ID ' . $job_id . ' (was already cancelled)');
 
             header("Location: ../views/logistics_orders.php?msg=order_deleted");
             exit;
