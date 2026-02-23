@@ -422,7 +422,7 @@ $dispatchStats = [
 
                             <h6 class="mb-3">Automated Smart Assignment</h6>
 
-                            <div class="mb-3">
+                            <div class="mb-3 d-none">
                                 <label class="form-label">Warehouse</label>
                                 <select class="form-select" id="smartWarehouse">
                                     <option value="">Select Warehouse</option>
