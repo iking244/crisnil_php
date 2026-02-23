@@ -113,6 +113,17 @@ $pending_count   = $pending_jobs_count    ?? 0;
                             <?php endif; ?>
                         </tbody>
                     </table>
+
+                    <div class="pagination mt-3">
+                        <?php if (isset($totalPages) && $totalPages > 1): ?>
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <a href="?page=<?= $i ?>"
+                                    class="page-link <?= ($i == ($page ?? 1)) ? 'active' : '' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 
