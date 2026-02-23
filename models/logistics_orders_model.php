@@ -662,12 +662,13 @@ function confirmTripLoaded($conn, $trip_id)
 // temporary warehouse_id only
 function getLogisticsOrderItems($conn, $job_id)
 {
+    $job_id = intval($job_id);
+
     $query = "
     SELECT 
         joi.job_item_id,
         joi.product_id,
         p.product_name,
-        p.unit,
         joi.quantity,
         ws.quantity AS stock_qty
     FROM tbl_job_order_items joi
@@ -675,8 +676,8 @@ function getLogisticsOrderItems($conn, $job_id)
         ON joi.product_id = p.product_id
     LEFT JOIN tbl_warehouse_stock ws
         ON joi.product_id = ws.product_id
+        AND ws.warehouse_id = 1
     WHERE joi.job_order_id = $job_id
-    AND ws.warehouse_id = 1
     ";
 
     $result = mysqli_query($conn, $query);
