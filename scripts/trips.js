@@ -173,3 +173,56 @@ if (smartWarehouseSelect && runSmartAssignBtn && smartSummary) {
 
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadRecentTrips();
+});
+
+async function loadRecentTrips() {
+
+    try {
+
+        const response = await fetch(
+            "../controllers/trips_controller.php?ajax=recent_trips"
+        );
+
+        const data = await response.json();
+
+        const tbody = document.getElementById("recentTripsTable");
+        tbody.innerHTML = "";
+
+        data.forEach(trip => {
+
+            const statusClass = trip.status.toLowerCase();
+            const formattedDate = trip.eta
+                ? new Date(trip.eta).toLocaleString()
+                : "-";
+
+            const row = `
+                <tr>
+                    <td><strong>#T${trip.trip_id}</strong></td>
+                    <td>${trip.stops}</td>
+                    <td>${trip.truck_plate_number ?? '-'}</td>
+                    <td>${trip.driver_name ?? '-'}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${formatStatus(trip.status)}
+                        </span>
+                    </td>
+                    <td>${formattedDate}</td>
+                </tr>
+            `;
+
+            tbody.insertAdjacentHTML("beforeend", row);
+        });
+
+    } catch (error) {
+        console.error("Failed to load trips:", error);
+    }
+}
+
+function formatStatus(status) {
+    return status
+        .replace("_", " ")
+        .replace(/\b\w/g, c => c.toUpperCase());
+}

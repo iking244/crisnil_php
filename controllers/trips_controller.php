@@ -84,6 +84,18 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'get_jobs') {
     exit();
 }
 
+if (isset($_GET['ajax']) && $_GET['ajax'] === 'recent_trips') {
+
+    header('Content-Type: application/json');
+
+    require_once "../models/trips_model.php";
+
+    $trips = getRecentDispatchTrips($databaseconn);
+
+    echo json_encode($trips);
+    exit;
+}
+
 /* =========================
    HANDLE POST ACTIONS
 ========================= */

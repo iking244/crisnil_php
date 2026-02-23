@@ -19,7 +19,6 @@ function createTrip($conn, $driver_id, $truck_plate, $warehouse_id, $departure_t
 
         $conn->commit();
         return $trip_id;
-
     } catch (Exception $e) {
         $conn->rollback();
         return false;
@@ -325,4 +324,39 @@ function completeTrip($conn, $trip_id)
             "message" => "Trip cannot be completed"
         ];
     }
+}
+
+function getRecentDispatchTrips($conn)
+{
+    $query = "
+        SELECT 
+            t.trip_id,
+            t.status,
+            t.eta,
+            t.truck_plate_number,
+            CONCAT(d.FIRST_NAME, ' ', d.LAST_NAME) AS driver_name,
+            COUNT(j.id) AS stops
+        FROM tbl_trips t
+        LEFT JOIN tbl_job_orders j 
+            ON j.trip_id = t.trip_id
+        LEFT JOIN crisnil_users d
+            ON t.driver_id = d.USER_ID
+        GROUP BY 
+            t.trip_id,
+            t.status,
+            t.eta,
+            t.truck_plate_number,
+            driver_name
+        ORDER BY t.created_at DESC
+        LIMIT 5
+    ";
+
+    $result = mysqli_query($conn, $query);
+
+    $trips = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $trips[] = $row;
+    }
+
+    return $trips;
 }

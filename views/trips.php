@@ -152,62 +152,34 @@ $dispatchStats = [
             <!-- ===================== -->
 
             <div class="row g-4">
+<!-- Recent Dispatch Trips -->
+<div class="col-lg-8">
+    <div class="card">
+        <div class="card-body">
 
-                <!-- Recent Dispatch Trips -->
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-body">
+            <h3 class="mb-3">Recent Dispatch Trips</h3>
 
-                            <h3 class="mb-3">Recent Dispatch Trips</h3>
+            <table class="table table-sm align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Trip ID</th>
+                        <th>Stops</th>
+                        <th>Truck</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th>ETA</th>
+                    </tr>
+                </thead>
 
-                            <table class="table table-sm align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Trip ID</th>
-                                        <th>Stops</th>
-                                        <th>Truck</th>
-                                        <th>Driver</th>
-                                        <th>Status</th>
-                                        <th>ETA</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                <tbody id="recentTripsTable">
+                    <!-- JS will insert rows here -->
+                </tbody>
 
-                                    <tr>
-                                        <td><strong>#T001</strong></td>
-                                        <td>3</td>
-                                        <td>Mitsubishi L300 CXU 913</td>
-                                        <td>Kevin Santos</td>
-                                        <td>
-                                            <span class="status-badge in_transit">
-                                                In Transit
-                                            </span>
-                                        </td>
-                                        <td>Jun 21, 2026 14:00</td>
-                                    </tr>
+            </table>
 
-                                    <tr class="table-danger fw-semibold">
-                                        <td><strong>#T002</strong></td>
-                                        <td>2</td>
-                                        <td>Mitsubishi L300 BYK 123</td>
-                                        <td>Rodney Mullen</td>
-                                        <td>
-                                            <span class="status-badge delayed">
-                                                Delayed
-                                            </span>
-                                            <span class="badge bg-danger ms-1">
-                                                Overdue
-                                            </span>
-                                        </td>
-                                        <td>Jun 21, 2026 10:00</td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Dispatch Alerts -->
                 <div class="col-lg-4">
