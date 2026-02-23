@@ -192,41 +192,6 @@ $pending_count   = $pending_jobs_count    ?? 0;
             </div>
 
         </div>
-
-        <!-- Unscheduled Jobs -->
-        <div class="unscheduled-jobs">
-            <div class="section-header red">
-                <i class="fas fa-clipboard-list section-icon"></i>
-                <h4>Unscheduled Job Orders</h4>
-                <button class="view-more-btn">View More</button>
-            </div>
-            <table class="section-table">
-                <thead>
-                    <tr>
-                        <th>Job #</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Status</th> <!-- Merged from collaborator -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($unscheduled_jobs && $unscheduled_jobs->num_rows > 0): ?>
-                        <?php while ($job = $unscheduled_jobs->fetch_assoc()): ?>
-                            <tr>
-                                <td>#<?= $job['id']; ?></td>
-                                <td><?= $job['origin']; ?></td>
-                                <td><?= $job['destination']; ?></td>
-                                <td><?= renderStatusBadge($job['status']); ?></td> <!-- Merged from collaborator -->
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4">No pending jobs.</td> <!-- Updated colspan to 4 -->
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
     </section>
 
     <script type="text/javascript" src="../scripts/dashboard.js"></script>
