@@ -176,6 +176,7 @@ if (smartWarehouseSelect && runSmartAssignBtn && smartSummary) {
                 }
 
                 alert("Smart assignment completed!");
+                 window.location.href = "trips.php";
 
             } else {
                 alert(data.message || "Smart assignment failed.");
