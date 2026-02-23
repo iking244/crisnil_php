@@ -128,3 +128,66 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+
+const smartWarehouseSelect = document.getElementById("smartWarehouse");
+const runSmartAssignBtn = document.getElementById("runSmartAssign");
+const smartSummary = document.getElementById("smartSummary");
+
+if (smartWarehouseSelect && runSmartAssignBtn && smartSummary) {
+
+    runSmartAssignBtn.addEventListener("click", async function () {
+
+        runSmartAssignBtn.disabled = true;
+        runSmartAssignBtn.innerText = "Processing...";
+
+        try {
+
+            const response = await fetch(
+                "../api/logistics_order/auto_assign_clusters.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        warehouse_id: warehouseId
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Server error");
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+
+                smartSummary.innerHTML = `
+                    <li>Jobs Grouped: ${data.jobs_grouped}</li>
+                    <li>Trips Created: ${data.trips_created}</li>
+                    <li>Unassigned Remaining: ${data.unassigned_remaining}</li>
+                `;
+
+                // 🔥 Optional: reload unassigned jobs in Create Tab
+                if (warehouseSelect.value === warehouseId) {
+                    loadJobsByWarehouse(warehouseId);
+                }
+
+                alert("Smart assignment completed!");
+
+            } else {
+                alert(data.message || "Smart assignment failed.");
+            }
+
+        } catch (error) {
+            console.error("Smart assignment error:", error);
+            alert("Something went wrong.");
+        }
+
+        runSmartAssignBtn.disabled = false;
+        runSmartAssignBtn.innerText = "Run Smart Assignment";
+
+    });
+}

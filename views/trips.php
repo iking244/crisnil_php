@@ -12,7 +12,7 @@ $dispatchStats = [
     'drivers_available' => $available_drivers ?? 0,
     'drivers_assigned' => 0,
     'trucks_available' => $available_trucks_count ?? 0,
-    'trucks_in_use' =>$navailable_trucks_count ?? 0,
+    'trucks_in_use' => $navailable_trucks_count ?? 0,
     'fleet_utilization' => 0
 ];
 ?>
@@ -424,8 +424,9 @@ $dispatchStats = [
 
                             <div class="mb-3">
                                 <label class="form-label">Warehouse</label>
-                                <select class="form-select">
-                                    <option>Select Warehouse</option>
+                                <select class="form-select" id="smartWarehouse">
+                                    <option value="">Select Warehouse</option>
+                                    <!-- populate dynamically -->
                                 </select>
                             </div>
 
@@ -434,7 +435,7 @@ $dispatchStats = [
                                 into optimized trips.
                             </div>
 
-                            <button class="btn btn-dark">
+                            <button class="btn btn-dark" id="runSmartAssign">
                                 Run Smart Assignment
                             </button>
 
@@ -442,10 +443,10 @@ $dispatchStats = [
 
                             <div class="mt-3">
                                 <strong>Last Run Summary</strong>
-                                <ul class="mt-2">
-                                    <li>Jobs Grouped: 5</li>
-                                    <li>Trips Created: 2</li>
-                                    <li>Unassigned Remaining: 1</li>
+                                <ul class="mt-2" id="smartSummary">
+                                    <li>Jobs Grouped: 0</li>
+                                    <li>Trips Created: 0</li>
+                                    <li>Unassigned Remaining: 0</li>
                                 </ul>
                             </div>
 
