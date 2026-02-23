@@ -145,15 +145,7 @@ if (smartWarehouseSelect && runSmartAssignBtn && smartSummary) {
 
             const response = await fetch(
                 "../api/logistics_order/auto_assign_clusters.php",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        warehouse_id: warehouseId
-                    })
-                }
+                { method: "POST" }
             );
 
             if (!response.ok) {
@@ -164,19 +156,11 @@ if (smartWarehouseSelect && runSmartAssignBtn && smartSummary) {
 
             if (data.success) {
 
-                smartSummary.innerHTML = `
-                    <li>Jobs Grouped: ${data.jobs_grouped}</li>
-                    <li>Trips Created: ${data.trips_created}</li>
-                    <li>Unassigned Remaining: ${data.unassigned_remaining}</li>
-                `;
-
-                // 🔥 Optional: reload unassigned jobs in Create Tab
-
                 alert("Smart assignment completed!");
-                 window.location.href = "trips.php";
+                window.location.href = "trips.php";
 
             } else {
-                alert(data.message || "Smart assignment failed.");
+                alert(data.error || "Smart assignment failed.");
             }
 
         } catch (error) {
