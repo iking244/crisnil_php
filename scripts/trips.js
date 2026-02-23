@@ -171,9 +171,6 @@ if (smartWarehouseSelect && runSmartAssignBtn && smartSummary) {
                 `;
 
                 // 🔥 Optional: reload unassigned jobs in Create Tab
-                if (warehouseSelect.value === warehouseId) {
-                    loadJobsByWarehouse(warehouseId);
-                }
 
                 alert("Smart assignment completed!");
                  window.location.href = "trips.php";
