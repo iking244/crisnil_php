@@ -71,7 +71,7 @@ $pending_count   = $pending_jobs_count    ?? 0;
         <div class="row g-4">
 
             <!-- Active Trips -->
-            <div class="col-lg-4">
+            <div class="col-lg-6">
                 <div class="section-card active-trips h-100">
                     <div class="section-header">
                         <i class="fas fa-truck section-icon"></i>
@@ -117,7 +117,7 @@ $pending_count   = $pending_jobs_count    ?? 0;
             </div>
 
             <!-- Available Trucks -->
-            <div class="col-lg-4">
+            <div class="col-lg-6">
                 <div class="section-card available-trucks h-100">
                     <div class="section-header">
                         <i class="fas fa-truck section-icon"></i>
@@ -155,7 +155,7 @@ $pending_count   = $pending_jobs_count    ?? 0;
             </div>
 
             <!-- Unscheduled Jobs -->
-            <div class="col-lg-4">
+            <div class="col-lg-6">
                 <div class="section-card h-100">
                     <div class="section-header red">
                         <i class="fas fa-clipboard-list section-icon"></i>
