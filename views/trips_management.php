@@ -68,88 +68,129 @@ $pending_count   = $pending_jobs_count    ?? 0;
         </div>
 
         <!-- Main Sections -->
-        <div class="main-sections">
+        <div class="row g-4">
+
             <!-- Active Trips -->
-            <div class="section-card active-trips">
-                <div class="section-header">
-                    <i class="fas fa-truck section-icon"></i>
-                    <h4>Active Trips</h4>
-                    <button class="view-more-btn">View More</button>
-                </div>
-                <table class="section-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Truck</th>
-                            <th>Driver</th>
-                            <th>Jobs</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($all_trips && $all_trips->num_rows > 0): ?>
-                            <?php while ($trip = $all_trips->fetch_assoc()): ?>
-                                <tr>
-                                    <td>#<?= $trip['trip_id']; ?></td>
-                                    <td><?= $trip['truck_plate_number'] ?? '-'; ?></td>
-                                    <td><?= $trip['driver_name'] ?? '-'; ?></td>
-                                    <td><?= $trip['job_count']; ?> jobs</td> <!-- Merged from collaborator -->
-                                    <td><?= renderStatusBadge($trip['status']); ?></td>
-                                    <td>
-                                        <a href="trip_details.php?trip_id=<?= $trip['trip_id']; ?>" 
-                                           class="action-btn manage">
-                                            Manage
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
+            <div class="col-lg-4">
+                <div class="section-card active-trips h-100">
+                    <div class="section-header">
+                        <i class="fas fa-truck section-icon"></i>
+                        <h4>Active Trips</h4>
+                        <button class="view-more-btn">View More</button>
+                    </div>
+                    <table class="section-table">
+                        <thead>
                             <tr>
-                                <td colspan="6">No trips available.</td>
+                                <th>#</th>
+                                <th>Truck</th>
+                                <th>Driver</th>
+                                <th>Jobs</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-                <div class="pagination">
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?page=<?= $i ?>" class="page-link <?= ($i == $page) ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
+                        </thead>
+                        <tbody>
+                            <?php if ($all_trips && $all_trips->num_rows > 0): ?>
+                                <?php while ($trip = $all_trips->fetch_assoc()): ?>
+                                    <tr>
+                                        <td>#<?= $trip['trip_id']; ?></td>
+                                        <td><?= $trip['truck_plate_number'] ?? '-'; ?></td>
+                                        <td><?= $trip['driver_name'] ?? '-'; ?></td>
+                                        <td><?= $trip['job_count']; ?> jobs</td>
+                                        <td><?= renderStatusBadge($trip['status']); ?></td>
+                                        <td>
+                                            <a href="trip_details.php?trip_id=<?= $trip['trip_id']; ?>"
+                                                class="action-btn manage">
+                                                Manage
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="6">No trips available.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <!-- Available Trucks -->
-            <div class="section-card available-trucks">
-                <div class="section-header">
-                    <i class="fas fa-truck section-icon"></i>
-                    <h4>Available Trucks</h4>
-                    <button class="view-more-btn green">View More</button>
-                </div>
-                <table class="section-table">
-                    <thead>
-                        <tr>
-                            <th>Truck</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($available_trucks && $available_trucks->num_rows > 0): ?>
-                            <?php while ($truck = $available_trucks->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?= $truck['MODEL']; ?> <?= $truck['PLATE_NUM']; ?></td>
-                                    <td>
-                                        <button class="action-btn create-trip" onclick="openTripModal(<?= $truck['PK_FLEET']; ?>)">Create Trip</button>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
+            <div class="col-lg-4">
+                <div class="section-card available-trucks h-100">
+                    <div class="section-header">
+                        <i class="fas fa-truck section-icon"></i>
+                        <h4>Available Trucks</h4>
+                        <button class="view-more-btn green">View More</button>
+                    </div>
+                    <table class="section-table">
+                        <thead>
                             <tr>
-                                <td colspan="2">No available trucks.</td>
+                                <th>Truck</th>
+                                <th>Action</th>
                             </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php if ($available_trucks && $available_trucks->num_rows > 0): ?>
+                                <?php while ($truck = $available_trucks->fetch_assoc()): ?>
+                                    <tr>
+                                        <td><?= $truck['MODEL']; ?> <?= $truck['PLATE_NUM']; ?></td>
+                                        <td>
+                                            <button class="action-btn create-trip"
+                                                onclick="openTripModal(<?= $truck['PK_FLEET']; ?>)">
+                                                Create Trip
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="2">No available trucks.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <!-- Unscheduled Jobs -->
+            <div class="col-lg-4">
+                <div class="section-card h-100">
+                    <div class="section-header red">
+                        <i class="fas fa-clipboard-list section-icon"></i>
+                        <h4>Unscheduled Job Orders</h4>
+                        <button class="view-more-btn">View More</button>
+                    </div>
+                    <table class="section-table">
+                        <thead>
+                            <tr>
+                                <th>Job #</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if ($unscheduled_jobs && $unscheduled_jobs->num_rows > 0): ?>
+                                <?php while ($job = $unscheduled_jobs->fetch_assoc()): ?>
+                                    <tr>
+                                        <td>#<?= $job['id']; ?></td>
+                                        <td><?= $job['origin']; ?></td>
+                                        <td><?= $job['destination']; ?></td>
+                                        <td><?= renderStatusBadge($job['status']); ?></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4">No pending jobs.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
         <!-- Unscheduled Jobs -->
