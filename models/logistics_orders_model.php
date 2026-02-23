@@ -664,26 +664,34 @@ function getLogisticsOrderItems($conn, $job_id)
 {
     $job_id = intval($job_id);
 
-    $query = "
-    SELECT 
-        joi.job_item_id,
-        joi.product_id,
-        p.product_name,
-        joi.quantity,
-        ws.quantity AS stock_qty
-    FROM tbl_job_order_items joi
-    LEFT JOIN tbl_products p 
-        ON joi.product_id = p.product_id
-    LEFT JOIN tbl_warehouse_stock ws
-        ON joi.product_id = ws.product_id
-        AND ws.warehouse_id = 1
-    WHERE joi.job_order_id = $job_id
-    ";
+    $stmt = $conn->prepare("
+        SELECT 
+            joi.job_item_id,
+            joi.product_id,
+            p.product_name,
+            joi.quantity,
+            COALESCE(SUM(ws.quantity), 0) AS stock_qty
+        FROM tbl_job_order_items joi
+        LEFT JOIN tbl_products p 
+            ON joi.product_id = p.product_id
+        LEFT JOIN tbl_warehouse_stock ws
+            ON joi.product_id = ws.product_id
+            AND ws.warehouse_id = 1
+        WHERE joi.job_order_id = ?
+        GROUP BY 
+            joi.job_item_id,
+            joi.product_id,
+            p.product_name,
+            joi.quantity
+    ");
 
-    $result = mysqli_query($conn, $query);
+    $stmt->bind_param("i", $job_id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
 
     $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
+    while ($row = $result->fetch_assoc()) {
         $items[] = $row;
     }
 
