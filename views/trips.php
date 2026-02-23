@@ -422,6 +422,14 @@ $dispatchStats = [
 
                             <h6 class="mb-3">Automated Smart Assignment</h6>
 
+                            <div class="mb-3">
+                                <label class="form-label">Warehouse</label>
+                                <select class="form-select" id="smartWarehouse">
+                                    <option value="">Select Warehouse</option>
+                                    <!-- populate dynamically -->
+                                </select>
+                            </div>
+
                             <div class="alert alert-info">
                                 This will automatically group nearby unassigned jobs
                                 into optimized trips.
