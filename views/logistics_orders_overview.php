@@ -335,9 +335,11 @@ include "../controllers/logistics_orders_controller.php";
     <!-- KEEP YOUR EXISTING MODAL AND SCRIPTS BELOW UNCHANGED -->
     <!-- ================= SCRIPTS ================= -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../scripts/notif.js"></script>
-    <script src="../scripts/sidenav.js"></script>
-    <script src="../scripts/dropdown2.js"></script>
+     <script src="../scripts/table.js"></script>
+     <script src="../scripts/orders.js"></script>
+     <script src="../scripts/notif.js"></script>
+     <script src="../scripts/sidenav.js"></script>
+     <script src="../scripts/dropdown2.js"></script>
     <script>
         window.productList = [
             <?php
