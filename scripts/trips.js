@@ -1,4 +1,5 @@
 let unassignedJobs = [];
+console.log("Dashboard JS loaded");
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -179,9 +180,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function loadRecentTrips() {
+    
 
     try {
 
+        console.log("Loading recent trips...");
         const response = await fetch(
             "../controllers/trips_controller.php?ajax=recent_trips"
         );
