@@ -178,6 +178,7 @@ while (!empty($jobs)) {
     $databaseconn->commit();
 
     echo json_encode([
+        "success" => true,
         "message" => "Auto assignment completed",
         "jobs_assigned" => $assigned,
         "clusters_created" => count($clusters)
@@ -189,6 +190,7 @@ while (!empty($jobs)) {
     $databaseconn->rollback();
 
     echo json_encode([
+        "success" => false,
         "error" => $e->getMessage()
     ]);
 }
