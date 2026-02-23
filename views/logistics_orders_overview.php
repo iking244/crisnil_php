@@ -252,7 +252,7 @@ include "../controllers/logistics_orders_controller.php";
                         method="POST">
 
                         <div class="row">
-                            <div class="col-md-6 mb-3 d-none">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Origin Warehouse</label>
                                 <select name="warehouse_id" class="form-select" required>
                                     <option value="">Select Warehouse</option>
