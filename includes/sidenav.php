@@ -1,7 +1,7 @@
 <div id="mySidenav" class="sidenav">
     <a href="dashboard.php">Dashboard</a>
     <a href="logistics_dashboard.php">Logistics</a>
-    <a href="logistics_orders_overview.php">Sales Order</a>
+    <a href="logistics_orders_overview.php">Sales Orders</a>
     <a href="product_overview.php">Products</a>
     <a href="trips.php">Dispatch Management</a>
 	<a href="user_management.php">Users</a>

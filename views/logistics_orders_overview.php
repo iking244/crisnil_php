@@ -33,7 +33,7 @@ include "../controllers/logistics_orders_controller.php";
 
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="page-title">Job Orders Overview</h1>
+                <h1 class="page-title">Sales Orders Overview</h1>
 
 
 
