@@ -7,7 +7,7 @@ include "../controllers/logistics_orders_controller.php";
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logistics Orders Overview - CRISNIL</title>
+    <title>Sales Orders Overview - CRISNIL</title>
 
     <!-- Bootstrap FIRST -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
