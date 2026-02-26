@@ -39,12 +39,12 @@ include "../controllers/logistics_orders_controller.php";
 
                 <div class="d-flex gap-2">
                     <a href="logistics_orders.php" class="btn btn-outline-dark">
-                        <i class="fa fa-list"></i> View All Jobs
+                        <i class="fa fa-list"></i> View All Orders
                     </a>
                     <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#createOrderModal">
-                        <i class="fa fa-plus"></i> Create Job Order
+                        <i class="fa fa-plus"></i> Create Order
                     </button>
 
 
@@ -117,7 +117,7 @@ include "../controllers/logistics_orders_controller.php";
                         <div class="card-body">
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="mb-0">Recent Job Orders</h3>
+                                <h3 class="mb-0">Recent Orders</h3>
                             </div>
 
                             <table class="table table-sm align-middle mb-0">
