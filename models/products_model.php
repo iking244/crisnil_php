@@ -333,6 +333,23 @@ function getRecentStockActivity($conn, $limit = 5)
     return mysqli_query($conn, $query);
 }
 
+function getProductById($conn, $id) {
+    $stmt = $conn->prepare("SELECT * FROM tbl_products WHERE product_id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+function getProductStats($conn, $product_id) {
+    // Run multiple queries or one big one to get totals
+    $stats = [];
+    $stats['total_inventory'] = 1450; // placeholder - implement real query
+    // ... add others
+    return $stats;
+}
+
+// Add similar functions for batches, movements, orders, expiring alerts
+
 
 
 

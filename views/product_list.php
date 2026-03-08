@@ -158,7 +158,12 @@ include "../controllers/products_controller.php";
                                 <td><input type="checkbox" class="row-check"></td>
 
                                 <td><strong><?= $row['product_code'] ?></strong></td>
-                                <td><?= htmlspecialchars($row['product_name']) ?></td>
+                                <td>
+                                    <a href="../views/product_details.php?id=<?= (int)$row['product_id'] ?>" 
+                                    class="text-primary fw-semibold text-decoration-none hover-underline">
+                                        <?= htmlspecialchars($row['product_name']) ?>
+                                    </a>
+                                </td>
                                 <td><?= htmlspecialchars($row['unit']) ?></td>
                                 <td><?= $row['quantity'] ?></td>
                                 <td><?= $row['weight'] ?></td>

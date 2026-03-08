@@ -1350,3 +1350,14 @@ body {
     min-height: 220px;
 }
 
+/* Product name as link */
+.text-primary.hover-underline {
+    transition: all 0.2s ease;
+}
+
+.text-primary.hover-underline:hover {
+    text-decoration: underline;
+    color: #0d6efd !important; /* Bootstrap primary blue */
+    cursor: pointer;
+}
+
