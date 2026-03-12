@@ -28,6 +28,15 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
 
         $databaseconn->begin_transaction();
 
+
+        $delivery_item_id = $_POST['delivery_item_id'];
+
+        $weights = $_POST['weight'];
+        $sizes = $_POST['size'];
+        $batches = $_POST['batch'];
+        $pallets = $_POST['pallet'];
+        $expiries = $_POST['expiry'];
+
         $query = "SELECT warehouse_id, product_id 
           FROM tbl_delivery_items 
           WHERE delivery_item_id = ?";
@@ -42,13 +51,6 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
         $warehouse_id = $row['warehouse_id'];
         $product_id = $row['product_id'];
 
-        $delivery_item_id = $_POST['delivery_item_id'];
-
-        $weights = $_POST['weight'];
-        $sizes = $_POST['size'];
-        $batches = $_POST['batch'];
-        $pallets = $_POST['pallet'];
-        $expiries = $_POST['expiry'];
 
         insertBoxes(
             $databaseconn,
