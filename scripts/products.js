@@ -135,3 +135,40 @@ document.addEventListener("input", function(e){
 
 });
 
+document.getElementById("deliveryForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    let form = this;
+    let formData = new FormData(form);
+    let errorBox = document.getElementById("deliveryError");
+
+    errorBox.classList.add("d-none");
+
+    fetch(form.action, {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.status === "error"){
+
+            errorBox.innerText = data.message;
+            errorBox.classList.remove("d-none");
+
+        } else {
+
+            location.reload();
+
+        }
+
+    })
+    .catch(err => {
+
+        errorBox.innerText = "Unexpected error occurred.";
+        errorBox.classList.remove("d-none");
+
+    });
+
+});

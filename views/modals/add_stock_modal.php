@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
 
-            <form action="../controllers/stock_controller.php?action=add_delivery" method="POST">
+            <form id="deliveryForm" action="../controllers/stock_controller.php?action=add_delivery" method="POST">
 
                 <div class="modal-header">
                     <h5 class="modal-title">
@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="modal-body">
-
+                    <div id="deliveryError" class="alert alert-danger d-none"></div>
                     <div class="row">
 
                         <!-- Warehouse -->

@@ -93,13 +93,19 @@ if ($_GET['action'] == "add_delivery") {
         // Commit transaction
         $databaseconn->commit();
 
-        header("Location: ../views/product_overview.php?success=delivery_added");
+        echo json_encode([
+            "status" => "success",
+            "message" => "Delivery saved successfully"
+        ]);
         exit();
     } catch (Exception $e) {
 
         // Rollback everything
         $databaseconn->rollback();
 
-        echo "Transaction failed: " . $e->getMessage();
+        echo json_encode([
+            "status" => "error",
+            "message" => $e->getMessage()
+        ]);
     }
 }
