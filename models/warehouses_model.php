@@ -39,37 +39,44 @@ GROUP BY di.delivery_item_id
 }
 
 
-function insertBoxes($databaseconn, $delivery_item_id, $weights, $sizes, $batches, $pallets, $expiries)
+function insertBoxes($databaseconn, $delivery_item_id, $warehouse_id, $product_id, $weights, $sizes, $batches, $pallets, $expiries)
 {
 
     $query = "
-
 INSERT INTO tbl_stock_boxes
 (
 delivery_item_id,
+warehouse_id,
+product_id,
 box_weight,
 box_size,
 batch_code,
 pallet_code,
 expiry_date
 )
-
-VALUES (?,?,?,?,?,?)
-
+VALUES (?,?,?,?,?,?,?,?)
 ";
 
     $stmt = $databaseconn->prepare($query);
 
     for ($i = 0; $i < count($weights); $i++) {
 
+        $weight = $weights[$i];
+        $size = $sizes[$i];
+        $batch = $batches[$i];
+        $pallet = $pallets[$i];
+        $expiry = $expiries[$i];
+
         $stmt->bind_param(
-            "isssss",
+            "iiidssss",
             $delivery_item_id,
-            $weights[$i],
-            $sizes[$i],
-            $batches[$i],
-            $pallets[$i],
-            $expiries[$i]
+            $warehouse_id,
+            $product_id,
+            $weight,
+            $size,
+            $batch,
+            $pallet,
+            $expiry
         );
 
         $stmt->execute();
