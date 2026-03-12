@@ -129,7 +129,10 @@
     z-index: 3;
 }
 
-.items-scroll{
-    max-height: 210px;   /* about 3 rows */
-    overflow-y: auto;
+.modal {
+    z-index: 99999 !important;
+}
+
+.modal-backdrop {
+    z-index: 99998 !important;
 }
