@@ -2,8 +2,6 @@ let assignModal = new bootstrap.Modal(document.getElementById('assignBoxesModal'
 document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
-
-        let btn = this.querySelector("button[type='submit']");
         startButtonLoading(btn);
         let qty = this.dataset.qty;
         let product = this.dataset.product;
@@ -139,8 +137,10 @@ document.addEventListener("input", function (e) {
 
 document.getElementById("assignBoxesForm").addEventListener("submit", function (e) {
 
-    e.preventDefault(); // stop page reload
+    e.preventDefault(); // stop page reload 
 
+
+    let btn = this.querySelector("button[type='submit']");
     startButtonLoading(btn);
 
     let form = this;
@@ -174,6 +174,6 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
 
         });
 
-        
+
 
 });
