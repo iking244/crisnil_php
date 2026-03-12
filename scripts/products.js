@@ -85,16 +85,14 @@ document.getElementById("addRow").addEventListener("click", function () {
 
 });
 
-document.addEventListener("click", function(e){
+document.addEventListener("click", function (e) {
 
-    if(e.target.classList.contains("removeRow")){
+    if (e.target.classList.contains("removeRow")) {
 
         let rows = document.querySelectorAll("#itemsTable tbody tr");
 
-        if(rows.length > 1){
-            e.target.closest("tr").remove();
-        }else{
-            alert("At least one item is required.");
+        if (rows.length === 1) {
+            e.target.closest("tr").querySelector(".removeRow").disabled = true;
         }
 
     }
