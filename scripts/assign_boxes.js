@@ -14,19 +14,21 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
         container.innerHTML = "";
 
         fetch("../controllers/warehouse_controller.php?action=get_boxes&delivery_item_id=" + id)
-        .then(res => res.json())
-        .then(boxes => {
+            .then(res => res.json())
+            .then(boxes => {
 
-            let existing = boxes.length;
+                let existing = boxes.length;
 
-            /* show existing boxes */
+                /* show existing boxes */
 
-            boxes.forEach(box => {
+                boxes.forEach(box => {
 
-                container.innerHTML += `
+                    container.innerHTML += `
                 <tr>
+                
 
                     <td>
+                        <input type="hidden" name="box_id[]" value="${box.box_id}">
                         <input type="number" step="0.01" name="weight[]" 
                         value="${box.box_weight}" class="form-control weight">
                     </td>
@@ -54,18 +56,20 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
                 </tr>
                 `;
 
-            });
+                });
 
-            /* add missing rows */
+                /* add missing rows */
 
-            let remaining = qty - existing;
+                let remaining = qty - existing;
 
-            for (let i = 0; i < remaining; i++) {
+                for (let i = 0; i < remaining; i++) {
 
-                container.innerHTML += `
+                    container.innerHTML += `
                 <tr>
+                    
 
                     <td>
+                        <input type="hidden" name="box_id[]" value="">
                         <input type="number" step="0.01" name="weight[]" class="form-control weight">
                     </td>
 
@@ -88,11 +92,11 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
                 </tr>
                 `;
 
-            }
+                }
 
-            assignModal.show();
+                assignModal.show();
 
-        });
+            });
 
     });
 

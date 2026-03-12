@@ -39,10 +39,57 @@ GROUP BY di.delivery_item_id
 }
 
 
-function insertBoxes($databaseconn, $delivery_item_id, $warehouse_id, $product_id, $weights, $sizes, $batches, $pallets, $expiries)
-{
+function insertBoxes(
+    $databaseconn,
+    $delivery_item_id,
+    $warehouse_id,
+    $product_id,
+    $box_ids,
+    $weights,
+    $sizes,
+    $batches,
+    $pallets,
+    $expiries
+) {
 
-    $query = "
+    for ($i = 0; $i < count($weights); $i++) {
+
+        $box_id = $box_ids[$i];
+        $weight = $weights[$i];
+        $size = $sizes[$i];
+        $batch = $batches[$i];
+        $pallet = $pallets[$i];
+        $expiry = $expiries[$i];
+
+        if ($box_id) {
+
+            $query = "
+UPDATE tbl_stock_boxes
+SET
+box_weight = ?,
+box_size = ?,
+batch_code = ?,
+pallet_code = ?,
+expiry_date = ?
+WHERE box_id = ?
+";
+
+            $stmt = $databaseconn->prepare($query);
+
+            $stmt->bind_param(
+                "dssssi",
+                $weight,
+                $size,
+                $batch,
+                $pallet,
+                $expiry,
+                $box_id
+            );
+
+            $stmt->execute();
+        } else {
+
+            $query = "
 INSERT INTO tbl_stock_boxes
 (
 delivery_item_id,
@@ -57,29 +104,22 @@ expiry_date
 VALUES (?,?,?,?,?,?,?,?)
 ";
 
-    $stmt = $databaseconn->prepare($query);
+            $stmt = $databaseconn->prepare($query);
 
-    for ($i = 0; $i < count($weights); $i++) {
+            $stmt->bind_param(
+                "iiidssss",
+                $delivery_item_id,
+                $warehouse_id,
+                $product_id,
+                $weight,
+                $size,
+                $batch,
+                $pallet,
+                $expiry
+            );
 
-        $weight = $weights[$i];
-        $size = $sizes[$i];
-        $batch = $batches[$i];
-        $pallet = $pallets[$i];
-        $expiry = $expiries[$i];
-
-        $stmt->bind_param(
-            "iiidssss",
-            $delivery_item_id,
-            $warehouse_id,
-            $product_id,
-            $weight,
-            $size,
-            $batch,
-            $pallet,
-            $expiry
-        );
-
-        $stmt->execute();
+            $stmt->execute();
+        }
     }
 }
 

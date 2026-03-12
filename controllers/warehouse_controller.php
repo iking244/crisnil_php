@@ -46,6 +46,7 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
         $batches = $_POST['batch'];
         $pallets = $_POST['pallet'];
         $expiries = $_POST['expiry'];
+        $box_ids = $_POST['box_id'];
 
         $query = "
 SELECT 
@@ -72,6 +73,7 @@ WHERE di.delivery_item_id = ?
             $delivery_item_id,
             $warehouse_id,
             $product_id,
+            $box_ids,
             $weights,
             $sizes,
             $batches,
