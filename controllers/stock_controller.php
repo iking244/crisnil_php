@@ -12,49 +12,57 @@ if (!isset($_SESSION['USER_ID'])) {
     exit();
 }
 
-/* =========================
-   CURRENT WAREHOUSE
-========================= */
-$warehouse_id = (int)$_POST['warehouse_id'];
+if ($_GET['action'] == "add_delivery") {
 
-if ($warehouse_id <= 0) {
-    die("Invalid warehouse selected.");
-}
+    $dr_number = $_POST['dr_number'];
+    $warehouse_id = $_POST['warehouse_id'];
 
+    // Insert Delivery Receipt
+    $query = "INSERT INTO tbl_delivery_receipts 
+              (dr_number, warehouse_id) 
+              VALUES (?, ?)";
 
-/* =========================
-   HANDLE ACTIONS
-========================= */
-$action = $_GET['action'] ?? $_POST['action'] ?? null;
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("si", $dr_number, $warehouse_id);
+    $stmt->execute();
 
-if ($action === 'add') {
+    $delivery_receipt_id = $conn->insert_id;
 
-    $product_id = (int)$_POST['product_id'];
-    $quantity = (int)$_POST['quantity'];
-    $production_date = $_POST['production_date'];
-    $expiration_date = $_POST['expiration_date'];
+    // Arrays from form
+    $products = $_POST['product_id'];
+    $qtys = $_POST['qty'];
+    $units = $_POST['unit'];
+    $weights = $_POST['weight'];
+    $prices = $_POST['price'];
+    $amounts = $_POST['amount'];
 
-    // Basic validation
-    if ($product_id <= 0 || $quantity <= 0) {
-        header("Location: ../views/product_management.php?error=invalid_input");
-        exit;
+    for ($i = 0; $i < count($products); $i++) {
+
+        $product_id = $products[$i];
+        $qty = $qtys[$i];
+        $unit = $units[$i];
+        $weight = $weights[$i];
+        $price = $prices[$i];
+        $amount = $amounts[$i];
+
+        $query = "INSERT INTO tbl_delivery_items 
+                  (delivery_receipt_id, product_id, qty, unit, total_weight, price_per_kg, total_amount)
+                  VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param(
+            "iiisddd",
+            $delivery_receipt_id,
+            $product_id,
+            $qty,
+            $unit,
+            $weight,
+            $price,
+            $amount
+        );
+
+        $stmt->execute();
     }
 
-    // Add stock batch
-    $result = addStockBatch(
-        $databaseconn,
-        $warehouse_id,
-        $product_id,
-        $quantity,
-        $production_date,
-        $expiration_date
-    );
-
-    if (!$result) {
-        die("Stock insert failed: " . mysqli_error($databaseconn));
-    }
-
-    // Redirect back to product page
-    header("Location: ../views/product_management.php?warehouse_id=" . $warehouse_id);
-    exit;
+    header("Location: ../views/products_overview.php?success=delivery_added");
 }
