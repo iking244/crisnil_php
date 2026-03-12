@@ -45,10 +45,11 @@
                                 <thead>
                                     <tr>
                                         <th>Product</th>
-                                        <th>Pallet</th>
-                                        <th>Batch Code</th>
                                         <th>Qty</th>
-                                        <th>Exp Date</th>
+                                        <th>Unit</th>
+                                        <th>Total Weight</th>
+                                        <th>Price per Weight</th>
+                                        <th>Total Amount</th>
                                         <th></th>
                                     </tr>
                                 </thead>
