@@ -1,5 +1,4 @@
 let assignModal = new bootstrap.Modal(document.getElementById('assignBoxesModal'));
-
 document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
@@ -14,37 +13,86 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
         let container = document.getElementById("boxesContainer");
         container.innerHTML = "";
 
-        for (let i = 0; i < qty; i++) {
+        fetch("../controllers/warehouse_controller.php?action=get_boxes&delivery_item_id=" + id)
+        .then(res => res.json())
+        .then(boxes => {
 
-            container.innerHTML += `
-<tr>
+            let existing = boxes.length;
 
-<td>
-<input type="number" step="0.01" name="weight[]" class="form-control weight" required>
-</td>
+            /* show existing boxes */
 
-<td>
-<input type="text" name="size[]" class="form-control size" readonly>
-</td>
+            boxes.forEach(box => {
 
-<td>
-<input type="text" name="batch[]" class="form-control" required>
-</td>
+                container.innerHTML += `
+                <tr>
 
-<td>
-<input type="text" name="pallet[]" class="form-control" required>
-</td>
+                    <td>
+                        <input type="number" step="0.01" name="weight[]" 
+                        value="${box.box_weight}" class="form-control weight">
+                    </td>
 
-<td>
-<input type="date" name="expiry[]" class="form-control" required>
-</td>
+                    <td>
+                        <input type="text" name="size[]" 
+                        value="${box.box_size}" class="form-control size">
+                    </td>
 
-</tr>
-`;
+                    <td>
+                        <input type="text" name="batch[]" 
+                        value="${box.batch_code}" class="form-control">
+                    </td>
 
-        }
+                    <td>
+                        <input type="text" name="pallet[]" 
+                        value="${box.pallet_code}" class="form-control">
+                    </td>
 
-        assignModal.show();
+                    <td>
+                        <input type="date" name="expiry[]" 
+                        value="${box.expiry_date}" class="form-control">
+                    </td>
+
+                </tr>
+                `;
+
+            });
+
+            /* add missing rows */
+
+            let remaining = qty - existing;
+
+            for (let i = 0; i < remaining; i++) {
+
+                container.innerHTML += `
+                <tr>
+
+                    <td>
+                        <input type="number" step="0.01" name="weight[]" class="form-control weight">
+                    </td>
+
+                    <td>
+                        <input type="text" name="size[]" class="form-control size" readonly>
+                    </td>
+
+                    <td>
+                        <input type="text" name="batch[]" class="form-control">
+                    </td>
+
+                    <td>
+                        <input type="text" name="pallet[]" class="form-control">
+                    </td>
+
+                    <td>
+                        <input type="date" name="expiry[]" class="form-control">
+                    </td>
+
+                </tr>
+                `;
+
+            }
+
+            assignModal.show();
+
+        });
 
     });
 

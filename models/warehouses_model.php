@@ -82,3 +82,32 @@ VALUES (?,?,?,?,?,?,?,?)
         $stmt->execute();
     }
 }
+
+function getBoxesByDeliveryItem($databaseconn, $delivery_item_id)
+{
+    $query = "
+        SELECT 
+            box_id,
+            box_weight,
+            box_size,
+            batch_code,
+            pallet_code,
+            expiry_date
+        FROM tbl_stock_boxes
+        WHERE delivery_item_id = ?
+    ";
+
+    $stmt = $databaseconn->prepare($query);
+    $stmt->bind_param("i", $delivery_item_id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $boxes = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $boxes[] = $row;
+    }
+
+    return $boxes;
+}

@@ -18,6 +18,16 @@ if (!isset($_SESSION['USER_ID'])) {
 $deliveryItems = getDeliveryItemsForAssignment($databaseconn);
 
 
+if (isset($_GET['action']) && $_GET['action'] == "get_boxes") {
+
+    $delivery_item_id = $_GET['delivery_item_id'];
+
+    $boxes = getBoxesByDeliveryItem($databaseconn, $delivery_item_id);
+
+    header('Content-Type: application/json');
+    echo json_encode($boxes);
+    exit();
+}
 # --------------------------------
 # SAVE BOX ASSIGNMENT
 # --------------------------------
