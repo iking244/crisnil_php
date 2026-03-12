@@ -72,14 +72,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 const tableBody = document.querySelector("#itemsTable tbody");
+const templateRow = tableBody.querySelector("tr").cloneNode(true);
 
 document.getElementById("addRow").addEventListener("click", function () {
 
-    let template = document.querySelector(".item-row");
-    let newRow = template.cloneNode(true);
+    let newRow = templateRow.cloneNode(true);
 
     newRow.querySelectorAll("input").forEach(input => input.value = "");
-    newRow.querySelector("select").selectedIndex = 0;
+    newRow.querySelectorAll("select").forEach(select => select.selectedIndex = 0);
 
     tableBody.appendChild(newRow);
 
@@ -89,14 +89,15 @@ document.addEventListener("click", function (e) {
 
     if (e.target.classList.contains("removeRow")) {
 
-        let rows = document.querySelectorAll("#itemsTable tbody tr");
+        e.target.closest("tr").remove();
 
-        if (rows.length === 1) {
-            e.target.closest("tr").querySelector(".removeRow").disabled = true;
+        // if table becomes empty, add a new row automatically
+        if (tableBody.children.length === 0) {
+            let newRow = templateRow.cloneNode(true);
+            tableBody.appendChild(newRow);
         }
 
     }
 
 });
-
 
