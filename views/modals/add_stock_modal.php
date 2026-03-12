@@ -36,8 +36,11 @@
                             <label class="form-label">Delivery Receipt (DR)</label>
                             <input type="text" name="dr_number"
                                 class="form-control"
-                                placeholder="Example: DR-0234"
-                                required>
+                                placeholder="Example: 23741"
+                                required
+                                autocomplete="off"
+                                pattern="\d+"
+                                title="Please enter a valid DR number (digits only)">
                         </div>
 
                         <h6 class="mt-3">Delivery Items</h6>
