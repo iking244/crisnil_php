@@ -53,8 +53,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
 
+                                <tr class="item-row">
                                     <td>
                                         <select name="product_id[]" class="form-control" required>
                                             <option value="">Select product</option>
@@ -89,6 +89,7 @@
                                     </td>
 
                                 </tr>
+
                             </tbody>
                         </table>
 

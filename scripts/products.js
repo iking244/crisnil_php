@@ -71,21 +71,34 @@ document.addEventListener("DOMContentLoaded", function () {
     loadProducts(1);
 });
 
+const tableBody = document.querySelector("#itemsTable tbody");
+
 document.getElementById("addRow").addEventListener("click", function () {
 
-    let table = document.querySelector("#itemsTable tbody");
-    let row = table.rows[0].cloneNode(true);
+    let template = document.querySelector(".item-row");
+    let newRow = template.cloneNode(true);
 
-    row.querySelectorAll("input").forEach(input => input.value = "");
+    newRow.querySelectorAll("input").forEach(input => input.value = "");
+    newRow.querySelector("select").selectedIndex = 0;
 
-    table.appendChild(row);
+    tableBody.appendChild(newRow);
 
 });
 
 document.addEventListener("click", function(e){
+
     if(e.target.classList.contains("removeRow")){
-        e.target.closest("tr").remove();
+
+        let rows = document.querySelectorAll("#itemsTable tbody tr");
+
+        if(rows.length > 1){
+            e.target.closest("tr").remove();
+        }else{
+            alert("At least one item is required.");
+        }
+
     }
+
 });
 
 
