@@ -34,7 +34,11 @@ if ($_GET['action'] == "add_delivery") {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            throw new Exception("Duplicate DR number detected.");
+            echo json_encode([
+                "status" => "error",
+                "message" => $e->getMessage()
+            ]);
+            exit();
         }
 
         // Insert Delivery Receipt
