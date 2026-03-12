@@ -26,7 +26,7 @@ if ($_GET['action'] == "add_delivery") {
     $stmt->bind_param("si", $dr_number, $warehouse_id);
     $stmt->execute();
 
-    $delivery_receipt_id = $conn->insert_id;
+    $delivery_receipt_id = $databaseconn->insert_id;
 
     // Arrays from form
     $products = $_POST['product_id'];
@@ -49,7 +49,7 @@ if ($_GET['action'] == "add_delivery") {
                   (delivery_receipt_id, product_id, qty, unit, total_weight, price_per_kg, total_amount)
                   VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        $stmt = $conn->prepare($query);
+        $stmt = $databaseconn->prepare($query);
         $stmt->bind_param(
             "iiisddd",
             $delivery_receipt_id,
