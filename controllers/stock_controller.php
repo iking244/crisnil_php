@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+
 session_start();
 
 include "../config/database_conn.php";
@@ -14,55 +15,78 @@ if (!isset($_SESSION['USER_ID'])) {
 
 if ($_GET['action'] == "add_delivery") {
 
-    $dr_number = $_POST['dr_number'];
-    $warehouse_id = $_POST['warehouse_id'];
+    try {
 
-    // Insert Delivery Receipt
-    $query = "INSERT INTO tbl_delivery_receipts 
-              (dr_number, warehouse_id) 
-              VALUES (?, ?)";
+        // Start transaction
+        $databaseconn->begin_transaction();
 
-    $stmt = $databaseconn->prepare($query);
-    $stmt->bind_param("si", $dr_number, $warehouse_id);
-    $stmt->execute();
+        $dr_number = $_POST['dr_number'];
+        $warehouse_id = $_POST['warehouse_id'];
 
-    $delivery_receipt_id = $databaseconn->insert_id;
+        // Insert Delivery Receipt
+        $query = "INSERT INTO tbl_delivery_receipts 
+                  (dr_number, warehouse_id) 
+                  VALUES (?, ?)";
 
-    // Arrays from form
-    $products = $_POST['product_id'];
-    $qtys = $_POST['qty'];
-    $units = $_POST['unit'];
-    $weights = $_POST['weight'];
-    $prices = $_POST['price'];
-    $amounts = $_POST['amount'];
+        $stmt = $databaseconn->prepare($query);
+        $stmt->bind_param("si", $dr_number, $warehouse_id);
 
-    for ($i = 0; $i < count($products); $i++) {
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to insert delivery receipt");
+        }
 
-        $product_id = $products[$i];
-        $qty = $qtys[$i];
-        $unit = $units[$i];
-        $weight = $weights[$i];
-        $price = $prices[$i];
-        $amount = $amounts[$i];
+        $delivery_receipt_id = $databaseconn->insert_id;
+
+        // Arrays from form
+        $products = $_POST['product_id'];
+        $qtys = $_POST['qty'];
+        $units = $_POST['unit'];
+        $weights = $_POST['weight'];
+        $prices = $_POST['price'];
+        $amounts = $_POST['amount'];
 
         $query = "INSERT INTO tbl_delivery_items 
                   (delivery_receipt_id, product_id, qty, unit, total_weight, price_per_kg, total_amount)
                   VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $databaseconn->prepare($query);
-        $stmt->bind_param(
-            "iiisddd",
-            $delivery_receipt_id,
-            $product_id,
-            $qty,
-            $unit,
-            $weight,
-            $price,
-            $amount
-        );
 
-        $stmt->execute();
+        for ($i = 0; $i < count($products); $i++) {
+
+            $product_id = $products[$i];
+            $qty = $qtys[$i];
+            $unit = $units[$i];
+            $weight = $weights[$i];
+            $price = $prices[$i];
+            $amount = $amounts[$i];
+
+            $stmt->bind_param(
+                "iiisddd",
+                $delivery_receipt_id,
+                $product_id,
+                $qty,
+                $unit,
+                $weight,
+                $price,
+                $amount
+            );
+
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to insert delivery item");
+            }
+        }
+
+        // Commit transaction
+        $databaseconn->commit();
+
+        header("Location: ../views/products_overview.php?success=delivery_added");
+        exit();
+
+    } catch (Exception $e) {
+
+        // Rollback everything
+        $databaseconn->rollback();
+
+        echo "Transaction failed: " . $e->getMessage();
     }
-
-    header("Location: ../views/products_overview.php?success=delivery_added");
 }
