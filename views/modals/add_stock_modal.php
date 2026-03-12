@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
 
-            <form action="../controllers/stock_controller.php?action=add" method="POST">
+            <form action="../controllers/stock_controller.php?action=add_delivery" method="POST">
 
                 <div class="modal-header">
                     <h5 class="modal-title">
