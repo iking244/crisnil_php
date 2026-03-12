@@ -140,6 +140,8 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
 
     e.preventDefault(); // stop page reload
 
+    startButtonLoading(btn);
+
     let form = this;
     let formData = new FormData(form);
 
@@ -169,5 +171,7 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
             alert("Something went wrong");
 
         });
+
+        stopButtonLoading(btn);
 
 });
