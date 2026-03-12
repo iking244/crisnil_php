@@ -40,58 +40,59 @@
                         </div>
 
                         <h6 class="mt-3">Delivery Items</h6>
+                        <div class="items-container">
+                            <table class="table table-bordered delivery-table" id="itemsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Pallet</th>
+                                        <th>Batch Code</th>
+                                        <th>Qty</th>
+                                        <th>Exp Date</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                        <table class="table table-bordered" id="itemsTable">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Pallet</th>
-                                    <th>Batch Code</th>
-                                    <th>Qty</th>
-                                    <th>Exp Date</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                                    <tr class="item-row">
+                                        <td>
+                                            <select name="product_id[]" class="form-control" required>
+                                                <option value="">Select product</option>
+                                                <?php
+                                                mysqli_data_seek($productsDropdown, 0);
+                                                while ($p = mysqli_fetch_assoc($productsDropdown)): ?>
+                                                    <option value="<?= $p['product_id'] ?>">
+                                                        <?= htmlspecialchars($p['product_name']) ?>
+                                                    </option>
+                                                <?php endwhile; ?>
+                                            </select>
+                                        </td>
 
-                                <tr class="item-row">
-                                    <td>
-                                        <select name="product_id[]" class="form-control" required>
-                                            <option value="">Select product</option>
-                                            <?php
-                                            mysqli_data_seek($productsDropdown, 0);
-                                            while ($p = mysqli_fetch_assoc($productsDropdown)): ?>
-                                                <option value="<?= $p['product_id'] ?>">
-                                                    <?= htmlspecialchars($p['product_name']) ?>
-                                                </option>
-                                            <?php endwhile; ?>
-                                        </select>
-                                    </td>
+                                        <td>
+                                            <input type="text" name="pallet_code[]" class="form-control" placeholder="P.9">
+                                        </td>
 
-                                    <td>
-                                        <input type="text" name="pallet_code[]" class="form-control" placeholder="P.9">
-                                    </td>
+                                        <td>
+                                            <input type="text" name="batch_code[]" class="form-control" placeholder="From label">
+                                        </td>
 
-                                    <td>
-                                        <input type="text" name="batch_code[]" class="form-control" placeholder="From label">
-                                    </td>
+                                        <td>
+                                            <input type="number" name="quantity[]" class="form-control">
+                                        </td>
 
-                                    <td>
-                                        <input type="number" name="quantity[]" class="form-control">
-                                    </td>
+                                        <td>
+                                            <input type="date" name="expiration_date[]" class="form-control">
+                                        </td>
 
-                                    <td>
-                                        <input type="date" name="expiration_date[]" class="form-control">
-                                    </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger removeRow">X</button>
+                                        </td>
 
-                                    <td>
-                                        <button type="button" class="btn btn-danger removeRow">X</button>
-                                    </td>
+                                    </tr>
 
-                                </tr>
-
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
 
                         <button type="button" class="btn btn-secondary" id="addRow">
                             + Add Item

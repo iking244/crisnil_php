@@ -71,30 +71,50 @@ document.addEventListener("DOMContentLoaded", function () {
     loadProducts(1);
 });
 
+// get table body
 const tableBody = document.querySelector("#itemsTable tbody");
+
+// store template row
 const templateRow = tableBody.querySelector("tr").cloneNode(true);
 
+// ADD ITEM
 document.getElementById("addRow").addEventListener("click", function () {
 
     let newRow = templateRow.cloneNode(true);
 
+    // clear inputs
     newRow.querySelectorAll("input").forEach(input => input.value = "");
+
+    // reset dropdowns
     newRow.querySelectorAll("select").forEach(select => select.selectedIndex = 0);
 
+    // add row
     tableBody.appendChild(newRow);
+
+    // scroll to bottom
+    document.querySelector(".items-container").scrollTop =
+        document.querySelector(".items-container").scrollHeight;
+
+    // focus first field
+    newRow.querySelector("select").focus();
 
 });
 
+
+// REMOVE ITEM
 document.addEventListener("click", function (e) {
 
     if (e.target.classList.contains("removeRow")) {
 
         e.target.closest("tr").remove();
 
-        // if table becomes empty, add a new row automatically
+        // if no rows left, add empty row
         if (tableBody.children.length === 0) {
+
             let newRow = templateRow.cloneNode(true);
+
             tableBody.appendChild(newRow);
+
         }
 
     }
