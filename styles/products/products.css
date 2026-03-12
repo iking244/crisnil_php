@@ -128,3 +128,11 @@
     background: white;
     z-index: 3;
 }
+
+.modal {
+    z-index: 2000 !important;
+}
+
+.modal-backdrop {
+    z-index: 1990 !important;
+}
