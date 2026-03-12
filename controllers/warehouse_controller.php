@@ -37,10 +37,15 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
         $pallets = $_POST['pallet'];
         $expiries = $_POST['expiry'];
 
-        $query = "SELECT warehouse_id, product_id 
-          FROM tbl_delivery_items 
-          WHERE delivery_item_id = ?";
-
+        $query = "
+SELECT 
+dr.warehouse_id,
+di.product_id
+FROM tbl_delivery_items di
+JOIN tbl_delivery_receipts dr
+ON dr.delivery_receipt_id = di.delivery_receipt_id
+WHERE di.delivery_item_id = ?
+";
         $stmt = $databaseconn->prepare($query);
         $stmt->bind_param("i", $delivery_item_id);
         $stmt->execute();
