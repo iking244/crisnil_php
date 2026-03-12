@@ -136,39 +136,3 @@
 .modal-backdrop {
     z-index: 99998 !important;
 }
-
-/* Product */
-#itemsTable th:nth-child(1),
-#itemsTable td:nth-child(1){
-    width: 30%;
-}
-
-/* Pallet */
-#itemsTable th:nth-child(2),
-#itemsTable td:nth-child(2){
-    width: 12%;
-}
-
-/* Batch Code (make longer) */
-#itemsTable th:nth-child(3),
-#itemsTable td:nth-child(3){
-    width: 30%;
-}
-
-/* Qty (smaller) */
-#itemsTable th:nth-child(4),
-#itemsTable td:nth-child(4){
-    width: 8%;
-}
-
-/* Exp Date */
-#itemsTable th:nth-child(5),
-#itemsTable td:nth-child(5){
-    width: 15%;
-}
-
-/* Delete button */
-#itemsTable th:nth-child(6),
-#itemsTable td:nth-child(6){
-    width: 5%;
-}
