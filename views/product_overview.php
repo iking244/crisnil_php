@@ -51,7 +51,7 @@ include "../controllers/products_controller.php";
                 <button class="btn btn-success"
                         data-bs-toggle="modal"
                         data-bs-target="#addStockModal">
-                    <i class="fa fa-box me-1"></i> Add Stock
+                    <i class="fa fa-box me-1"></i> Add Inbound Stock
                 </button>
             </div>
         </div>
