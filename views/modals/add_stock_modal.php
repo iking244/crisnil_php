@@ -19,7 +19,6 @@
                     <div class="mb-3">
                         <label class="form-label">Warehouse</label>
                         <select name="warehouse_id" class="form-control" required>
-                            <option value="">Select warehouse</option>
                             <?php
                             mysqli_data_seek($warehouses, 0);
                             while ($w = mysqli_fetch_assoc($warehouses)): ?>
