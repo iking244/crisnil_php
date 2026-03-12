@@ -3,6 +3,7 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
 
+        startButtonLoading(btn);
         let qty = this.dataset.qty;
         let product = this.dataset.product;
         let id = this.dataset.id;
@@ -17,7 +18,7 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
             .then(res => res.json())
             .then(boxes => {
 
-                startButtonLoading(btn);
+
 
                 let existing = boxes.length;
 
