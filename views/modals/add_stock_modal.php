@@ -40,22 +40,25 @@
                         </div>
 
                         <h6 class="mt-3">Delivery Items</h6>
+
                         <div class="items-container">
                             <table class="table table-bordered delivery-table" id="itemsTable">
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
-                                        <th>Qty</th>
-                                        <th>Unit</th>
-                                        <th>Total Weight</th>
-                                        <th>Price per Weight</th>
-                                        <th>Total Amount</th>
-                                        <th></th>
+                                        <th style="width:25%">Product</th>
+                                        <th style="width:10%">Qty</th>
+                                        <th style="width:10%">Unit</th>
+                                        <th style="width:15%">Total Weight (kg)</th>
+                                        <th style="width:15%">Price / Kg</th>
+                                        <th style="width:15%">Total Amount</th>
+                                        <th style="width:5%"></th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
 
                                     <tr class="item-row">
+
                                         <td>
                                             <select name="product_id[]" class="form-control" required>
                                                 <option value="">Select product</option>
@@ -70,19 +73,23 @@
                                         </td>
 
                                         <td>
-                                            <input type="text" name="pallet_code[]" class="form-control" placeholder="P.9">
+                                            <input type="number" name="qty[]" class="form-control qty" placeholder="Boxes" required>
                                         </td>
 
                                         <td>
-                                            <input type="text" name="batch_code[]" class="form-control" placeholder="From label">
+                                            <input type="text" name="unit[]" class="form-control" value="BOX" readonly>
                                         </td>
 
                                         <td>
-                                            <input type="number" name="quantity[]" class="form-control">
+                                            <input type="number" step="0.01" name="weight[]" class="form-control weight" placeholder="kg" required>
                                         </td>
 
                                         <td>
-                                            <input type="date" name="expiration_date[]" class="form-control">
+                                            <input type="number" step="0.01" name="price[]" class="form-control price" placeholder="Price/kg" required>
+                                        </td>
+
+                                        <td>
+                                            <input type="number" step="0.01" name="amount[]" class="form-control amount" readonly>
                                         </td>
 
                                         <td>

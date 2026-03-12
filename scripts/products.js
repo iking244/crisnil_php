@@ -121,3 +121,17 @@ document.addEventListener("click", function (e) {
 
 });
 
+document.addEventListener("input", function(e){
+
+    if(e.target.classList.contains("weight") || e.target.classList.contains("price")){
+
+        let row = e.target.closest("tr");
+
+        let weight = parseFloat(row.querySelector(".weight").value) || 0;
+        let price = parseFloat(row.querySelector(".price").value) || 0;
+
+        row.querySelector(".amount").value = (weight * price).toFixed(2);
+    }
+
+});
+
