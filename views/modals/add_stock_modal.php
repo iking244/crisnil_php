@@ -39,61 +39,62 @@
                                 required>
                         </div>
 
-                        <!-- Product -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Product</label>
-                            <select name="product_id" class="form-control" required>
-                                <option value="">Select product</option>
-                                <?php
-                                mysqli_data_seek($productsDropdown, 0);
-                                while ($p = mysqli_fetch_assoc($productsDropdown)): ?>
-                                    <option value="<?= $p['product_id'] ?>">
-                                        <?= htmlspecialchars($p['product_name']) ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
+                        <h6 class="mt-3">Delivery Items</h6>
 
-                        <!-- Pallet -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Pallet Number</label>
-                            <input type="text" name="pallet_code"
-                                class="form-control"
-                                placeholder="Example: P.9"
-                                required>
-                        </div>
+                        <table class="table table-bordered" id="itemsTable">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Pallet</th>
+                                    <th>Batch Code</th>
+                                    <th>Qty</th>
+                                    <th>Exp Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
 
-                        <!-- Supplier Batch -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Supplier Batch Code</label>
-                            <input type="text" name="supplier_batch_code"
-                                class="form-control"
-                                placeholder="From pallet label"
-                                required>
-                        </div>
+                                    <td>
+                                        <select name="product_id[]" class="form-control" required>
+                                            <option value="">Select product</option>
+                                            <?php
+                                            mysqli_data_seek($productsDropdown, 0);
+                                            while ($p = mysqli_fetch_assoc($productsDropdown)): ?>
+                                                <option value="<?= $p['product_id'] ?>">
+                                                    <?= htmlspecialchars($p['product_name']) ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        </select>
+                                    </td>
 
-                        <!-- Quantity -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Quantity</label>
-                            <input type="number" name="quantity"
-                                class="form-control"
-                                placeholder="Enter total units"
-                                required>
-                        </div>
+                                    <td>
+                                        <input type="text" name="pallet_code[]" class="form-control" placeholder="P.9">
+                                    </td>
 
-                        <!-- Production Date -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Production Date</label>
-                            <input type="date" name="production_date"
-                                class="form-control">
-                        </div>
+                                    <td>
+                                        <input type="text" name="batch_code[]" class="form-control" placeholder="From label">
+                                    </td>
 
-                        <!-- Expiration Date -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Expiration Date</label>
-                            <input type="date" name="expiration_date"
-                                class="form-control" required>
-                        </div>
+                                    <td>
+                                        <input type="number" name="quantity[]" class="form-control">
+                                    </td>
+
+                                    <td>
+                                        <input type="date" name="expiration_date[]" class="form-control">
+                                    </td>
+
+                                    <td>
+                                        <button type="button" class="btn btn-danger removeRow">X</button>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <button type="button" class="btn btn-secondary" id="addRow">
+                            + Add Item
+                        </button>
 
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Receipt Image (Optional)</label>

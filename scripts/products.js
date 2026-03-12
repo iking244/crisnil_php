@@ -71,4 +71,21 @@ document.addEventListener("DOMContentLoaded", function () {
     loadProducts(1);
 });
 
+document.getElementById("addRow").addEventListener("click", function () {
+
+    let table = document.querySelector("#itemsTable tbody");
+    let row = table.rows[0].cloneNode(true);
+
+    row.querySelectorAll("input").forEach(input => input.value = "");
+
+    table.appendChild(row);
+
+});
+
+document.addEventListener("click", function(e){
+    if(e.target.classList.contains("removeRow")){
+        e.target.closest("tr").remove();
+    }
+});
+
 
