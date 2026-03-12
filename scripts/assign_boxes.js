@@ -17,6 +17,8 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
             .then(res => res.json())
             .then(boxes => {
 
+                startButtonLoading(btn);
+
                 let existing = boxes.length;
 
                 /* show existing boxes */
@@ -93,6 +95,8 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
                 `;
 
                 }
+
+                stopButtonLoading(btn);
 
                 assignModal.show();
 
