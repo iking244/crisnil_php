@@ -20,7 +20,7 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 <tr>
 
 <td>
-<input type="number" step="0.01" name="weight[]" class="form-control weight">
+<input type="number" step="0.01" name="weight[]" class="form-control weight" required>
 </td>
 
 <td>
@@ -28,15 +28,15 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 </td>
 
 <td>
-<input type="text" name="batch[]" class="form-control">
+<input type="text" name="batch[]" class="form-control" required>
 </td>
 
 <td>
-<input type="text" name="pallet[]" class="form-control">
+<input type="text" name="pallet[]" class="form-control" required>
 </td>
 
 <td>
-<input type="date" name="expiry[]" class="form-control">
+<input type="date" name="expiry[]" class="form-control" required>
 </td>
 
 </tr>
@@ -50,6 +50,8 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
 });
 
+
+/* AUTO SIZE FROM WEIGHT */
 
 document.addEventListener("input", function (e) {
 
@@ -71,5 +73,44 @@ document.addEventListener("input", function (e) {
             sizeField.value = "";
 
     }
+
+});
+
+
+/* SUBMIT FORM VIA AJAX */
+
+document.getElementById("assignBoxesForm").addEventListener("submit", function (e) {
+
+    e.preventDefault(); // stop page reload
+
+    let form = this;
+    let formData = new FormData(form);
+
+    fetch(form.action, {
+        method: "POST",
+        body: formData
+    })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.status === "success") {
+
+                alert("Boxes saved successfully");
+
+                location.reload();
+
+            } else {
+
+                alert(data.message);
+
+            }
+
+        })
+        .catch(err => {
+
+            console.error("Error:", err);
+            alert("Something went wrong");
+
+        });
 
 });
