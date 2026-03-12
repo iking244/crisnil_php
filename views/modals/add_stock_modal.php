@@ -1,5 +1,5 @@
 <div class="modal fade" id="addStockModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
 
             <form action="../controllers/stock_controller.php?action=add" method="POST">
