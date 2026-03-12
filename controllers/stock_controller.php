@@ -22,7 +22,7 @@ if ($_GET['action'] == "add_delivery") {
               (dr_number, warehouse_id) 
               VALUES (?, ?)";
 
-    $stmt = $conn->prepare($query);
+    $stmt = $databaseconn->prepare($query);
     $stmt->bind_param("si", $dr_number, $warehouse_id);
     $stmt->execute();
 

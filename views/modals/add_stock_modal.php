@@ -28,6 +28,7 @@
                                     </option>
                                 <?php endwhile; ?>
                             </select>
+                            <input type="hidden" name="warehouse_id" value="1">
                         </div>
 
                         <!-- Delivery Receipt -->
