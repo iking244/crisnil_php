@@ -3,6 +3,7 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
 
+        let btn = this.querySelector("button[type='submit']");
         startButtonLoading(btn);
         let qty = this.dataset.qty;
         let product = this.dataset.product;
@@ -152,6 +153,7 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
         .then(res => res.json())
         .then(data => {
 
+            stopButtonLoading(btn);
             if (data.status === "success") {
 
                 alert("Boxes saved successfully");
@@ -166,12 +168,12 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
 
         })
         .catch(err => {
-
+            stopButtonLoading(btn);
             console.error("Error:", err);
             alert("Something went wrong");
 
         });
 
-        stopButtonLoading(btn);
+        
 
 });
