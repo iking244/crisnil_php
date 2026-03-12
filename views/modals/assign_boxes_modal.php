@@ -4,7 +4,8 @@
 
         <div class="modal-content">
 
-            <form id="assignBoxesForm" action="../controllers/warehouse_controller.php?action=assign_boxes" method="POST">
+            <form id="assignBoxesForm" method="POST"
+                action="../controllers/warehouse_controller.php?action=assign_boxes">
 
                 <div class="modal-header">
 
