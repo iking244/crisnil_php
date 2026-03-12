@@ -23,6 +23,20 @@ if ($_GET['action'] == "add_delivery") {
         $dr_number = $_POST['dr_number'];
         $warehouse_id = $_POST['warehouse_id'];
 
+        $query = "SELECT delivery_receipt_id 
+          FROM tbl_delivery_receipts 
+          WHERE dr_number = ?";
+
+        $stmt = $databaseconn->prepare($query);
+        $stmt->bind_param("s", $dr_number);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            throw new Exception("Duplicate DR number detected.");
+        }
+
         // Insert Delivery Receipt
         $query = "INSERT INTO tbl_delivery_receipts 
                   (dr_number, warehouse_id) 
@@ -79,9 +93,8 @@ if ($_GET['action'] == "add_delivery") {
         // Commit transaction
         $databaseconn->commit();
 
-        header("Location: ../views/products_overview.php?success=delivery_added");
+        header("Location: ../views/product_overview.php?success=delivery_added");
         exit();
-
     } catch (Exception $e) {
 
         // Rollback everything
