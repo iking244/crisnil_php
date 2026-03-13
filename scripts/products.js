@@ -196,6 +196,14 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
                 <input type="hidden" name="item_id[]" value="${item.delivery_item_id}">
 
                 <td>
+                    <select name="product_id[]" class="form-control">
+                        <option value="">Select product</option>
+                        ${data.products.map(p => `
+                            <option value="${p.product_id}" ${p.product_id == item.product_id ? "selected" : ""}>
+                    </select>
+                </td>
+
+                <td>
                     <input type="number" name="qty[]" value="${item.qty}" class="form-control">
                 </td>
 
