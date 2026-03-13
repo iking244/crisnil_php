@@ -17,22 +17,25 @@ if ($_GET['action'] == "get_delivery_by_dr") {
 
     $dr = $_GET['dr'];
 
-    $query = "
-        SELECT 
-            di.delivery_item_id,
-            di.product_id,
-            di.qty,
-            di.unit,
-            di.total_weight,
-            di.price_per_kg,
-            di.total_amount,
-            dr.delivery_receipt_id,
-            dr.dr_number
-        FROM tbl_delivery_receipts dr
-        JOIN tbl_delivery_items di 
-            ON dr.delivery_receipt_id = di.delivery_receipt_id
-        WHERE dr.dr_number = ?
-    ";
+$query = "
+    SELECT 
+        di.delivery_item_id,
+        di.product_id,
+        p.product_name,
+        di.qty,
+        di.unit,
+        di.total_weight,
+        di.price_per_kg,
+        di.total_amount,
+        dr.delivery_receipt_id,
+        dr.dr_number
+    FROM tbl_delivery_receipts dr
+    JOIN tbl_delivery_items di 
+        ON dr.delivery_receipt_id = di.delivery_receipt_id
+    JOIN tbl_products p
+        ON di.product_id = p.product_id
+    WHERE dr.dr_number = ?
+";
 
     $stmt = $databaseconn->prepare($query);
     $stmt->bind_param("s", $dr);

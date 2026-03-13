@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qtyField.value = icon.dataset.qty;
             qtyField.setAttribute('readonly', true);
         }
-        
+
 
         // Unit & packaging
         document.getElementById('editUnit').value = icon.dataset.unitId;
@@ -174,12 +174,57 @@ document.getElementById("deliveryForm").addEventListener("submit", function (e) 
 
 });
 
-function productOptions(products, selectedId){
+function productOptions(products, selectedId) {
     return products.map(p => `
         <option value="${p.product_id}" ${p.product_id == selectedId ? "selected" : ""}>
             ${p.product_name}
         </option>
     `).join("");
+}
+
+function createDeliveryRow(item) {
+
+    const tr = document.createElement("tr");
+    tr.classList.add("item-row");
+
+    tr.innerHTML = `
+        <input type="hidden" name="item_id[]" value="${item.delivery_item_id}">
+
+        <td>
+            <select name="product_id[]" class="form-control">
+                <option value="${item.product_id}" selected>
+                    ${item.product_name}
+                </option>
+            </select>
+        </td>
+
+        <td>
+            <input type="number" name="qty[]" value="${item.qty}" class="form-control">
+        </td>
+
+        <td>
+            <input type="text" name="unit[]" value="BOX" class="form-control" readonly>
+        </td>
+
+        <td>
+            <input type="number" step="0.01" name="weight[]" value="${item.total_weight}" class="form-control weight">
+        </td>
+
+        <td>
+            <input type="number" step="0.01" name="price[]" value="${item.price_per_kg}" class="form-control price">
+        </td>
+
+        <td>
+            <input type="number" step="0.01" name="amount[]" value="${item.total_amount}" class="form-control amount" readonly>
+        </td>
+
+        <td>
+            <button type="button" class="btn btn-danger removeRow">X</button>
+        </td>
+    `;
+
+    return tr;
+
 }
 
 document.getElementById("loadDRBtn").addEventListener("click", function () {
@@ -197,45 +242,11 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
             tbody.innerHTML = "";
 
             data.items.forEach(item => {
-                    console.log(item);
-                tbody.innerHTML += `    
-            <tr class="item-row">
+                console.log(item);
 
-                <input type="hidden" name="item_id[]" value="${item.delivery_item_id}">
+                const row = createDeliveryRow(item);
 
-                <td>
-                    <select name="product_id[]" class="form-control">
-                        <option value="">Select product</option>
-                        ${productOptions(data.products, item.product_id)}                       
-                    </select>
-                </td>
-
-                <td>
-                    <input type="number" name="qty[]" value="${item.qty}" class="form-control">
-                </td>
-
-                <td>
-                    <input type="text" name="unit[]" value="BOX" class="form-control" readonly>
-                </td>
-
-                <td>
-                    <input type="number" step="0.01" name="weight[]" value="${item.total_weight}" class="form-control weight">
-                </td>
-
-                <td>
-                    <input type="number" step="0.01" name="price[]" value="${item.price_per_kg}" class="form-control price">
-                </td>
-
-                <td>
-                    <input type="number" step="0.01" name="amount[]" value="${item.total_amount}" class="form-control amount" readonly>
-                </td>
-
-                <td>
-                    <button type="button" class="btn btn-danger removeRow">X</button>
-                </td>
-
-            </tr>
-            `;
+                tbody.appendChild(row);
 
             });
 
