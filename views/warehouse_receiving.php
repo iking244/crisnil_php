@@ -1,5 +1,5 @@
 <?php
-include "../controllers/receiving_controller.php";
+include "../controllers/warehouse_controller.php";
 ?>
 
 <!DOCTYPE html>
@@ -14,24 +14,21 @@ include "../controllers/receiving_controller.php";
     <link rel="stylesheet" href="../styles/layout.css">
     <link rel="stylesheet" href="../styles/components.css">
     <link rel="stylesheet" href="../styles/products/products.css">
+    <link rel="stylesheet" href="../styles/modals.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../styles/floatingBtn.css">
-    <link rel="stylesheet" href="../styles/modals.css">
 
 </head>
-
 
 <body>
 
     <?php include '../includes/header.php'; ?>
     <?php include '../includes/sidenav.php'; ?>
 
-
     <div class="main">
-        <div class="container-fluid">
+        <div class="container-fluid pt-3">
 
 
             <!-- PAGE HEADER -->
@@ -47,155 +44,143 @@ include "../controllers/receiving_controller.php";
             </div>
 
 
+            <?php
 
-            <div class="row g-4">
+            $totalItems = 0;
+            $totalBoxes = 0;
+            $totalAssigned = 0;
 
-                <!-- DELIVERY QUEUE -->
+            $rows = [];
 
-                <div class="col-lg-4">
+            while ($row = mysqli_fetch_assoc($deliveryItems)) {
 
-                    <div class="card shadow-sm">
+                $rows[] = $row;
 
-                        <div class="card-body">
+                $totalItems++;
+                $totalBoxes += $row['qty'];
+                $totalAssigned += $row['assigned_boxes'];
+            }
 
-                            <h6 class="mb-3">
-                                <i class="fa fa-list me-2"></i>
-                                Receiving Queue
-                            </h6>
+            $remaining = $totalBoxes - $totalAssigned;
+
+            ?>
 
 
-                            <?php if ($queue && mysqli_num_rows($queue) > 0): ?>
+            <!-- KPI SUMMARY -->
 
-                                <?php while ($row = mysqli_fetch_assoc($queue)): ?>
+            <div class="row g-3 mb-4">
 
-                                    <div class="border rounded p-3 mb-3">
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Delivery Items</h6>
+                        <h4><?= $totalItems ?></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Total Boxes</h6>
+                        <h4><?= $totalBoxes ?></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Assigned</h6>
+                        <h4><?= $totalAssigned ?></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Remaining</h6>
+                        <h4><?= $remaining ?></h4>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- RECEIVING QUEUE -->
+
+            <div class="row g-3">
+
+                <?php foreach ($rows as $row):
+
+                    $remainingBoxes = $row['qty'] - $row['assigned_boxes'];
+                    $progress = $row['qty'] > 0 ? ($row['assigned_boxes'] / $row['qty']) * 100 : 0;
+
+                ?>
+
+                    <div class="col-lg-4">
+
+                        <div class="card receiving-card shadow-sm h-100">
+
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+
+                                    <div>
 
                                         <strong>DR <?= $row['dr_number'] ?></strong>
 
-                                        <br>
+                                        <div class="fw-semibold">
+                                            <?= htmlspecialchars($row['product_name']) ?>
+                                        </div>
 
                                         <small class="text-muted">
-                                            <?= htmlspecialchars($row['product_name']) ?>
+                                            <?= $row['total_weight'] ?> kg
                                         </small>
-
-                                        <hr>
-
-                                        <div class="d-flex justify-content-between small">
-                                            <span>Boxes</span>
-                                            <span><?= $row['boxes'] ?></span>
-                                        </div>
-
-                                        <div class="d-flex justify-content-between small">
-                                            <span>Assigned</span>
-                                            <span><?= $row['assigned'] ?></span>
-                                        </div>
-
-                                        <div class="d-flex justify-content-between small">
-                                            <span>Remaining</span>
-                                            <span><?= $row['boxes'] - $row['assigned'] ?></span>
-                                        </div>
-
-                                        <button class="btn btn-sm btn-primary w-100 mt-2">
-                                            Continue Receiving
-                                        </button>
 
                                     </div>
 
-                                <?php endwhile; ?>
+                                    <button class="btn btn-primary btn-sm assignBtn"
+                                        data-id="<?= $row['delivery_item_id'] ?>"
+                                        data-product="<?= htmlspecialchars($row['product_name']) ?>"
+                                        data-qty="<?= $row['qty'] ?>">
 
-                            <?php else: ?>
+                                        <i class="fa fa-box"></i> Assign
 
-                                <div class="text-muted text-center py-3">
-                                    No deliveries waiting for receiving.
+                                    </button>
+
                                 </div>
 
-                            <?php endif; ?>
+
+                                <div class="progress mb-3" style="height:6px;">
+
+                                    <div class="progress-bar bg-success"
+                                        style="width: <?= $progress ?>%">
+                                    </div>
+
+                                </div>
 
 
-                        </div>
-                    </div>
+                                <div class="small">
 
-                </div>
+                                    <div class="d-flex justify-content-between py-1">
+                                        <span class="text-muted">Boxes</span>
+                                        <span><?= $row['qty'] ?></span>
+                                    </div>
 
+                                    <div class="d-flex justify-content-between py-1">
+                                        <span class="text-muted">Assigned</span>
+                                        <span><?= $row['assigned_boxes'] ?></span>
+                                    </div>
 
+                                    <div class="d-flex justify-content-between py-1">
+                                        <span class="text-muted">Remaining</span>
+                                        <span class="fw-semibold"><?= $remainingBoxes ?></span>
+                                    </div>
 
-                <!-- BOX ASSIGNMENT -->
-
-                <div class="col-lg-8">
-
-                    <div class="card shadow-sm">
-
-                        <div class="card-body">
-
-                            <h6 class="mb-3">
-                                <i class="fa fa-box me-2"></i>
-                                Assign Boxes
-                            </h6>
-
-
-                            <div class="alert alert-info">
-
-                                Select a delivery from the left queue to start assigning boxes.
+                                </div>
 
                             </div>
 
-
-                            <table class="table table-bordered align-middle">
-
-                                <thead>
-
-                                    <tr>
-                                        <th>Weight (kg)</th>
-                                        <th>Size</th>
-                                        <th>Batch</th>
-                                        <th>Pallet</th>
-                                        <th>Expiry</th>
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody>
-
-                                    <tr>
-
-                                        <td>
-                                            <input type="number" class="form-control" placeholder="0.00">
-                                        </td>
-
-                                        <td>
-                                            <input class="form-control">
-                                        </td>
-
-                                        <td>
-                                            <input class="form-control">
-                                        </td>
-
-                                        <td>
-                                            <input class="form-control">
-                                        </td>
-
-                                        <td>
-                                            <input type="date" class="form-control">
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-
-                            <button class="btn btn-success">
-                                <i class="fa fa-save me-1"></i> Save Boxes
-                            </button>
-
-
                         </div>
+
                     </div>
 
-                </div>
-
+                <?php endforeach; ?>
 
             </div>
 
@@ -204,16 +189,14 @@ include "../controllers/receiving_controller.php";
     </div>
 
 
+    <!-- ASSIGN BOXES MODAL -->
+    <?php include 'modals/assign_boxes_modal.php'; ?>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="../scripts/utils.js"></script>
-    <script src="../scripts/table.js"></script>
-    <script src="../scripts/products.js"></script>
-    <script src="../scripts/notif.js"></script>
-    <script src="../scripts/sidenav.js"></script>
-    <script src="../scripts/dropdown2.js"></script>
-
+    <script src="../scripts/assign_boxes.js"></script>
 
 </body>
 
