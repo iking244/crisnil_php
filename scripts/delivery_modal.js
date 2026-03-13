@@ -1,47 +1,48 @@
-const deliveryModal =
-    new bootstrap.Modal(document.getElementById("deliveryModal"));
+document.addEventListener("DOMContentLoaded", function () {
 
-const loadBtn = document.getElementById("loadDRBtn");
-const modeInput = document.getElementById("delivery_mode");
-const form = document.getElementById("deliveryForm");
-const title = document.querySelector("#deliveryModal .modal-title");
+    const deliveryModal =
+        new bootstrap.Modal(document.getElementById("deliveryModal"));
 
+    const loadBtn = document.getElementById("loadDRBtn");
+    const modeInput = document.getElementById("delivery_mode");
+    const form = document.getElementById("deliveryForm");
+    const title = document.querySelector("#deliveryModal .modal-title");
 
-// OPEN CREATE DELIVERY
-document.getElementById("openCreateDelivery").addEventListener("click", () => {
+    // CREATE
+    document.getElementById("openCreateDelivery").addEventListener("click", () => {
 
-    modeInput.value = "create";
+        modeInput.value = "create";
 
-    title.innerHTML =
-        `<i class="fa fa-truck me-2 text-success"></i> Receive Delivery`;
+        title.innerHTML =
+            `<i class="fa fa-truck me-2 text-success"></i> Receive Delivery`;
 
-    loadBtn.classList.add("d-none");
+        loadBtn.classList.add("d-none");
 
-    form.reset();
+        form.reset();
 
-    document.querySelector("#itemsTable tbody").innerHTML = "";
+        document.querySelector("#itemsTable tbody").innerHTML = "";
 
-    deliveryModal.show();
+        deliveryModal.show();
 
-});
+    });
 
+    // EDIT
+    document.getElementById("openEditDelivery").addEventListener("click", () => {
 
-// OPEN EDIT DELIVERY
-document.getElementById("openEditDelivery").addEventListener("click", () => {
+        modeInput.value = "edit";
 
-    modeInput.value = "edit";
+        title.innerHTML =
+            `<i class="fa fa-edit me-2 text-warning"></i> Edit Delivery`;
 
-    title.innerHTML =
-        `<i class="fa fa-edit me-2 text-warning"></i> Edit Delivery`;
+        loadBtn.classList.remove("d-none");
 
-    console.log(loadBtn);
-    loadBtn.classList.remove("d-none");
+        form.reset();
 
-    form.reset();
+        document.querySelector("#itemsTable tbody").innerHTML = "";
 
-    document.querySelector("#itemsTable tbody").innerHTML = "";
+        deliveryModal.show();
 
-    deliveryModal.show();
+    });
 
 });
 
