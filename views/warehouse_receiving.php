@@ -7,197 +7,199 @@ include "../controllers/warehouse_controller.php";
 
 <head>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Receiving - CRISNIL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warehouse Receiving - CRISNIL</title>
 
-    <link rel="stylesheet" href="../styles/base.css">
-    <link rel="stylesheet" href="../styles/layout.css">
-    <link rel="stylesheet" href="../styles/components.css">
-    <link rel="stylesheet" href="../styles/products/products.css">
-    <link rel="stylesheet" href="../styles/modals.css">
+<link rel="stylesheet" href="../styles/base.css">
+<link rel="stylesheet" href="../styles/layout.css">
+<link rel="stylesheet" href="../styles/components.css">
+<link rel="stylesheet" href="../styles/products/products.css">
+<link rel="stylesheet" href="../styles/modals.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
+
 <body>
 
-    <?php include '../includes/header.php'; ?>
-    <?php include '../includes/sidenav.php'; ?>
+<?php include '../includes/header.php'; ?>
+<?php include '../includes/sidenav.php'; ?>
 
-    <div class="main">
-        <div class="container-fluid pt-3">
+<div class="main">
 
+<div class="container-fluid pt-3">
 
-            <!-- PAGE HEADER -->
+<!-- HEADER -->
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-                <h1 class="page-title">Warehouse Receiving</h1>
+<h1 class="page-title">Warehouse Receiving</h1>
 
-                <a href="inventory_overview.php" class="btn btn-outline-dark">
-                    <i class="fa fa-arrow-left me-1"></i> Back to Inventory
-                </a>
+<a href="inventory_overview.php" class="btn btn-outline-dark">
+<i class="fa fa-arrow-left me-1"></i> Back to Inventory
+</a>
 
-            </div>
+</div>
 
 
-            <?php
+<?php
 
-            $totalItems = 0;
-            $totalBoxes = 0;
-            $totalAssigned = 0;
+$drGroups = [];
 
-            $rows = [];
+while($row = mysqli_fetch_assoc($deliveryItems)){
 
-            while ($row = mysqli_fetch_assoc($deliveryItems)) {
+$dr = $row['dr_number'];
 
-                $rows[] = $row;
+if(!isset($drGroups[$dr])){
 
-                $totalItems++;
-                $totalBoxes += $row['qty'];
-                $totalAssigned += $row['assigned_boxes'];
-            }
+$drGroups[$dr] = [
+"items"=>[],
+"total_boxes"=>0,
+"assigned_boxes"=>0
+];
 
-            $remaining = $totalBoxes - $totalAssigned;
+}
 
-            ?>
+$drGroups[$dr]["items"][] = $row;
+$drGroups[$dr]["total_boxes"] += $row['qty'];
+$drGroups[$dr]["assigned_boxes"] += $row['assigned_boxes'];
 
+}
 
-            <!-- KPI SUMMARY -->
+?>
 
-            <div class="row g-3 mb-4">
 
-                <div class="col-md-3">
-                    <div class="metric-card">
-                        <h6>Delivery Items</h6>
-                        <h4><?= $totalItems ?></h4>
-                    </div>
-                </div>
+<?php foreach($drGroups as $dr => $group):
 
-                <div class="col-md-3">
-                    <div class="metric-card">
-                        <h6>Total Boxes</h6>
-                        <h4><?= $totalBoxes ?></h4>
-                    </div>
-                </div>
+$progress = ($group["assigned_boxes"] / $group["total_boxes"]) * 100;
+$isComplete = $group["assigned_boxes"] == $group["total_boxes"];
 
-                <div class="col-md-3">
-                    <div class="metric-card">
-                        <h6>Assigned</h6>
-                        <h4><?= $totalAssigned ?></h4>
-                    </div>
-                </div>
+?>
 
-                <div class="col-md-3">
-                    <div class="metric-card">
-                        <h6>Remaining</h6>
-                        <h4><?= $remaining ?></h4>
-                    </div>
-                </div>
+<div class="card dr-card">
 
-            </div>
+<div class="card-body">
 
+<div class="d-flex justify-content-between align-items-center mb-2">
 
-            <!-- RECEIVING QUEUE -->
+<h5 class="mb-0">
 
-            <div class="row g-3">
+DR <?= $dr ?>
 
-                <?php foreach ($rows as $row):
+<?php if($isComplete): ?>
 
-                    $remainingBoxes = $row['qty'] - $row['assigned_boxes'];
-                    $progress = $row['qty'] > 0 ? ($row['assigned_boxes'] / $row['qty']) * 100 : 0;
+<span class="badge bg-success ms-2">Completed</span>
 
-                ?>
+<?php endif; ?>
 
-                    <div class="col-lg-4">
+</h5>
 
-                        <div class="card receiving-card shadow-sm h-100">
+<small class="text-muted">
 
-                            <div class="card-body">
+<?= $group["assigned_boxes"] ?> / <?= $group["total_boxes"] ?> boxes
 
-                                <div class="d-flex justify-content-between align-items-start mb-2">
+</small>
 
-                                    <div>
+</div>
 
-                                        <strong>DR <?= $row['dr_number'] ?></strong>
+<div class="progress mb-3">
 
-                                        <div class="fw-semibold">
-                                            <?= htmlspecialchars($row['product_name']) ?>
-                                        </div>
+<div class="progress-bar bg-success"
+style="width: <?= $progress ?>%">
+</div>
 
-                                        <small class="text-muted">
-                                            <?= $row['total_weight'] ?> kg
-                                        </small>
+</div>
 
-                                    </div>
 
-                                    <button class="btn btn-primary btn-sm assignBtn"
-                                        data-id="<?= $row['delivery_item_id'] ?>"
-                                        data-product="<?= htmlspecialchars($row['product_name']) ?>"
-                                        data-qty="<?= $row['qty'] ?>">
+<?php foreach($group["items"] as $item):
 
-                                        <i class="fa fa-box"></i> Assign
+$remaining = $item["qty"] - $item["assigned_boxes"];
 
-                                    </button>
+?>
 
-                                </div>
+<div class="item-row">
 
+<div class="d-flex justify-content-between">
 
-                                <div class="progress mb-3" style="height:6px;">
+<div>
 
-                                    <div class="progress-bar bg-success"
-                                        style="width: <?= $progress ?>%">
-                                    </div>
+<div class="fw-semibold">
 
-                                </div>
+<?= htmlspecialchars($item["product_name"]) ?>
 
+</div>
 
-                                <div class="small">
+<small class="text-muted">
 
-                                    <div class="d-flex justify-content-between py-1">
-                                        <span class="text-muted">Boxes</span>
-                                        <span><?= $row['qty'] ?></span>
-                                    </div>
+<?= $item["total_weight"] ?> kg
 
-                                    <div class="d-flex justify-content-between py-1">
-                                        <span class="text-muted">Assigned</span>
-                                        <span><?= $row['assigned_boxes'] ?></span>
-                                    </div>
+</small>
 
-                                    <div class="d-flex justify-content-between py-1">
-                                        <span class="text-muted">Remaining</span>
-                                        <span class="fw-semibold"><?= $remainingBoxes ?></span>
-                                    </div>
+</div>
 
-                                </div>
 
-                            </div>
+<div>
 
-                        </div>
+<button class="btn btn-primary btn-sm assignBtn"
 
-                    </div>
+data-id="<?= $item['delivery_item_id'] ?>"
+data-product="<?= htmlspecialchars($item['product_name']) ?>"
+data-qty="<?= $item['qty'] ?>"
 
-                <?php endforeach; ?>
+<?= $remaining == 0 ? "disabled" : "" ?>
 
-            </div>
+>
 
+<i class="fa fa-box"></i>
 
-        </div>
-    </div>
+<?= $remaining == 0 ? "Completed" : "Assign" ?>
 
+</button>
 
-    <!-- ASSIGN BOXES MODAL -->
-    <?php include 'modals/assign_boxes_modal.php'; ?>
+</div>
 
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="../scripts/utils.js"></script>
-    <script src="../scripts/assign_boxes.js"></script>
+<div class="small mt-2">
+
+<span class="me-3">
+Boxes: <strong><?= $item["qty"] ?></strong>
+</span>
+
+<span class="me-3">
+Assigned: <strong><?= $item["assigned_boxes"] ?></strong>
+</span>
+
+<span>
+Remaining: <strong><?= $remaining ?></strong>
+</span>
+
+</div>
+
+</div>
+
+<?php endforeach; ?>
+
+</div>
+
+</div>
+
+<?php endforeach; ?>
+
+
+</div>
+</div>
+
+
+<?php include 'modals/assign_boxes_modal.php'; ?>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="../scripts/utils.js"></script>
+<script src="../scripts/assign_boxes.js"></script>
 
 </body>
-
 </html>
