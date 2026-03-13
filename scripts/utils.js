@@ -1,19 +1,24 @@
-function startButtonLoading(btn){
+document.addEventListener("submit", function (e) {
 
-btn.dataset.originalText = btn.innerHTML;
+    let form = e.target;
 
-btn.disabled = true;
+    if (!form.classList.contains("auto-loading-form")) return;
 
-btn.innerHTML = `
-<span class="loading-spinner"></span>
-`;
+    let btn = form.querySelector("button[type='submit']");
 
-}
+    if (!btn) return;
 
-function stopButtonLoading(btn){
+    if (btn.disabled) {
+        e.preventDefault();
+        return;
+    }
 
-btn.disabled = false;
+    btn.dataset.originalText = btn.innerHTML;
 
-btn.innerHTML = btn.dataset.originalText;
+    btn.disabled = true;
 
-}
+    btn.innerHTML = `
+        <span class="loading-spinner"></span>
+    `;
+
+});

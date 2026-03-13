@@ -2,7 +2,6 @@ let assignModal = new bootstrap.Modal(document.getElementById('assignBoxesModal'
 document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
-        startButtonLoading(btn);
         let qty = this.dataset.qty;
         let product = this.dataset.product;
         let id = this.dataset.id;
@@ -96,7 +95,6 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
                 }
 
-                stopButtonLoading(btn);
 
                 assignModal.show();
 
@@ -140,9 +138,6 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
     e.preventDefault(); // stop page reload 
 
 
-    let btn = this.querySelector("button[type='submit']");
-    startButtonLoading(btn);
-
     let form = this;
     let formData = new FormData(form);
 
@@ -153,7 +148,6 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
         .then(res => res.json())
         .then(data => {
 
-            stopButtonLoading(btn);
             if (data.status === "success") {
 
                 alert("Boxes saved successfully");
@@ -168,7 +162,6 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
 
         })
         .catch(err => {
-            stopButtonLoading(btn);
             console.error("Error:", err);
             alert("Something went wrong");
 
