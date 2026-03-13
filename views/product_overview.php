@@ -159,14 +159,14 @@ include "../controllers/products_controller.php";
                             <div class="d-flex justify-content-between">
 
                                 <span class="text-muted small">Pending DR</span>
-                                <span class="fw-semibold"><?= $pending_dr ?></span>
+                                <span class="fw-semibold">5</span>
 
                             </div>
 
                             <div class="d-flex justify-content-between">
 
                                 <span class="text-muted small">Items waiting</span>
-                                <span class="fw-semibold"><?= $pending_items ?></span>
+                                <span class="fw-semibold">5</span>
 
                             </div>
 
