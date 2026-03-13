@@ -200,6 +200,10 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
                         <option value="">Select product</option>
                         ${data.products.map(p => `
                             <option value="${p.product_id}" ${p.product_id == item.product_id ? "selected" : ""}>
+                                ${p.product_name}
+                            </option>
+                        `)}
+                            
                     </select>
                 </td>
 
