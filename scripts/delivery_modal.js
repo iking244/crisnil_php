@@ -1,10 +1,10 @@
 const deliveryModal =
-    new bootstrap.Modal(document.getElementById("addStockModal"));
+    new bootstrap.Modal(document.getElementById("deliveryModal"));
 
 const loadBtn = document.getElementById("loadDRBtn");
 const modeInput = document.getElementById("delivery_mode");
 const form = document.getElementById("deliveryForm");
-const title = document.querySelector("#addStockModal .modal-title");
+const title = document.querySelector("#deliveryModal .modal-title");
 
 
 // OPEN CREATE DELIVERY
