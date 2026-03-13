@@ -212,7 +212,6 @@ include "../controllers/products_controller.php";
     <script src="../scripts/utils.js"></script>
     <script src="../scripts/table.js"></script>
     <script src="../scripts/products.js"></script>
-    <script src="../scripts/delivery_modal.js"></script>
     <script src="../scripts/notif.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>

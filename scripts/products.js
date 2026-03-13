@@ -182,6 +182,7 @@ function productOptions(products, selectedId){
 }
 
 document.getElementById("loadDRBtn").addEventListener("click", function () {
+    console.log("Loading DR details...");
 
     let dr = document.getElementById("edit_dr_number").value;
 
