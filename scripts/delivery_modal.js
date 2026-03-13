@@ -85,13 +85,14 @@ document.addEventListener("DOMContentLoaded", () => {
         editBtn.addEventListener("click", () => {
 
             modeInput.value = "edit";
+            
+            resetModal();
 
+            
             title.innerHTML =
                 `<i class="fa fa-edit me-2 text-warning"></i> Edit Delivery`;
 
             loadBtn.classList.remove("d-none");
-
-            resetModal();
 
             deliveryModal.show();
 
