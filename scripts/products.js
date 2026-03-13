@@ -196,12 +196,6 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
                 <input type="hidden" name="item_id[]" value="${item.delivery_item_id}">
 
                 <td>
-                    <select name="product_id[]" class="form-control">
-                        ${document.getElementById("productTemplate").innerHTML}
-                    </select>
-                </td>
-
-                <td>
                     <input type="number" name="qty[]" value="${item.qty}" class="form-control">
                 </td>
 
