@@ -156,6 +156,7 @@ document.addEventListener("input", function (e) {
 });
 
 document.getElementById("deliveryForm").addEventListener("submit", function (e) {
+    console.log("Submitting delivery form...");
 
     e.preventDefault();
 
@@ -164,7 +165,7 @@ document.getElementById("deliveryForm").addEventListener("submit", function (e) 
     let errorBox = document.getElementById("deliveryError");
 
     errorBox.classList.add("d-none");
-
+     console.log(formData);
     fetch(form.action, {
         method: "POST",
         body: formData
