@@ -133,6 +133,10 @@ font-weight:600;
 }
 }
 
+.operation-card .card-body{
+padding:20px 22px;
+}
+
 /* =====================================
    FILTER CARD
 ===================================== */
