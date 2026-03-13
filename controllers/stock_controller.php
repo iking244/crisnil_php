@@ -197,7 +197,7 @@ if ($_GET['action'] == "update_delivery") {
     ";
 
 
-        $stmt = mysqli_prepare($conn, $deleteQuery);
+        $stmt = mysqli_prepare($databaseconn, $deleteQuery);
 
         $types = str_repeat('i', count($item_ids) + 1);
 
