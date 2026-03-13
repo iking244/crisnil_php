@@ -68,6 +68,36 @@ color:#6c757d;
 margin-bottom:15px;
 }
 
+.section-title{
+font-size:14px;
+font-weight:600;
+color:#6c757d;
+margin-bottom:15px;
+}
+
+.operation-card{
+border-radius:12px;
+transition:.2s ease;
+}
+
+.operation-card:hover{
+transform:translateY(-3px);
+box-shadow:0 8px 18px rgba(0,0,0,0.08);
+}
+
+.operation-stats{
+margin-top:12px;
+padding-top:10px;
+border-top:1px solid #eee;
+}
+
+.operation-stats div{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+margin-bottom:4px;
+}
+
 /* =====================================
    FILTER CARD
 ===================================== */
