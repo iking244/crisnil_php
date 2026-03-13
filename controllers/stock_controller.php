@@ -15,6 +15,14 @@ if (!isset($_SESSION['USER_ID'])) {
 
 $action = $_GET['action'] ?? '';
 
+if (!$action) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "No action specified"
+    ]);
+    exit();
+}
+
 /* ================================
    GET DELIVERY BY DR
 ================================ */
@@ -152,7 +160,6 @@ if ($action == "add_delivery") {
             "status" => "success",
             "message" => "Delivery saved successfully"
         ]);
-
     } catch (Exception $e) {
 
         $databaseconn->rollback();
@@ -175,13 +182,12 @@ if ($action == "update_delivery") {
     $delivery_id = $_POST['delivery_receipt_id'];
     $dr_number = $_POST['dr_number'];
 
-    $products = $_POST['product_id'];
-    $qtys = $_POST['qty'];
-    $units = $_POST['unit'];
-    $weights = $_POST['weight'];
-    $prices = $_POST['price'];
-    $amounts = $_POST['amount'];
-
+    $products = $_POST['product_id'] ?? [];
+    $qtys = $_POST['qty'] ?? [];
+    $units = $_POST['unit'] ?? [];
+    $weights = $_POST['weight'] ?? [];
+    $prices = $_POST['price'] ?? [];
+    $amounts = $_POST['amount'] ?? [];
     $item_ids = $_POST['item_id'] ?? [];
 
     $databaseconn->begin_transaction();
@@ -199,7 +205,6 @@ if ($action == "update_delivery") {
 
             $stmt->bind_param("i", $delivery_id);
             $stmt->execute();
-
         } else {
 
             $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
@@ -271,7 +276,6 @@ if ($action == "update_delivery") {
                 );
 
                 $updateItem->execute();
-
             } else {
 
                 $insertItem->bind_param(
@@ -294,7 +298,6 @@ if ($action == "update_delivery") {
         echo json_encode([
             "status" => "success"
         ]);
-
     } catch (Exception $e) {
 
         $databaseconn->rollback();
