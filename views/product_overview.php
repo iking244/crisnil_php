@@ -88,19 +88,23 @@ include "../controllers/products_controller.php";
             <div class="row mb-4 g-3">
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm action-card h-100">
-
+                    <div class="card shadow-sm border-0 action-card h-100">
                         <div class="card-body d-flex justify-content-between align-items-center">
 
                             <div>
-                                <h6 class="fw-semibold mb-1">Receive Delivery</h6>
-                                <small class="text-muted">Record incoming supplier deliveries</small>
+                                <h6 class="fw-semibold mb-1">
+                                    <i class="fa fa-truck text-success me-2"></i>
+                                    Receive Delivery
+                                </h6>
+                                <small class="text-muted">
+                                    Record supplier deliveries into the system
+                                </small>
                             </div>
 
                             <button class="btn btn-success"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addStockModal">
-                                <i class="fa fa-truck"></i>
+                                Open
                             </button>
 
                         </div>
@@ -109,19 +113,23 @@ include "../controllers/products_controller.php";
 
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm action-card h-100">
-
+                    <div class="card shadow-sm border-0 action-card h-100">
                         <div class="card-body d-flex justify-content-between align-items-center">
 
                             <div>
-                                <h6 class="fw-semibold mb-1">Edit Delivery</h6>
-                                <small class="text-muted">Modify delivery receipts</small>
+                                <h6 class="fw-semibold mb-1">
+                                    <i class="fa fa-edit text-warning me-2"></i>
+                                    Edit Delivery
+                                </h6>
+                                <small class="text-muted">
+                                    Modify existing delivery receipts
+                                </small>
                             </div>
 
                             <button class="btn btn-warning"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editDeliveryModal">
-                                <i class="fa fa-edit"></i>
+                                Open
                             </button>
 
                         </div>
@@ -130,17 +138,21 @@ include "../controllers/products_controller.php";
 
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm action-card h-100">
-
+                    <div class="card shadow-sm border-0 action-card h-100">
                         <div class="card-body d-flex justify-content-between align-items-center">
 
                             <div>
-                                <h6 class="fw-semibold mb-1">Warehouse Receiving</h6>
-                                <small class="text-muted">Assign boxes, pallets, and batches</small>
+                                <h6 class="fw-semibold mb-1">
+                                    <i class="fa fa-box text-secondary me-2"></i>
+                                    Warehouse Receiving
+                                </h6>
+                                <small class="text-muted">
+                                    Assign boxes, pallets and batch codes
+                                </small>
                             </div>
 
-                            <a href="receiving.php" class="btn btn-outline-secondary">
-                                <i class="fa fa-box"></i>
+                            <a href="receiving.php" class="btn btn-outline-dark">
+                                Open
                             </a>
 
                         </div>
@@ -148,7 +160,6 @@ include "../controllers/products_controller.php";
                 </div>
 
             </div>
-
 
             <!-- ================= OPERATION METRICS ================= -->
             <!-- ================= KPI CARDS ================= -->
