@@ -46,7 +46,7 @@
 
                             <!-- Load button (hidden by default) -->
                             <button type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-secondary d-none mt-2"
                                 id="loadDRBtn">
 
                                 <i class="fa fa-search"></i> Load
