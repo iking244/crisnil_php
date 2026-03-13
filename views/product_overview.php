@@ -128,9 +128,9 @@ include "../controllers/products_controller.php";
                 <!-- RECEIVE DELIVERY -->
                 <div class="col-md-4">
 
-                    <div class="card border-0 shadow-sm action-card h-100">
+                    <div class="card-body">
 
-                        <div class="card-body d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
 
                             <div>
 
@@ -140,16 +140,35 @@ include "../controllers/products_controller.php";
                                 </h6>
 
                                 <small class="text-muted">
-                                    Record supplier deliveries into the system
+                                    Supplier deliveries waiting to be recorded
                                 </small>
 
                             </div>
 
-                            <button class="btn btn-success"
+                            <button class="btn btn-success btn-sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addStockModal">
                                 Open
                             </button>
+
+                        </div>
+
+
+                        <div class="mt-3">
+
+                            <div class="d-flex justify-content-between">
+
+                                <span class="text-muted small">Pending DR</span>
+                                <span class="fw-semibold"><?= $pending_dr ?></span>
+
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+
+                                <span class="text-muted small">Items waiting</span>
+                                <span class="fw-semibold"><?= $pending_items ?></span>
+
+                            </div>
 
                         </div>
 
