@@ -196,8 +196,8 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
             tbody.innerHTML = "";
 
             data.items.forEach(item => {
-
-                tbody.innerHTML += `
+                    console.log(item);
+                tbody.innerHTML += `    
             <tr class="item-row">
 
                 <input type="hidden" name="item_id[]" value="${item.delivery_item_id}">
