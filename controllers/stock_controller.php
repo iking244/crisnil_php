@@ -53,6 +53,7 @@ $query = "
         $items[] = [
             "delivery_item_id" => $row['delivery_item_id'],
             "product_id" => $row['product_id'],
+            "product_name" => $row['product_name'],
             "qty" => $row['qty'],
             "unit" => $row['unit'],
             "total_weight" => $row['total_weight'],
