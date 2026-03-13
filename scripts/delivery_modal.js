@@ -34,6 +34,7 @@ document.getElementById("openEditDelivery").addEventListener("click", () => {
     title.innerHTML =
         `<i class="fa fa-edit me-2 text-warning"></i> Edit Delivery`;
 
+    console.log(loadBtn);
     loadBtn.classList.remove("d-none");
 
     form.reset();
