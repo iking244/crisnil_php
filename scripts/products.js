@@ -121,9 +121,9 @@ document.addEventListener("click", function (e) {
 
 });
 
-document.addEventListener("input", function(e){
+document.addEventListener("input", function (e) {
 
-    if(e.target.classList.contains("weight") || e.target.classList.contains("price")){
+    if (e.target.classList.contains("weight") || e.target.classList.contains("price")) {
 
         let row = e.target.closest("tr");
 
@@ -135,7 +135,7 @@ document.addEventListener("input", function(e){
 
 });
 
-document.getElementById("deliveryForm").addEventListener("submit", function(e){
+document.getElementById("deliveryForm").addEventListener("submit", function (e) {
 
     e.preventDefault();
 
@@ -149,26 +149,89 @@ document.getElementById("deliveryForm").addEventListener("submit", function(e){
         method: "POST",
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        if(data.status === "error"){
+            if (data.status === "error") {
 
-            errorBox.innerText = data.message;
+                errorBox.innerText = data.message;
+                errorBox.classList.remove("d-none");
+
+            } else {
+
+                location.reload();
+
+            }
+
+        })
+        .catch(err => {
+
+            errorBox.innerText = "Unexpected error occurred.";
             errorBox.classList.remove("d-none");
 
-        } else {
+        });
 
-            location.reload();
+});
 
-        }
 
-    })
-    .catch(err => {
+document.getElementById("loadDRBtn").addEventListener("click", function () {
 
-        errorBox.innerText = "Unexpected error occurred.";
-        errorBox.classList.remove("d-none");
+    let dr = document.getElementById("edit_dr_number").value;
 
-    });
+    fetch("../controllers/stock_controller.php?action=get_delivery_by_dr&dr=" + dr)
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            let tbody = document.querySelector("#editItemsTable tbody");
+
+            tbody.innerHTML = "";
+
+            data.items.forEach(item => {
+
+                tbody.innerHTML += `
+            <tr class="item-row">
+
+                <input type="hidden" name="item_id[]" value="${item.delivery_item_id}">
+
+                <td>
+                    <select name="product_id[]" class="form-control">
+                        ${buildProductOptions(item.product_id)}
+                    </select>
+                </td>
+
+                <td>
+                    <input type="number" name="qty[]" value="${item.qty}" class="form-control">
+                </td>
+
+                <td>
+                    <input type="text" name="unit[]" value="BOX" class="form-control" readonly>
+                </td>
+
+                <td>
+                    <input type="number" step="0.01" name="weight[]" value="${item.total_weight}" class="form-control weight">
+                </td>
+
+                <td>
+                    <input type="number" step="0.01" name="price[]" value="${item.price_per_kg}" class="form-control price">
+                </td>
+
+                <td>
+                    <input type="number" step="0.01" name="amount[]" value="${item.total_amount}" class="form-control amount" readonly>
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-danger removeRow">X</button>
+                </td>
+
+            </tr>
+            `;
+
+            });
+
+            document.getElementById("edit_delivery_receipt_id").value = data.delivery_receipt_id;
+
+        });
 
 });
