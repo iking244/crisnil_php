@@ -33,7 +33,7 @@ LEFT JOIN tbl_stock_boxes sb
 JOIN tbl_products p 
     ON di.product_id = p.product_id
 GROUP BY di.delivery_item_id
-HAVING remaining_boxes > 0
+HAVING (di.qty - COUNT(sb.box_id)) > 0
 ORDER BY dr.dr_number DESC
 ");
 
