@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qtyField.value = icon.dataset.qty;
             qtyField.setAttribute('readonly', true);
         }
+        
 
         // Unit & packaging
         document.getElementById('editUnit').value = icon.dataset.unitId;
@@ -182,7 +183,6 @@ function productOptions(products, selectedId){
 }
 
 document.getElementById("loadDRBtn").addEventListener("click", function () {
-    console.log("Loading DR details...");
 
     let dr = document.getElementById("edit_dr_number").value;
 
