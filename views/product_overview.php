@@ -44,6 +44,13 @@ include "../controllers/products_controller.php";
                         <i class="fa fa-box me-1"></i> Receive Delivery
                     </button>
 
+                    <button class="btn btn-warning"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editDeliveryModal">
+
+                        <i class="fa fa-edit"></i> Edit Delivery
+                    </button>
+
                     <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#createProductModal">
@@ -198,6 +205,7 @@ include "../controllers/products_controller.php";
     <!-- ================= MODALS ================= -->
     <?php include 'modals/create_product_modal.php'; ?>
     <?php include 'modals/add_stock_modal.php'; ?>
+    <?php include 'modals/edit_delivery_modal.php'; ?>
 
     <!-- ================= SCRIPTS ================= -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
