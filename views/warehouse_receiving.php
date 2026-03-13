@@ -47,7 +47,7 @@ include "../controllers/warehouse_controller.php";
 
             <div class="row g-4">
 
-                <?php while ($row = mysqli_fetch_assoc($deliveryItems)): ?>
+                <?php while ($row = mysqli_fetch_assoc($receivingItems)): ?>
 
                     <?php
 
