@@ -145,12 +145,10 @@ include "../controllers/products_controller.php";
 
             <!-- ================= QUICK ACTIONS ================= -->
             <div class="row mb-4 g-3">
-
+                <h6 class="text-muted fw-semibold mb-3">
+                    <i class="fa fa-cogs me-2"></i> Warehouse Operations
+                </h6>
                 <div class="col-md-4">
-
-                    <h6 class="text-muted fw-semibold mb-3">
-                        <i class="fa fa-cogs me-2"></i> Warehouse Operations
-                    </h6>
                     <div class="card shadow-sm border-0 action-card h-100">
                         <div class="card-body d-flex justify-content-between align-items-center">
 
