@@ -6,6 +6,7 @@
 
             <form class="auto-loading-form" id="assignBoxesForm" method="POST"
                 action="../controllers/warehouse_controller.php?action=assign_boxes">
+                <input type="hidden" name="pallet_id" id="pallet_id">
 
                 <div class="modal-header">
 

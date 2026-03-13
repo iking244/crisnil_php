@@ -37,6 +37,13 @@ HAVING remaining_boxes > 0
 ORDER BY dr.dr_number DESC
 ");
 
+$pallets = mysqli_query($databaseconn,"
+SELECT pallet_id,pallet_code
+FROM tbl_pallets
+WHERE status='active'
+ORDER BY pallet_code
+");
+
 
 if (isset($_GET['action']) && $_GET['action'] == "get_boxes") {
 

@@ -19,31 +19,6 @@ include "../controllers/warehouse_controller.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        .receiving-card {
-            border-radius: 10px;
-            border: 1px solid #eee;
-            transition: .2s;
-        }
-
-        .receiving-card:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, .05);
-        }
-
-        .progress {
-            height: 6px;
-        }
-
-        .metric {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .metric strong {
-            font-size: 15px;
-        }
-    </style>
-
 </head>
 
 <body>
@@ -68,11 +43,11 @@ include "../controllers/warehouse_controller.php";
             </div>
 
 
-            <!-- RECEIVING GRID -->
+            <!-- RECEIVING ITEMS -->
 
             <div class="row g-4">
 
-                <?php while ($row = mysqli_fetch_assoc($receivingItems)): ?>
+                <?php while ($row = mysqli_fetch_assoc($deliveryItems)): ?>
 
                     <?php
 
@@ -104,15 +79,6 @@ include "../controllers/warehouse_controller.php";
 
                                     </div>
 
-                                    <button class="btn btn-primary btn-sm assignBtn"
-                                        data-id="<?= $row['delivery_item_id'] ?>"
-                                        data-product="<?= htmlspecialchars($row['product_name']) ?>"
-                                        data-qty="<?= $row['remaining_boxes'] ?>">
-
-                                        <i class="fa fa-box"></i> Assign
-
-                                    </button>
-
                                 </div>
 
                                 <div class="small text-muted mb-2">
@@ -125,12 +91,11 @@ include "../controllers/warehouse_controller.php";
 
                                     <div class="progress-bar bg-success"
                                         style="width: <?= $progress ?>%">
-
                                     </div>
 
                                 </div>
 
-                                <div class="row text-center">
+                                <div class="row text-center mb-3">
 
                                     <div class="col">
 
@@ -164,6 +129,45 @@ include "../controllers/warehouse_controller.php";
 
                                 </div>
 
+
+                                <!-- PALLET SELECT -->
+
+                                <div class="mb-3">
+
+                                    <label class="small text-muted mb-1">Assign Pallet</label>
+
+                                    <select class="form-control palletSelect">
+
+                                        <option value="">Select Pallet</option>
+
+                                        <?php
+                                        mysqli_data_seek($pallets, 0);
+                                        while ($p = mysqli_fetch_assoc($pallets)):
+                                        ?>
+
+                                            <option value="<?= $p['pallet_id'] ?>">
+                                                <?= $p['pallet_code'] ?>
+                                            </option>
+
+                                        <?php endwhile; ?>
+
+                                    </select>
+
+                                </div>
+
+
+                                <!-- ASSIGN BUTTON -->
+
+                                <button class="btn btn-primary btn-sm assignBtn w-100"
+                                    data-id="<?= $row['delivery_item_id'] ?>"
+                                    data-product="<?= htmlspecialchars($row['product_name']) ?>"
+                                    data-qty="<?= $row['remaining_boxes'] ?>">
+
+                                    <i class="fa fa-box"></i> Encode Boxes
+
+                                </button>
+
+
                             </div>
 
                         </div>
@@ -180,10 +184,41 @@ include "../controllers/warehouse_controller.php";
 
 
     <?php include 'modals/assign_boxes_modal.php'; ?>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="../scripts/utils.js"></script>
-    <script src="../scripts/assign_boxes.js"></script>
     <script src="../scripts/sidenav.js"></script>
+    <script src="../scripts/assign_boxes.js"></script>
+
+
+    <script>
+        /* PASS PALLET ID TO MODAL */
+
+        document.querySelectorAll(".assignBtn").forEach(btn => {
+
+            btn.addEventListener("click", function() {
+
+                let palletSelect = this.closest(".card-body").querySelector(".palletSelect");
+
+                let palletId = palletSelect.value;
+
+                if (!palletId) {
+
+                    alert("Please select a pallet first");
+
+                    return;
+
+                }
+
+                document.getElementById("pallet_id").value = palletId;
+
+            });
+
+        });
+    </script>
+
 
 </body>
 
