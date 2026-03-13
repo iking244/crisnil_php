@@ -172,7 +172,7 @@ if ($_GET['action'] == "add_delivery") {
 }
 
 if ($_GET['action'] == "update_delivery") {
-    var_dump($_POST['item_id']);
+    var_dump($_POST['item_id'],$_POST['delivery_receipt_id']);
     exit;
 
     $delivery_id = $_POST['delivery_receipt_id'];
