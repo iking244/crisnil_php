@@ -38,12 +38,16 @@ include "../controllers/products_controller.php";
                 <h1 class="page-title">Products Overview</h1>
 
                 <div class="d-flex gap-2">
-                    <button class="btn btn-success" id="openCreateDelivery">
-                        Receive Delivery
+                    <button class="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addStockModal">
+                        <i class="fa fa-truck"></i> Receive Delivery
                     </button>
 
-                    <button class="btn btn-warning" id="openEditDelivery">
-                        Edit Delivery
+                    <button class="btn btn-warning"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editDeliveryModal">
+                        <i class="fa fa-edit"></i> Edit Delivery
                     </button>
 
                     <button class="btn btn-primary"
