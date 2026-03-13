@@ -35,23 +35,31 @@
 
                         <!-- Delivery Receipt -->
                         <div class="col-md-6 mb-3">
+
                             <label class="form-label">Delivery Receipt (DR)</label>
-                            <input type="text" name="dr_number"
-                                class="form-control"
-                                placeholder="Example: 23741"
-                                required
-                                autocomplete="off"
-                                pattern="\d+"
-                                title="Please enter a valid DR number (digits only)">
 
-                            <!-- Load button (hidden by default) -->
-                            <button type="button"
-                                class="btn btn-secondary d-none "
-                                id="loadDRBtn">
+                            <div class="input-group">
 
-                                <i class="fa fa-search"></i> Load
+                                <input type="text"
+                                    name="dr_number"
+                                    id="dr_number"
+                                    class="form-control"
+                                    placeholder="Example: 23741"
+                                    required
+                                    autocomplete="off"
+                                    pattern="\d+"
+                                    title="Please enter a valid DR number (digits only)">
 
-                            </button>
+                                <button type="button"
+                                    class="btn btn-secondary d-none"
+                                    id="loadDRBtn">
+
+                                    <i class="fa fa-search"></i> Load
+
+                                </button>
+
+                            </div>
+
                         </div>
 
                         <h6 class="mt-3">Delivery Items</h6>
