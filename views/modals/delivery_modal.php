@@ -1,3 +1,18 @@
+<?php
+
+$productsArray = [];
+
+mysqli_data_seek($productsDropdown, 0);
+
+while ($p = mysqli_fetch_assoc($productsDropdown)) {
+    $productsArray[] = $p;
+}
+
+?>
+
+<script>
+    const PRODUCTS = <?= json_encode($productsArray) ?>;
+</script>
 <div class="modal fade" id="deliveryModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">

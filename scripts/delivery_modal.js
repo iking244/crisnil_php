@@ -44,6 +44,18 @@ document.getElementById("openEditDelivery").addEventListener("click", () => {
 
 });
 
+function productOptions(selectedId) {
+
+    if (!window.PRODUCTS) return "";
+
+    return PRODUCTS.map(p => `
+        <option value="${p.product_id}" ${p.product_id == selectedId ? "selected" : ""}>
+            ${p.product_name}
+        </option>
+    `).join("");
+
+}
+
 document.getElementById("loadDRBtn").addEventListener("click", function () {
 
     let dr = document.getElementById("dr_number").value.trim();
