@@ -175,6 +175,26 @@ margin:0;
 font-weight:600;
 }
 
+.dr-card{
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
+margin-bottom:20px;
+}
+
+.item-row{
+border-top:1px solid #eee;
+padding:12px 0;
+}
+
+.item-row:first-child{
+border-top:none;
+}
+
+.progress{
+height:6px;
+}
+
+
 /* =====================================
    FILTER CARD
 ===================================== */
