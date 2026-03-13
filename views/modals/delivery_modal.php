@@ -44,9 +44,8 @@
                                 pattern="\d+"
                                 title="Please enter a valid DR number (digits only)">
 
-                            <!-- Load button (hidden by default) -->
                             <button type="button"
-                                class="btn btn-secondary d-none mt-2"
+                                class="btn btn-secondary"
                                 id="loadDRBtn">
 
                                 <i class="fa fa-search"></i> Load
