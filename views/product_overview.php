@@ -199,6 +199,8 @@ include "../controllers/products_controller.php";
 
     <!-- ================= MODALS ================= -->
     <?php include 'modals/create_product_modal.php'; ?>
+   <?php include 'modals/add_stock_modal.php'; ?>
+   <?php include 'modals/edit_delivery_modal.php'; ?>
     <?php include 'modals/delivery_modal.php'; ?>
 
     <!-- ================= SCRIPTS ================= -->
