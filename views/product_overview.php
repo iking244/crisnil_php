@@ -84,6 +84,65 @@ include "../controllers/products_controller.php";
 
             </div>
 
+
+
+            <!-- ================= OPERATION METRICS ================= -->
+            <div class="row mb-4 g-3">
+
+                <div class="col-md-3">
+                    <div class="kpi-card blue d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <h6>Total Products</h6>
+                            <h3><?= $stats['total_products'] ?></h3>
+                        </div>
+
+                        <i class="fa fa-box fa-2x text-white opacity-75"></i>
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="kpi-card green d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <h6>Total Stock</h6>
+                            <h3><?= number_format($stats['total_stock']) ?></h3>
+                        </div>
+
+                        <i class="fa fa-warehouse fa-2x text-white opacity-75"></i>
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="kpi-card orange d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <h6>Low Stock Items</h6>
+                            <h3><?= $stats['low_stock'] ?></h3>
+                        </div>
+
+                        <i class="fa fa-exclamation-triangle fa-2x text-white opacity-75"></i>
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="kpi-card gray d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <h6>Total Weight</h6>
+                            <h3><?= number_format($stats['total_weight']) ?> kg</h3>
+                        </div>
+
+                        <i class="fa fa-weight-hanging fa-2x text-white opacity-75"></i>
+
+                    </div>
+                </div>
+
+            </div>
+
             <!-- ================= QUICK ACTIONS ================= -->
             <div class="row mb-4 g-3">
 
@@ -156,64 +215,6 @@ include "../controllers/products_controller.php";
                             </a>
 
                         </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ================= OPERATION METRICS ================= -->
-            <!-- ================= KPI CARDS ================= -->
-            <div class="row mb-4 g-3">
-
-                <div class="col-md-3">
-                    <div class="kpi-card blue d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Total Products</h6>
-                            <h3><?= $stats['total_products'] ?></h3>
-                        </div>
-
-                        <i class="fa fa-box fa-2x text-white opacity-75"></i>
-
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="kpi-card green d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Total Stock</h6>
-                            <h3><?= number_format($stats['total_stock']) ?></h3>
-                        </div>
-
-                        <i class="fa fa-warehouse fa-2x text-white opacity-75"></i>
-
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="kpi-card orange d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Low Stock Items</h6>
-                            <h3><?= $stats['low_stock'] ?></h3>
-                        </div>
-
-                        <i class="fa fa-exclamation-triangle fa-2x text-white opacity-75"></i>
-
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="kpi-card gray d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Total Weight</h6>
-                            <h3><?= number_format($stats['total_weight']) ?> kg</h3>
-                        </div>
-
-                        <i class="fa fa-weight-hanging fa-2x text-white opacity-75"></i>
-
                     </div>
                 </div>
 
