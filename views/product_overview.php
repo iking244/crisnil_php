@@ -243,7 +243,7 @@ include "../controllers/products_controller.php";
 
                                 </div>
 
-                                <a href="receiving.php" class="btn btn-outline-dark btn-sm">
+                                <a href="warehouse_receiving.php" class="btn btn-outline-dark btn-sm">
                                     Open
                                 </a>
 
