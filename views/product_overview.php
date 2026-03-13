@@ -102,11 +102,17 @@ include "../controllers/products_controller.php";
 
             <!-- WAREHOUSE OPERATIONS -->
 
-            <div class="d-flex align-items-center mb-3">
-                <i class="fa fa-cogs text-muted me-2"></i>
-                <h6 class="fw-semibold text-muted mb-0">Warehouse Operations</h6>
-            </div>
+            <div class="d-flex align-items-center mb-3 mt-2">
 
+                <i class="fa fa-cogs text-muted me-2"></i>
+
+                <h6 class="fw-semibold text-muted mb-0">
+                    Warehouse Operations
+                </h6>
+
+                <div class="flex-grow-1 ms-3 border-bottom"></div>
+
+            </div>
             <div class="row g-3 mb-4">
 
                 <!-- RECEIVE DELIVERY -->
