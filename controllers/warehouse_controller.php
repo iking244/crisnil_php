@@ -17,6 +17,26 @@ if (!isset($_SESSION['USER_ID'])) {
 
 $deliveryItems = getDeliveryItemsForAssignment($databaseconn);
 
+$receivingItems = mysqli_query($databaseconn, "
+SELECT 
+    dr.dr_number,
+    di.delivery_item_id,
+    p.product_name,
+    di.qty AS expected_boxes,
+    COUNT(sb.box_id) AS received_boxes,
+    (di.qty - COUNT(sb.box_id)) AS remaining_boxes
+FROM tbl_delivery_items di
+JOIN tbl_delivery_receipts dr 
+    ON di.delivery_receipt_id = dr.delivery_receipt_id
+LEFT JOIN tbl_stock_boxes sb 
+    ON sb.delivery_item_id = di.delivery_item_id
+JOIN tbl_products p 
+    ON di.product_id = p.product_id
+GROUP BY di.delivery_item_id
+HAVING remaining_boxes > 0
+ORDER BY dr.dr_number DESC
+");
+
 
 if (isset($_GET['action']) && $_GET['action'] == "get_boxes") {
 

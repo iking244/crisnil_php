@@ -19,8 +19,32 @@ include "../controllers/warehouse_controller.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-</head>
+    <style>
+        .receiving-card {
+            border-radius: 10px;
+            border: 1px solid #eee;
+            transition: .2s;
+        }
 
+        .receiving-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .05);
+        }
+
+        .progress {
+            height: 6px;
+        }
+
+        .metric {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .metric strong {
+            font-size: 15px;
+        }
+    </style>
+
+</head>
 
 <body>
 
@@ -28,172 +52,141 @@ include "../controllers/warehouse_controller.php";
     <?php include '../includes/sidenav.php'; ?>
 
     <div class="main">
-        <div class="container-fluid pt-3">
+
+        <div class="container-fluid">
+
+            <!-- HEADER -->
 
             <div class="d-flex justify-content-between align-items-center mb-4">
 
                 <h1 class="page-title">Warehouse Receiving</h1>
 
-                <a href="inventory_overview.php" class="btn btn-outline-dark">
+                <a href="products_overview.php" class="btn btn-outline-dark">
                     <i class="fa fa-arrow-left me-1"></i> Back to Inventory
                 </a>
 
             </div>
 
-            <?php
 
-            $drGroups = [];
+            <!-- RECEIVING GRID -->
 
-            while ($row = mysqli_fetch_assoc($deliveryItems)) {
+            <div class="row g-4">
 
-                $dr = $row['dr_number'];
+                <?php while ($row = mysqli_fetch_assoc($receivingItems)): ?>
 
-                if (!isset($drGroups[$dr])) {
+                    <?php
 
-                    $drGroups[$dr] = [
-                        "items" => [],
-                        "total_boxes" => 0,
-                        "assigned_boxes" => 0,
-                        "exceptions" => 0
-                    ];
-                }
+                    $progress = 0;
 
-                $drGroups[$dr]["items"][] = $row;
-                $drGroups[$dr]["total_boxes"] += $row['qty'];
-                $drGroups[$dr]["assigned_boxes"] += $row['assigned_boxes'];
-                $drGroups[$dr]["exceptions"] += $row['exception_boxes'] ?? 0;
-            }
+                    if ($row['expected_boxes'] > 0) {
+                        $progress = ($row['received_boxes'] / $row['expected_boxes']) * 100;
+                    }
 
-            ?>
+                    ?>
 
-            <?php foreach ($drGroups as $dr => $group):
+                    <div class="col-lg-4">
 
-                $progress = ($group["assigned_boxes"] / $group["total_boxes"]) * 100;
-                $remaining = $group["total_boxes"] - $group["assigned_boxes"];
+                        <div class="card receiving-card h-100">
 
-                $statusClass = "status-pending";
-                $statusLabel = "Pending";
+                            <div class="card-body">
 
-                if ($remaining == 0 && $group["exceptions"] == 0) {
-                    $statusClass = "status-complete";
-                    $statusLabel = "Completed";
-                }
-
-                if ($remaining == 0 && $group["exceptions"] > 0) {
-                    $statusClass = "status-warning";
-                    $statusLabel = "Completed with Issues";
-                }
-
-            ?>
-
-                <div class="card dr-card <?= $statusClass ?>">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-
-                            <h5 class="mb-0">
-
-                                DR <?= $dr ?>
-
-                                <span class="badge bg-secondary ms-2">
-                                    <?= $statusLabel ?>
-                                </span>
-
-                            </h5>
-
-                            <small class="text-muted">
-
-                                <?= $group["assigned_boxes"] ?> / <?= $group["total_boxes"] ?> boxes
-
-                            </small>
-
-                        </div>
-
-                        <div class="progress mb-3">
-
-                            <div class="progress-bar bg-success"
-                                style="width: <?= $progress ?>%">
-                            </div>
-
-                        </div>
-
-                        <?php foreach ($group["items"] as $item):
-
-                            $remainingItem = $item["qty"] - $item["assigned_boxes"];
-
-                        ?>
-
-                            <div class="item-row">
-
-                                <div class="d-flex justify-content-between">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
 
                                     <div>
 
-                                        <div class="fw-semibold">
-                                            <?= htmlspecialchars($item["product_name"]) ?>
+                                        <h6 class="fw-bold mb-1">
+                                            DR <?= $row['dr_number'] ?>
+                                        </h6>
+
+                                        <div class="text-muted small">
+                                            <?= htmlspecialchars($row['product_name']) ?>
                                         </div>
 
-                                        <small class="text-muted">
-                                            <?= $item["total_weight"] ?> kg
-                                        </small>
-
                                     </div>
 
-                                    <div>
+                                    <button class="btn btn-primary btn-sm assignBtn"
+                                        data-id="<?= $row['delivery_item_id'] ?>"
+                                        data-product="<?= htmlspecialchars($row['product_name']) ?>"
+                                        data-qty="<?= $row['remaining_boxes'] ?>">
 
-                                        <button class="btn btn-primary btn-sm assignBtn"
+                                        <i class="fa fa-box"></i> Assign
 
-                                            data-id="<?= $item['delivery_item_id'] ?>"
-                                            data-product="<?= htmlspecialchars($item['product_name']) ?>"
-                                            data-qty="<?= $item['qty'] ?>"
+                                    </button>
 
-                                            <?= $remainingItem == 0 ? "disabled" : "" ?>>
+                                </div>
 
-                                            <i class="fa fa-box"></i>
+                                <div class="small text-muted mb-2">
 
-                                            <?= $remainingItem == 0 ? "Completed" : "Assign" ?>
+                                    Expected Boxes: <?= $row['expected_boxes'] ?>
 
-                                        </button>
+                                </div>
+
+                                <div class="progress mb-3">
+
+                                    <div class="progress-bar bg-success"
+                                        style="width: <?= $progress ?>%">
 
                                     </div>
 
                                 </div>
 
-                                <div class="small mt-2">
+                                <div class="row text-center">
 
-                                    <span class="me-3">
-                                        Boxes: <strong><?= $item["qty"] ?></strong>
-                                    </span>
+                                    <div class="col">
 
-                                    <span class="me-3">
-                                        Assigned: <strong><?= $item["assigned_boxes"] ?></strong>
-                                    </span>
+                                        <div class="metric">
+                                            Boxes
+                                            <br>
+                                            <strong><?= $row['expected_boxes'] ?></strong>
+                                        </div>
 
-                                    <span>
-                                        Remaining: <strong><?= $remainingItem ?></strong>
-                                    </span>
+                                    </div>
+
+                                    <div class="col">
+
+                                        <div class="metric">
+                                            Assigned
+                                            <br>
+                                            <strong><?= $row['received_boxes'] ?></strong>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col">
+
+                                        <div class="metric">
+                                            Remaining
+                                            <br>
+                                            <strong><?= $row['remaining_boxes'] ?></strong>
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
-                        <?php endforeach; ?>
+                        </div>
 
                     </div>
 
-                </div>
+                <?php endwhile; ?>
 
-            <?php endforeach; ?>
+            </div>
 
         </div>
+
     </div>
+
 
     <?php include 'modals/assign_boxes_modal.php'; ?>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="../scripts/utils.js"></script>
     <script src="../scripts/assign_boxes.js"></script>
+    <script src="../scripts/sidenav.js"></script>
 
 </body>
 
