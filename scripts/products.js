@@ -79,7 +79,7 @@ const tableBody = document.querySelector("#itemsTable tbody");
 const templateRow = tableBody.querySelector("tr").cloneNode(true);
 
 // ADD ITEM
-document.getElementById("addRow").addEventListener("click", function () {
+function addItemRow(templateRow, tableBody, container) {
 
     let newRow = templateRow.cloneNode(true);
 
@@ -93,11 +93,30 @@ document.getElementById("addRow").addEventListener("click", function () {
     tableBody.appendChild(newRow);
 
     // scroll to bottom
-    document.querySelector(".items-container").scrollTop =
-        document.querySelector(".items-container").scrollHeight;
+    container.scrollTop = container.scrollHeight;
 
     // focus first field
     newRow.querySelector("select").focus();
+
+}
+
+document.getElementById("addRow").addEventListener("click", function () {
+
+    addItemRow(
+        templateRow,
+        document.querySelector("#itemsTable tbody"),
+        document.querySelector(".items-container")
+    );
+
+});
+
+document.getElementById("editAddRow").addEventListener("click", function () {
+
+    addItemRow(
+        editTemplateRow,
+        document.querySelector("#editItemsTable tbody"),
+        document.querySelector(".edit-items-container")
+    );
 
 });
 
