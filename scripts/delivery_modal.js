@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const createBtn = document.getElementById("openCreateDelivery");
     const editBtn = document.getElementById("openEditDelivery");
 
-    console.log("tumagos");
+    console.log("tubmagos");
 
     // -----------------------------------
     // PRODUCT OPTIONS GENERATOR
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         editBtn.addEventListener("click", () => {
 
             modeInput.value = "edit";
-            
+
             resetModal();
 
             
