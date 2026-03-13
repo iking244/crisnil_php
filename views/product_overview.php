@@ -57,37 +57,65 @@ include "../controllers/products_controller.php";
 
 
             <!-- ================= WAREHOUSE OPERATIONS ================= -->
-            <div class="card mb-4 border-0 shadow-sm">
-                <div class="card-body">
+            <!-- ================= QUICK ACTIONS ================= -->
+            <div class="row mb-4 g-3">
 
-                    <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-0 action-card">
+                        <div class="card-body d-flex align-items-center justify-content-between">
 
-                        <h6 class="fw-semibold mb-0">Quick Warehouse Actions</h6>
-
-                        <div class="d-flex gap-2">
+                            <div>
+                                <h6 class="fw-semibold mb-1">Receive Delivery</h6>
+                                <small class="text-muted">Record incoming supplier delivery</small>
+                            </div>
 
                             <button class="btn btn-success"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addStockModal">
-                                <i class="fa fa-truck"></i> Receive Delivery
+                                <i class="fa fa-truck"></i>
                             </button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-0 action-card">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+
+                            <div>
+                                <h6 class="fw-semibold mb-1">Edit Delivery</h6>
+                                <small class="text-muted">Modify existing delivery receipts</small>
+                            </div>
 
                             <button class="btn btn-warning"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editDeliveryModal">
-                                <i class="fa fa-edit"></i> Edit Delivery
+                                <i class="fa fa-edit"></i>
                             </button>
 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-0 action-card">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+
+                            <div>
+                                <h6 class="fw-semibold mb-1">Warehouse Receiving</h6>
+                                <small class="text-muted">Assign boxes, batches, and pallets</small>
+                            </div>
+
                             <a href="receiving.php" class="btn btn-outline-secondary">
-                                <i class="fa fa-box"></i> Warehouse Receiving
+                                <i class="fa fa-box"></i>
                             </a>
 
                         </div>
-
                     </div>
                 </div>
-            </div>
 
+            </div>
 
             <!-- ================= INVENTORY ALERT ================= -->
             <?php if ($stats['low_stock'] > 0): ?>
