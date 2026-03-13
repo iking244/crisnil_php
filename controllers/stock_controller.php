@@ -13,20 +13,65 @@ if (!isset($_SESSION['USER_ID'])) {
     exit();
 }
 
+/* ================================
+   HELPER FUNCTIONS
+================================ */
+
+function jsonResponse($data)
+{
+    echo json_encode($data);
+    exit();
+}
+
+function jsonError($message)
+{
+    jsonResponse([
+        "status" => "error",
+        "message" => $message
+    ]);
+}
+
+function jsonSuccess($extra = [])
+{
+    jsonResponse(array_merge([
+        "status" => "success"
+    ], $extra));
+}
+
+function validateItemArrays($products, $qtys, $units, $weights, $prices, $amounts)
+{
+    $count = count($products);
+
+    if (
+        $count !== count($qtys) ||
+        $count !== count($units) ||
+        $count !== count($weights) ||
+        $count !== count($prices) ||
+        $count !== count($amounts)
+    ) {
+        throw new Exception("Invalid delivery item data.");
+    }
+
+    return $count;
+}
+
+
+/* ================================
+   ACTION ROUTER
+================================ */
+
 $action = $_GET['action'] ?? '';
 
 if (!$action) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "No action specified"
-    ]);
-    exit();
+    jsonError("No action specified");
 }
+
 
 /* ================================
    GET DELIVERY BY DR
 ================================ */
-if ($action == "get_delivery_by_dr") {
+
+if ($action === "get_delivery_by_dr") {
 
     $dr = $_GET['dr'] ?? '';
 
@@ -75,19 +120,18 @@ if ($action == "get_delivery_by_dr") {
         ];
     }
 
-    echo json_encode([
+    jsonResponse([
         "delivery_receipt_id" => $delivery_id,
         "items" => $items
     ]);
-
-    exit();
 }
 
 
 /* ================================
    ADD DELIVERY
 ================================ */
-if ($action == "add_delivery") {
+
+if ($action === "add_delivery") {
 
     try {
 
@@ -96,24 +140,27 @@ if ($action == "add_delivery") {
         $dr_number = $_POST['dr_number'];
         $warehouse_id = $_POST['warehouse_id'];
 
-        // Check duplicate DR
-        $query = "SELECT delivery_receipt_id FROM tbl_delivery_receipts WHERE dr_number = ?";
-        $stmt = $databaseconn->prepare($query);
+        // check duplicate DR
+        $stmt = $databaseconn->prepare("
+            SELECT delivery_receipt_id 
+            FROM tbl_delivery_receipts 
+            WHERE dr_number = ?
+        ");
+
         $stmt->bind_param("s", $dr_number);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            echo json_encode([
-                "status" => "error",
-                "message" => "Delivery Receipt number already exists."
-            ]);
-            exit();
+            jsonError("Delivery Receipt number already exists.");
         }
 
-        // Insert receipt
-        $query = "INSERT INTO tbl_delivery_receipts (dr_number, warehouse_id) VALUES (?, ?)";
-        $stmt = $databaseconn->prepare($query);
+        // insert receipt
+        $stmt = $databaseconn->prepare("
+            INSERT INTO tbl_delivery_receipts (dr_number, warehouse_id)
+            VALUES (?,?)
+        ");
+
         $stmt->bind_param("si", $dr_number, $warehouse_id);
         $stmt->execute();
 
@@ -126,6 +173,8 @@ if ($action == "add_delivery") {
         $prices = $_POST['price'];
         $amounts = $_POST['amount'];
 
+        validateItemArrays($products, $qtys, $units, $weights, $prices, $amounts);
+
         $insertItem = $databaseconn->prepare("
             INSERT INTO tbl_delivery_items
             (delivery_receipt_id, product_id, qty, unit, total_weight, price_per_kg, total_amount)
@@ -134,21 +183,15 @@ if ($action == "add_delivery") {
 
         foreach ($products as $i => $product) {
 
-            $qty = $qtys[$i];
-            $unit = $units[$i];
-            $weight = $weights[$i];
-            $price = $prices[$i];
-            $amount = $amounts[$i];
-
             $insertItem->bind_param(
                 "iiisddd",
                 $delivery_receipt_id,
                 $product,
-                $qty,
-                $unit,
-                $weight,
-                $price,
-                $amount
+                $qtys[$i],
+                $units[$i],
+                $weights[$i],
+                $prices[$i],
+                $amounts[$i]
             );
 
             $insertItem->execute();
@@ -156,45 +199,43 @@ if ($action == "add_delivery") {
 
         $databaseconn->commit();
 
-        echo json_encode([
-            "status" => "success",
+        jsonSuccess([
             "message" => "Delivery saved successfully"
         ]);
+
     } catch (Exception $e) {
 
         $databaseconn->rollback();
 
-        echo json_encode([
-            "status" => "error",
-            "message" => $e->getMessage()
-        ]);
+        jsonError($e->getMessage());
     }
-
-    exit();
 }
 
 
 /* ================================
    UPDATE DELIVERY
 ================================ */
-if ($action == "update_delivery") {
 
-    $delivery_id = $_POST['delivery_receipt_id'];
-    $dr_number = $_POST['dr_number'];
-
-    $products = $_POST['product_id'] ?? [];
-    $qtys = $_POST['qty'] ?? [];
-    $units = $_POST['unit'] ?? [];
-    $weights = $_POST['weight'] ?? [];
-    $prices = $_POST['price'] ?? [];
-    $amounts = $_POST['amount'] ?? [];
-    $item_ids = $_POST['item_id'] ?? [];
-
-    $databaseconn->begin_transaction();
+if ($action === "update_delivery") {
 
     try {
 
-        /* ===== DELETE REMOVED ITEMS ===== */
+        $delivery_id = $_POST['delivery_receipt_id'];
+        $dr_number = $_POST['dr_number'];
+
+        $products = $_POST['product_id'] ?? [];
+        $qtys = $_POST['qty'] ?? [];
+        $units = $_POST['unit'] ?? [];
+        $weights = $_POST['weight'] ?? [];
+        $prices = $_POST['price'] ?? [];
+        $amounts = $_POST['amount'] ?? [];
+        $item_ids = $_POST['item_id'] ?? [];
+
+        validateItemArrays($products, $qtys, $units, $weights, $prices, $amounts);
+
+        $databaseconn->begin_transaction();
+
+        /* DELETE REMOVED ITEMS */
 
         if (empty($item_ids)) {
 
@@ -205,11 +246,12 @@ if ($action == "update_delivery") {
 
             $stmt->bind_param("i", $delivery_id);
             $stmt->execute();
+
         } else {
 
             $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
 
-            $deleteQuery = "
+            $query = "
                 DELETE FROM tbl_delivery_items
                 WHERE delivery_receipt_id = ?
                 AND delivery_item_id NOT IN ($placeholders)
@@ -217,15 +259,14 @@ if ($action == "update_delivery") {
 
             $params = array_merge([$delivery_id], $item_ids);
 
-            $stmt = $databaseconn->prepare($deleteQuery);
+            $stmt = $databaseconn->prepare($query);
 
             $types = str_repeat('i', count($params));
             $stmt->bind_param($types, ...$params);
             $stmt->execute();
         }
 
-
-        /* ===== UPDATE RECEIPT ===== */
+        /* UPDATE RECEIPT */
 
         $stmt = $databaseconn->prepare("
             UPDATE tbl_delivery_receipts
@@ -236,8 +277,7 @@ if ($action == "update_delivery") {
         $stmt->bind_param("si", $dr_number, $delivery_id);
         $stmt->execute();
 
-
-        /* ===== PREPARE STATEMENTS ===== */
+        /* PREPARE ITEM STATEMENTS */
 
         $updateItem = $databaseconn->prepare("
             UPDATE tbl_delivery_items
@@ -251,14 +291,7 @@ if ($action == "update_delivery") {
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ");
 
-
         foreach ($products as $i => $product) {
-
-            $qty = $qtys[$i];
-            $unit = $units[$i];
-            $weight = $weights[$i];
-            $price = $prices[$i];
-            $amount = $amounts[$i];
 
             $item_id = $item_ids[$i] ?? null;
 
@@ -267,26 +300,27 @@ if ($action == "update_delivery") {
                 $updateItem->bind_param(
                     "iisdddi",
                     $product,
-                    $qty,
-                    $unit,
-                    $weight,
-                    $price,
-                    $amount,
+                    $qtys[$i],
+                    $units[$i],
+                    $weights[$i],
+                    $prices[$i],
+                    $amounts[$i],
                     $item_id
                 );
 
                 $updateItem->execute();
+
             } else {
 
                 $insertItem->bind_param(
                     "iiisddd",
                     $delivery_id,
                     $product,
-                    $qty,
-                    $unit,
-                    $weight,
-                    $price,
-                    $amount
+                    $qtys[$i],
+                    $units[$i],
+                    $weights[$i],
+                    $prices[$i],
+                    $amounts[$i]
                 );
 
                 $insertItem->execute();
@@ -295,18 +329,12 @@ if ($action == "update_delivery") {
 
         $databaseconn->commit();
 
-        echo json_encode([
-            "status" => "success"
-        ]);
+        jsonSuccess();
+
     } catch (Exception $e) {
 
         $databaseconn->rollback();
 
-        echo json_encode([
-            "status" => "error",
-            "message" => $e->getMessage()
-        ]);
+        jsonError($e->getMessage());
     }
-
-    exit();
 }
