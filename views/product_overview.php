@@ -123,63 +123,65 @@ include "../controllers/products_controller.php";
 
             <div class="row g-3 mb-4">
 
-
                 <!-- RECEIVE DELIVERY -->
-
                 <div class="col-md-4">
 
-                    <div class="operation-card h-100">
+                    <div class="card shadow-sm h-100">
 
-                        <div class="d-flex justify-content-between align-items-start">
+                        <div class="card-body">
 
-                            <div>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
 
-                                <div class="operation-title">
-                                    <i class="fa fa-truck text-success me-2"></i>
-                                    Receive Delivery
+                                <div>
+
+                                    <h6 class="fw-semibold mb-1">
+                                        <i class="fa fa-truck text-success me-2"></i>
+                                        Receive Delivery
+                                    </h6>
+
+                                    <small class="text-muted">
+                                        Supplier deliveries waiting to be recorded
+                                    </small>
+
                                 </div>
 
-                                <div class="operation-desc">
-                                    Supplier deliveries waiting to be recorded
+                                <button class="btn btn-success btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addStockModal">
+                                    Open
+                                </button>
+
+                            </div>
+
+                            <div class="small">
+
+                                <div class="d-flex justify-content-between py-1">
+                                    <span class="text-muted">Pending DR</span>
+                                    <span class="fw-semibold">5</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between py-1">
+                                    <span class="text-muted">Items Waiting</span>
+                                    <span class="fw-semibold">5</span>
                                 </div>
 
                             </div>
 
-                            <button class="btn btn-success btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addStockModal">
-                                Open
-                            </button>
-
                         </div>
-
-                        <div class="operation-metrics">
-
-                            <div class="metric-pill">
-                                Pending DR
-                                <span class="metric-number">5</span>
-                            </div>
-
-                            <div class="metric-pill">
-                                Items Waiting
-                                <span class="metric-number">5</span>
-                            </div>
-
-                        </div>
-
                     </div>
 
                 </div>
 
-                <!-- EDIT DELIVERY -->
 
+
+                <!-- EDIT DELIVERY -->
                 <div class="col-md-4">
 
-                    <div class="card shadow-sm operation-card h-100">
+                    <div class="card shadow-sm h-100">
 
                         <div class="card-body">
 
-                            <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
 
                                 <div>
 
@@ -202,14 +204,14 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <div class="operation-stats">
+                            <div class="small">
 
-                                <div>
+                                <div class="d-flex justify-content-between py-1">
                                     <span class="text-muted">Recent Edits</span>
                                     <span class="fw-semibold">3</span>
                                 </div>
 
-                                <div>
+                                <div class="d-flex justify-content-between py-1">
                                     <span class="text-muted">Needs Review</span>
                                     <span class="fw-semibold">1</span>
                                 </div>
@@ -222,15 +224,15 @@ include "../controllers/products_controller.php";
                 </div>
 
 
-                <!-- WAREHOUSE RECEIVING -->
 
+                <!-- WAREHOUSE RECEIVING -->
                 <div class="col-md-4">
 
-                    <div class="card shadow-sm operation-card h-100">
+                    <div class="card shadow-sm h-100">
 
                         <div class="card-body">
 
-                            <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
 
                                 <div>
 
@@ -251,14 +253,14 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <div class="operation-stats">
+                            <div class="small">
 
-                                <div>
+                                <div class="d-flex justify-content-between py-1">
                                     <span class="text-muted">Items Pending</span>
                                     <span class="fw-semibold">4</span>
                                 </div>
 
-                                <div>
+                                <div class="d-flex justify-content-between py-1">
                                     <span class="text-muted">Boxes Remaining</span>
                                     <span class="fw-semibold">12</span>
                                 </div>
@@ -271,7 +273,6 @@ include "../controllers/products_controller.php";
                 </div>
 
             </div>
-
 
             <!-- INVENTORY ALERT -->
 
