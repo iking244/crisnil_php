@@ -173,24 +173,6 @@ document.getElementById("deliveryForm").addEventListener("submit", function (e) 
 
 });
 
-function buildProductOptions(selectedId) {
-
-    let options = `<option value="">Select product</option>`;
-
-    productsList.forEach(p => {
-
-        let selected = p.product_id == selectedId ? "selected" : "";
-
-        options += `
-        <option value="${p.product_id}" ${selected}>
-            ${p.product_name}
-        </option>
-        `;
-
-    });
-
-    return options;
-}
 
 document.getElementById("loadDRBtn").addEventListener("click", function () {
 
@@ -215,7 +197,7 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
 
                 <td>
                     <select name="product_id[]" class="form-control">
-                        ${buildProductOptions(item.product_id)}
+                        ${document.getElementById("productTemplate").innerHTML}
                     </select>
                 </td>
 
