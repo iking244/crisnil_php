@@ -113,7 +113,7 @@ document.getElementById("addRow").addEventListener("click", function () {
 document.getElementById("editAddRow").addEventListener("click", function () {
 
     addItemRow(
-        editTemplateRow,
+        templateRow,
         document.querySelector("#editItemsTable tbody"),
         document.querySelector(".edit-items-container")
     );
