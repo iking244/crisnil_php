@@ -126,14 +126,17 @@ document.addEventListener("click", function (e) {
 
     if (e.target.classList.contains("removeRow")) {
 
-        e.target.closest("tr").remove();
+        const row = e.target.closest("tr");
+        const tbody = row.closest("tbody");
+
+        row.remove();
 
         // if no rows left, add empty row
-        if (tableBody.children.length === 0) {
+        if (tbody.children.length === 0) {
 
             let newRow = templateRow.cloneNode(true);
 
-            tableBody.appendChild(newRow);
+            tbody.appendChild(newRow);
 
         }
 
