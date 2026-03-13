@@ -51,15 +51,23 @@
     color: #2563eb;
 }
 
-.action-card {
-    transition: all 0.2s ease;
-    border-radius: 10px;
+.action-card{
+transition: all .2s ease;
+border-radius:12px;
 }
 
-.action-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+.action-card:hover{
+transform: translateY(-4px);
+box-shadow:0 10px 20px rgba(0,0,0,0.08);
 }
+
+.section-title{
+font-size:14px;
+font-weight:600;
+color:#6c757d;
+margin-bottom:15px;
+}
+
 /* =====================================
    FILTER CARD
 ===================================== */
