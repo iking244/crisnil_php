@@ -196,6 +196,16 @@ if ($_GET['action'] == "update_delivery") {
         AND delivery_item_id NOT IN ($placeholders)
     ";
 
+
+        $stmt = mysqli_prepare($conn, $deleteQuery);
+
+        $types = str_repeat('i', count($item_ids) + 1);
+
+        mysqli_stmt_bind_param($stmt, $types, $delivery_receipt_id, ...$item_ids);
+
+        mysqli_stmt_execute($stmt);
+
+
         // update DR number
         $query = "
             UPDATE tbl_delivery_receipts
