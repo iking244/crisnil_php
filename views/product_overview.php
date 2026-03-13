@@ -38,17 +38,12 @@ include "../controllers/products_controller.php";
                 <h1 class="page-title">Products Overview</h1>
 
                 <div class="d-flex gap-2">
-                    <button class="btn btn-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addStockModal">
-                        <i class="fa fa-box me-1"></i> Receive Delivery
+                    <button class="btn btn-success" id="openCreateDelivery">
+                        Receive Delivery
                     </button>
 
-                    <button class="btn btn-warning"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editDeliveryModal">
-
-                        <i class="fa fa-edit"></i> Edit Delivery
+                    <button class="btn btn-warning" id="openEditDelivery">
+                        Edit Delivery
                     </button>
 
                     <button class="btn btn-primary"
@@ -212,6 +207,7 @@ include "../controllers/products_controller.php";
     <script src="../scripts/utils.js"></script>
     <script src="../scripts/table.js"></script>
     <script src="../scripts/products.js"></script>
+    <script src="../scripts/delivery_modal.js"></script>
     <script src="../scripts/notif.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>
