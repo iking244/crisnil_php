@@ -182,7 +182,7 @@ if ($_GET['action'] == "update_delivery") {
     $weights = $_POST['weight'];
     $prices = $_POST['price'];
     $amounts = $_POST['amount'];
-    $item_ids = $_POST['item_id'];
+    $item_ids = $_POST['item_id'] ?? array_fill(0, count($products), null);
 
     $databaseconn->begin_transaction();
 
