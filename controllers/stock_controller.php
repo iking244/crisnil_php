@@ -197,7 +197,7 @@ if ($_GET['action'] == "update_delivery") {
     ";
 
 
-        $params = array_merge([$delivery_receipt_id], $item_ids);
+        $params = array_merge([$delivery_id], $item_ids);
 
         $stmt = mysqli_prepare($databaseconn, $deleteQuery);
 
