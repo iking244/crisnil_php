@@ -77,6 +77,9 @@ margin-bottom:15px;
 
 .operation-card{
 border-radius:12px;
+padding:18px;
+background:#fff;
+border:1px solid #ececec;
 transition:.2s ease;
 }
 
@@ -96,6 +99,38 @@ display:flex;
 justify-content:space-between;
 font-size:13px;
 margin-bottom:4px;
+
+.operation-title{
+font-weight:600;
+font-size:15px;
+margin-bottom:3px;
+}
+
+.operation-desc{
+font-size:13px;
+color:#6c757d;
+margin-bottom:12px;
+}
+
+.operation-metrics{
+display:flex;
+gap:12px;
+margin-top:10px;
+}
+
+.metric-pill{
+background:#f5f6f7;
+border-radius:6px;
+padding:6px 10px;
+font-size:12px;
+display:flex;
+gap:6px;
+align-items:center;
+}
+
+.metric-number{
+font-weight:600;
+}
 }
 
 /* =====================================
