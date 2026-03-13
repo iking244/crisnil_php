@@ -51,149 +51,175 @@
     color: #2563eb;
 }
 
-.action-card{
-transition: all .2s ease;
-border-radius:12px;
+.action-card {
+    transition: all .2s ease;
+    border-radius: 12px;
 }
 
-.action-card:hover{
-transform: translateY(-4px);
-box-shadow:0 10px 20px rgba(0,0,0,0.08);
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
-.section-title{
-font-size:14px;
-font-weight:600;
-color:#6c757d;
-margin-bottom:15px;
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 15px;
 }
 
-.section-title{
-font-size:14px;
-font-weight:600;
-color:#6c757d;
-margin-bottom:15px;
-}
-
-.operation-card{
-border-radius:12px;
-padding:18px;
-background:#fff;
-border:1px solid #ececec;
-transition:.2s ease;
-}
-
-.operation-card:hover{
-transform:translateY(-3px);
-box-shadow:0 8px 18px rgba(0,0,0,0.08);
-}
-
-.operation-stats{
-margin-top:12px;
-padding-top:10px;
-border-top:1px solid #eee;
-}
-
-.operation-stats div{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-margin-bottom:4px;
-
-.operation-title{
-font-weight:600;
-font-size:15px;
-margin-bottom:3px;
-}
-
-.operation-desc{
-font-size:13px;
-color:#6c757d;
-margin-bottom:12px;
-}
-
-.operation-metrics{
-display:flex;
-gap:12px;
-margin-top:10px;
-}
-
-.metric-pill{
-background:#f5f6f7;
-border-radius:6px;
-padding:6px 10px;
-font-size:12px;
-display:flex;
-gap:6px;
-align-items:center;
-}
-
-.metric-number{
-font-weight:600;
-}
-}
-
-.operation-card .card-body{
-padding:20px 22px;
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 15px;
 }
 
 .operation-card {
-cursor: pointer;
-transition: all 0.15s ease;
+    border-radius: 12px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #ececec;
+    transition: .2s ease;
 }
 
 .operation-card:hover {
-transform: translateY(-2px);
-box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
-.receiving-card{
-border-radius:10px;
-transition:all .2s ease;
+.operation-stats {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
 }
 
-.receiving-card:hover{
-transform:translateY(-3px);
-box-shadow:0 10px 20px rgba(0,0,0,0.08);
+.operation-stats div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 4px;
+
+    .operation-title {
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 3px;
+    }
+
+    .operation-desc {
+        font-size: 13px;
+        color: #6c757d;
+        margin-bottom: 12px;
+    }
+
+    .operation-metrics {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .metric-pill {
+        background: #f5f6f7;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 12px;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .metric-number {
+        font-weight: 600;
+    }
 }
 
-.metric-card{
-background:#fff;
-border-radius:8px;
-padding:14px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
+.operation-card .card-body {
+    padding: 20px 22px;
 }
 
-.metric-card h6{
-font-size:13px;
-color:#777;
-margin-bottom:2px;
+.operation-card {
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
 
-.metric-card h4{
-margin:0;
-font-weight:600;
+.operation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
 }
 
-.dr-card{
-border-radius:10px;
-box-shadow:0 4px 12px rgba(0,0,0,0.05);
-margin-bottom:20px;
+.receiving-card {
+    border-radius: 10px;
+    transition: all .2s ease;
 }
 
-.item-row{
-border-top:1px solid #eee;
-padding:12px 0;
+.receiving-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
-.item-row:first-child{
-border-top:none;
+.metric-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.progress{
-height:6px;
+.metric-card h6 {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 2px;
 }
 
+.metric-card h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.dr-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.item-row {
+    border-top: 1px solid #eee;
+    padding: 12px 0;
+}
+
+.item-row:first-child {
+    border-top: none;
+}
+
+.progress {
+    height: 6px;
+}
+
+.dr-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.item-row {
+    border-top: 1px solid #eee;
+    padding: 12px 0;
+}
+
+.progress {
+    height: 6px;
+}
+
+.status-complete {
+    border-left: 5px solid #28a745;
+}
+
+.status-warning {
+    border-left: 5px solid #ffc107;
+}
+
+.status-pending {
+    border-left: 5px solid #dc3545;
+}
 
 /* =====================================
    FILTER CARD

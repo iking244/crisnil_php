@@ -7,199 +7,194 @@ include "../controllers/warehouse_controller.php";
 
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Warehouse Receiving - CRISNIL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Receiving - CRISNIL</title>
 
-<link rel="stylesheet" href="../styles/base.css">
-<link rel="stylesheet" href="../styles/layout.css">
-<link rel="stylesheet" href="../styles/components.css">
-<link rel="stylesheet" href="../styles/products/products.css">
-<link rel="stylesheet" href="../styles/modals.css">
+    <link rel="stylesheet" href="../styles/base.css">
+    <link rel="stylesheet" href="../styles/layout.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/products/products.css">
+    <link rel="stylesheet" href="../styles/modals.css">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
 
 <body>
 
-<?php include '../includes/header.php'; ?>
-<?php include '../includes/sidenav.php'; ?>
+    <?php include '../includes/header.php'; ?>
+    <?php include '../includes/sidenav.php'; ?>
 
-<div class="main">
+    <div class="main">
+        <div class="container-fluid pt-3">
 
-<div class="container-fluid pt-3">
+            <div class="d-flex justify-content-between align-items-center mb-4">
 
-<!-- HEADER -->
+                <h1 class="page-title">Warehouse Receiving</h1>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="inventory_overview.php" class="btn btn-outline-dark">
+                    <i class="fa fa-arrow-left me-1"></i> Back to Inventory
+                </a>
 
-<h1 class="page-title">Warehouse Receiving</h1>
+            </div>
 
-<a href="inventory_overview.php" class="btn btn-outline-dark">
-<i class="fa fa-arrow-left me-1"></i> Back to Inventory
-</a>
+            <?php
 
-</div>
+            $drGroups = [];
 
+            while ($row = mysqli_fetch_assoc($deliveryItems)) {
 
-<?php
+                $dr = $row['dr_number'];
 
-$drGroups = [];
+                if (!isset($drGroups[$dr])) {
 
-while($row = mysqli_fetch_assoc($deliveryItems)){
+                    $drGroups[$dr] = [
+                        "items" => [],
+                        "total_boxes" => 0,
+                        "assigned_boxes" => 0,
+                        "exceptions" => 0
+                    ];
+                }
 
-$dr = $row['dr_number'];
+                $drGroups[$dr]["items"][] = $row;
+                $drGroups[$dr]["total_boxes"] += $row['qty'];
+                $drGroups[$dr]["assigned_boxes"] += $row['assigned_boxes'];
+                $drGroups[$dr]["exceptions"] += $row['exception_boxes'] ?? 0;
+            }
 
-if(!isset($drGroups[$dr])){
+            ?>
 
-$drGroups[$dr] = [
-"items"=>[],
-"total_boxes"=>0,
-"assigned_boxes"=>0
-];
+            <?php foreach ($drGroups as $dr => $group):
 
-}
+                $progress = ($group["assigned_boxes"] / $group["total_boxes"]) * 100;
+                $remaining = $group["total_boxes"] - $group["assigned_boxes"];
 
-$drGroups[$dr]["items"][] = $row;
-$drGroups[$dr]["total_boxes"] += $row['qty'];
-$drGroups[$dr]["assigned_boxes"] += $row['assigned_boxes'];
+                $statusClass = "status-pending";
+                $statusLabel = "Pending";
 
-}
+                if ($remaining == 0 && $group["exceptions"] == 0) {
+                    $statusClass = "status-complete";
+                    $statusLabel = "Completed";
+                }
 
-?>
+                if ($remaining == 0 && $group["exceptions"] > 0) {
+                    $statusClass = "status-warning";
+                    $statusLabel = "Completed with Issues";
+                }
 
+            ?>
 
-<?php foreach($drGroups as $dr => $group):
+                <div class="card dr-card <?= $statusClass ?>">
 
-$progress = ($group["assigned_boxes"] / $group["total_boxes"]) * 100;
-$isComplete = $group["assigned_boxes"] == $group["total_boxes"];
+                    <div class="card-body">
 
-?>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
 
-<div class="card dr-card">
+                            <h5 class="mb-0">
 
-<div class="card-body">
+                                DR <?= $dr ?>
 
-<div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-secondary ms-2">
+                                    <?= $statusLabel ?>
+                                </span>
 
-<h5 class="mb-0">
+                            </h5>
 
-DR <?= $dr ?>
+                            <small class="text-muted">
 
-<?php if($isComplete): ?>
+                                <?= $group["assigned_boxes"] ?> / <?= $group["total_boxes"] ?> boxes
 
-<span class="badge bg-success ms-2">Completed</span>
+                            </small>
 
-<?php endif; ?>
+                        </div>
 
-</h5>
+                        <div class="progress mb-3">
 
-<small class="text-muted">
+                            <div class="progress-bar bg-success"
+                                style="width: <?= $progress ?>%">
+                            </div>
 
-<?= $group["assigned_boxes"] ?> / <?= $group["total_boxes"] ?> boxes
+                        </div>
 
-</small>
+                        <?php foreach ($group["items"] as $item):
 
-</div>
+                            $remainingItem = $item["qty"] - $item["assigned_boxes"];
 
-<div class="progress mb-3">
+                        ?>
 
-<div class="progress-bar bg-success"
-style="width: <?= $progress ?>%">
-</div>
+                            <div class="item-row">
 
-</div>
+                                <div class="d-flex justify-content-between">
 
+                                    <div>
 
-<?php foreach($group["items"] as $item):
+                                        <div class="fw-semibold">
+                                            <?= htmlspecialchars($item["product_name"]) ?>
+                                        </div>
 
-$remaining = $item["qty"] - $item["assigned_boxes"];
+                                        <small class="text-muted">
+                                            <?= $item["total_weight"] ?> kg
+                                        </small>
 
-?>
+                                    </div>
 
-<div class="item-row">
+                                    <div>
 
-<div class="d-flex justify-content-between">
+                                        <button class="btn btn-primary btn-sm assignBtn"
 
-<div>
+                                            data-id="<?= $item['delivery_item_id'] ?>"
+                                            data-product="<?= htmlspecialchars($item['product_name']) ?>"
+                                            data-qty="<?= $item['qty'] ?>"
 
-<div class="fw-semibold">
+                                            <?= $remainingItem == 0 ? "disabled" : "" ?>>
 
-<?= htmlspecialchars($item["product_name"]) ?>
+                                            <i class="fa fa-box"></i>
 
-</div>
+                                            <?= $remainingItem == 0 ? "Completed" : "Assign" ?>
 
-<small class="text-muted">
+                                        </button>
 
-<?= $item["total_weight"] ?> kg
+                                    </div>
 
-</small>
+                                </div>
 
-</div>
+                                <div class="small mt-2">
 
+                                    <span class="me-3">
+                                        Boxes: <strong><?= $item["qty"] ?></strong>
+                                    </span>
 
-<div>
+                                    <span class="me-3">
+                                        Assigned: <strong><?= $item["assigned_boxes"] ?></strong>
+                                    </span>
 
-<button class="btn btn-primary btn-sm assignBtn"
+                                    <span>
+                                        Remaining: <strong><?= $remainingItem ?></strong>
+                                    </span>
 
-data-id="<?= $item['delivery_item_id'] ?>"
-data-product="<?= htmlspecialchars($item['product_name']) ?>"
-data-qty="<?= $item['qty'] ?>"
+                                </div>
 
-<?= $remaining == 0 ? "disabled" : "" ?>
+                            </div>
 
->
+                        <?php endforeach; ?>
 
-<i class="fa fa-box"></i>
+                    </div>
 
-<?= $remaining == 0 ? "Completed" : "Assign" ?>
+                </div>
 
-</button>
+            <?php endforeach; ?>
 
-</div>
+        </div>
+    </div>
 
-</div>
+    <?php include 'modals/assign_boxes_modal.php'; ?>
 
-
-<div class="small mt-2">
-
-<span class="me-3">
-Boxes: <strong><?= $item["qty"] ?></strong>
-</span>
-
-<span class="me-3">
-Assigned: <strong><?= $item["assigned_boxes"] ?></strong>
-</span>
-
-<span>
-Remaining: <strong><?= $remaining ?></strong>
-</span>
-
-</div>
-
-</div>
-
-<?php endforeach; ?>
-
-</div>
-
-</div>
-
-<?php endforeach; ?>
-
-
-</div>
-</div>
-
-
-<?php include 'modals/assign_boxes_modal.php'; ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script src="../scripts/utils.js"></script>
-<script src="../scripts/assign_boxes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/utils.js"></script>
+    <script src="../scripts/assign_boxes.js"></script>
 
 </body>
+
 </html>
