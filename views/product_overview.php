@@ -107,6 +107,11 @@ include "../controllers/products_controller.php";
                 <h6 class="fw-semibold text-muted mb-0">Warehouse Operations</h6>
             </div>
 
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa fa-cogs text-muted me-2"></i>
+                <h6 class="fw-semibold text-muted mb-0">Warehouse Operations</h6>
+            </div>
+
             <div class="row g-3 mb-4">
 
                 <!-- RECEIVE DELIVERY -->
@@ -139,16 +144,18 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <hr class="my-2">
+                            <hr class="my-3">
 
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
 
-                                <span class="badge bg-light text-dark px-3 py-2">
-                                    Pending DR <strong class="ms-1">5</strong>
+                                <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                    Pending DR
+                                    <strong class="ms-1">5</strong>
                                 </span>
 
-                                <span class="badge bg-light text-dark px-3 py-2">
-                                    Items Waiting <strong class="ms-1">5</strong>
+                                <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                    Items Waiting
+                                    <strong class="ms-1">5</strong>
                                 </span>
 
                             </div>
@@ -190,16 +197,18 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <hr class="my-2">
+                            <hr class="my-3">
 
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
 
-                                <span class="badge bg-light text-dark px-3 py-2">
-                                    Recent Edits <strong class="ms-1">3</strong>
+                                <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                    Recent Edits
+                                    <strong class="ms-1">3</strong>
                                 </span>
 
-                                <span class="badge bg-light text-dark px-3 py-2">
-                                    Needs Review <strong class="ms-1">1</strong>
+                                <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                    Needs Review
+                                    <strong class="ms-1">1</strong>
                                 </span>
 
                             </div>
@@ -239,16 +248,18 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <hr class="my-2">
+                            <hr class="my-3">
 
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
 
-                                <span class="badge bg-light text-dark px-3 py-2">
-                                    Items Pending <strong class="ms-1">4</strong>
+                                <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                    Items Pending
+                                    <strong class="ms-1">4</strong>
                                 </span>
 
-                                <span class="badge bg-light text-dark px-3 py-2">
-                                    Boxes Remaining <strong class="ms-1">12</strong>
+                                <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                    Boxes Remaining
+                                    <strong class="ms-1">12</strong>
                                 </span>
 
                             </div>
