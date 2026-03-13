@@ -149,26 +149,26 @@ include "../controllers/products_controller.php";
                     <i class="fa fa-cogs me-2"></i> Warehouse Operations
                 </h6>
                 <div class="col-md-4">
-                    <div class="card shadow-sm border-0 action-card h-100">
-                        <div class="card-body d-flex justify-content-between align-items-center">
+                    <div class="card-body d-flex justify-content-between align-items-center">
 
-                            <div>
-                                <h6 class="fw-semibold mb-1">
-                                    <i class="fa fa-truck text-success me-2"></i>
-                                    Receive Delivery
-                                </h6>
-                                <small class="text-muted">
-                                    Record supplier deliveries into the system
-                                </small>
-                            </div>
+                        <div>
+                            <h6 class="fw-semibold mb-1">
+                                <i class="fa fa-truck text-success me-2"></i>
+                                Receive Delivery
+                            </h6>
+                            <small class="text-muted">
+                                Record supplier deliveries into the system
+                            </small>
+                        </div>
 
+                        <div>
                             <button class="btn btn-success"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addStockModal">
                                 Open
                             </button>
-
                         </div>
+
                     </div>
                 </div>
 
