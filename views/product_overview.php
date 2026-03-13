@@ -20,9 +20,39 @@ include "../controllers/products_controller.php";
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Additional Styles -->
     <link rel="stylesheet" href="../styles/floatingBtn.css">
     <link rel="stylesheet" href="../styles/modals.css">
+
+    <style>
+        .action-card {
+            transition: all .2s ease;
+            border-radius: 10px;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .metric-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-card h6 {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .metric-card h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -40,7 +70,6 @@ include "../controllers/products_controller.php";
 
                 <div class="d-flex gap-2">
 
-                    <!-- Product Actions -->
                     <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#createProductModal">
@@ -55,18 +84,17 @@ include "../controllers/products_controller.php";
 
             </div>
 
-
-            <!-- ================= WAREHOUSE OPERATIONS ================= -->
             <!-- ================= QUICK ACTIONS ================= -->
             <div class="row mb-4 g-3">
 
                 <div class="col-md-4">
-                    <div class="card shadow-sm h-100 border-0 action-card">
-                        <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="card border-0 shadow-sm action-card h-100">
+
+                        <div class="card-body d-flex justify-content-between align-items-center">
 
                             <div>
                                 <h6 class="fw-semibold mb-1">Receive Delivery</h6>
-                                <small class="text-muted">Record incoming supplier delivery</small>
+                                <small class="text-muted">Record incoming supplier deliveries</small>
                             </div>
 
                             <button class="btn btn-success"
@@ -79,13 +107,15 @@ include "../controllers/products_controller.php";
                     </div>
                 </div>
 
+
                 <div class="col-md-4">
-                    <div class="card shadow-sm h-100 border-0 action-card">
-                        <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="card border-0 shadow-sm action-card h-100">
+
+                        <div class="card-body d-flex justify-content-between align-items-center">
 
                             <div>
                                 <h6 class="fw-semibold mb-1">Edit Delivery</h6>
-                                <small class="text-muted">Modify existing delivery receipts</small>
+                                <small class="text-muted">Modify delivery receipts</small>
                             </div>
 
                             <button class="btn btn-warning"
@@ -98,13 +128,15 @@ include "../controllers/products_controller.php";
                     </div>
                 </div>
 
+
                 <div class="col-md-4">
-                    <div class="card shadow-sm h-100 border-0 action-card">
-                        <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="card border-0 shadow-sm action-card h-100">
+
+                        <div class="card-body d-flex justify-content-between align-items-center">
 
                             <div>
                                 <h6 class="fw-semibold mb-1">Warehouse Receiving</h6>
-                                <small class="text-muted">Assign boxes, batches, and pallets</small>
+                                <small class="text-muted">Assign boxes, pallets, and batches</small>
                             </div>
 
                             <a href="receiving.php" class="btn btn-outline-secondary">
@@ -116,6 +148,41 @@ include "../controllers/products_controller.php";
                 </div>
 
             </div>
+
+
+            <!-- ================= OPERATION METRICS ================= -->
+            <div class="row mb-4 g-3">
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Total Products</h6>
+                        <h3><?= $stats['total_products'] ?></h3>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Total Stock</h6>
+                        <h3><?= number_format($stats['total_stock']) ?></h3>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Low Stock Items</h6>
+                        <h3><?= $stats['low_stock'] ?></h3>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <h6>Total Weight</h6>
+                        <h3><?= number_format($stats['total_weight']) ?> kg</h3>
+                    </div>
+                </div>
+
+            </div>
+
 
             <!-- ================= INVENTORY ALERT ================= -->
             <?php if ($stats['low_stock'] > 0): ?>
@@ -135,70 +202,8 @@ include "../controllers/products_controller.php";
             <?php endif; ?>
 
 
-            <!-- ================= KPI CARDS ================= -->
-            <div class="row mb-4 g-3">
-
-                <div class="col-md-3">
-                    <div class="kpi-card blue d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Total Products</h6>
-                            <h3><?= $stats['total_products'] ?></h3>
-                        </div>
-
-                        <i class="fa fa-box fa-2x text-white opacity-75"></i>
-
-                    </div>
-                </div>
-
-
-                <div class="col-md-3">
-                    <div class="kpi-card green d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Total Stock</h6>
-                            <h3><?= number_format($stats['total_stock']) ?></h3>
-                        </div>
-
-                        <i class="fa fa-warehouse fa-2x text-white opacity-75"></i>
-
-                    </div>
-                </div>
-
-
-                <div class="col-md-3">
-                    <div class="kpi-card orange d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Low Stock Items</h6>
-                            <h3><?= $stats['low_stock'] ?></h3>
-                        </div>
-
-                        <i class="fa fa-exclamation-triangle fa-2x text-white opacity-75"></i>
-
-                    </div>
-                </div>
-
-
-                <div class="col-md-3">
-                    <div class="kpi-card gray d-flex justify-content-between align-items-center">
-
-                        <div>
-                            <h6>Total Weight</h6>
-                            <h3><?= number_format($stats['total_weight']) ?> kg</h3>
-                        </div>
-
-                        <i class="fa fa-weight-hanging fa-2x text-white opacity-75"></i>
-
-                    </div>
-                </div>
-
-            </div>
-
-
-            <!-- ================= LOWER PANELS ================= -->
+            <!-- ================= DASHBOARD PANELS ================= -->
             <div class="row mt-4 g-4">
-
 
                 <!-- Low Stock Products -->
                 <div class="col-lg-7">
@@ -233,13 +238,11 @@ include "../controllers/products_controller.php";
                                         <?php while ($row = mysqli_fetch_assoc($lowStockProducts)): ?>
 
                                             <tr>
-
                                                 <td><?= htmlspecialchars($row['product_name']) ?></td>
 
                                                 <td class="text-end text-danger fw-bold">
                                                     <?= $row['quantity'] ?>
                                                 </td>
-
                                             </tr>
 
                                         <?php endwhile; ?>
@@ -247,11 +250,9 @@ include "../controllers/products_controller.php";
                                     <?php else: ?>
 
                                         <tr>
-
                                             <td colspan="2" class="text-center text-muted py-4">
                                                 No low stock products.
                                             </td>
-
                                         </tr>
 
                                     <?php endif; ?>
