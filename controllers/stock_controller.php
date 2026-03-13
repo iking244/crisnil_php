@@ -190,7 +190,7 @@ if ($_GET['action'] == "update_delivery") {
 
         $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
 
-        $query = "
+        $deleteQuery = "
         DELETE FROM tbl_delivery_items
         WHERE delivery_receipt_id = ?
         AND delivery_item_id NOT IN ($placeholders)
