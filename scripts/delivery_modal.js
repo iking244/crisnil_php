@@ -1,95 +1,141 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const deliveryModal =
-        new bootstrap.Modal(document.getElementById("deliveryModal"));
+    const modalEl = document.getElementById("deliveryModal");
+    const deliveryModal = new bootstrap.Modal(modalEl);
+
+    const form = document.getElementById("deliveryForm");
+    const title = modalEl.querySelector(".modal-title");
 
     const loadBtn = document.getElementById("loadDRBtn");
+    const drInput = document.getElementById("dr_number");
+
     const modeInput = document.getElementById("delivery_mode");
-    const form = document.getElementById("deliveryForm");
-    const title = document.querySelector("#deliveryModal .modal-title");
+    const receiptIdInput = document.getElementById("delivery_receipt_id");
 
-    // CREATE
-    document.getElementById("openCreateDelivery").addEventListener("click", () => {
+    const tbody = document.querySelector("#itemsTable tbody");
 
-        modeInput.value = "create";
+    const createBtn = document.getElementById("openCreateDelivery");
+    const editBtn = document.getElementById("openEditDelivery");
 
-        title.innerHTML =
-            `<i class="fa fa-truck me-2 text-success"></i> Receive Delivery`;
 
-        loadBtn.classList.add("d-none");
 
-        form.reset();
+    // -----------------------------------
+    // PRODUCT OPTIONS GENERATOR
+    // -----------------------------------
+    function productOptions(selectedId = null) {
 
-        document.querySelector("#itemsTable tbody").innerHTML = "";
+        if (!window.PRODUCTS || !Array.isArray(window.PRODUCTS)) {
+            console.warn("PRODUCTS array not found");
+            return "";
+        }
 
-        deliveryModal.show();
+        return window.PRODUCTS.map(p => `
+            <option value="${p.product_id}" ${p.product_id == selectedId ? "selected" : ""}>
+                ${p.product_name}
+            </option>
+        `).join("");
 
-    });
-
-    // EDIT
-    document.getElementById("openEditDelivery").addEventListener("click", () => {
-
-        modeInput.value = "edit";
-
-        title.innerHTML =
-            `<i class="fa fa-edit me-2 text-warning"></i> Edit Delivery`;
-
-        loadBtn.classList.remove("d-none");
-
-        form.reset();
-
-        document.querySelector("#itemsTable tbody").innerHTML = "";
-
-        deliveryModal.show();
-
-    });
-
-});
-
-function productOptions(selectedId) {
-
-    if (!window.PRODUCTS) return "";
-
-    return PRODUCTS.map(p => `
-        <option value="${p.product_id}" ${p.product_id == selectedId ? "selected" : ""}>
-            ${p.product_name}
-        </option>
-    `).join("");
-
-}
-
-document.getElementById("loadDRBtn").addEventListener("click", function () {
-
-    let dr = document.getElementById("dr_number").value.trim();
-
-    if (!dr) {
-        alert("Please enter a DR number first.");
-        return;
     }
 
-    fetch("../controllers/stock_controller.php?action=get_delivery_by_dr&dr=" + dr)
 
-        .then(res => res.json())
 
-        .then(data => {
+    // -----------------------------------
+    // RESET MODAL
+    // -----------------------------------
+    function resetModal() {
 
-            if (!data || !data.items || data.items.length === 0) {
+        form.reset();
+        tbody.innerHTML = "";
+        receiptIdInput.value = "";
 
-                alert("Delivery Receipt not found.");
+    }
+
+
+
+    // -----------------------------------
+    // OPEN CREATE DELIVERY
+    // -----------------------------------
+    if (createBtn) {
+
+        createBtn.addEventListener("click", () => {
+
+            modeInput.value = "create";
+
+            title.innerHTML =
+                `<i class="fa fa-truck me-2 text-success"></i> Receive Delivery`;
+
+            loadBtn.classList.add("d-none");
+
+            resetModal();
+
+            deliveryModal.show();
+
+        });
+
+    }
+
+
+
+    // -----------------------------------
+    // OPEN EDIT DELIVERY
+    // -----------------------------------
+    if (editBtn) {
+
+        editBtn.addEventListener("click", () => {
+
+            modeInput.value = "edit";
+
+            title.innerHTML =
+                `<i class="fa fa-edit me-2 text-warning"></i> Edit Delivery`;
+
+            loadBtn.classList.remove("d-none");
+
+            resetModal();
+
+            deliveryModal.show();
+
+        });
+
+    }
+
+
+
+    // -----------------------------------
+    // LOAD DELIVERY BY DR
+    // -----------------------------------
+    if (loadBtn) {
+
+        loadBtn.addEventListener("click", async () => {
+
+            const dr = drInput.value.trim();
+
+            if (!dr) {
+                alert("Please enter a DR number first.");
                 return;
             }
 
-            // store receipt id
-            document.getElementById("delivery_receipt_id").value =
-                data.delivery_receipt_id;
+            try {
 
-            const tbody = document.querySelector("#itemsTable tbody");
+                const res = await fetch(
+                    `../controllers/stock_controller.php?action=get_delivery_by_dr&dr=${dr}`
+                );
 
-            tbody.innerHTML = "";
+                const data = await res.json();
 
-            data.items.forEach(item => {
+                if (!data || !data.items || data.items.length === 0) {
 
-                tbody.innerHTML += `
+                    alert("Delivery Receipt not found.");
+                    return;
+
+                }
+
+                receiptIdInput.value = data.delivery_receipt_id;
+
+                tbody.innerHTML = "";
+
+                data.items.forEach(item => {
+
+                    const row = `
 <tr class="item-row">
 
 <input type="hidden" name="item_id[]" value="${item.delivery_item_id}">
@@ -148,15 +194,19 @@ ${productOptions(item.product_id)}
 </tr>
 `;
 
-            });
+                    tbody.insertAdjacentHTML("beforeend", row);
 
-        })
+                });
 
-        .catch(err => {
+            } catch (err) {
 
-            console.error(err);
-            alert("Failed to load delivery receipt.");
+                console.error(err);
+                alert("Failed to load delivery receipt.");
+
+            }
 
         });
+
+    }
 
 });
