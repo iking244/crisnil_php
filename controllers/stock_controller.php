@@ -17,7 +17,7 @@ if ($_GET['action'] == "get_delivery_by_dr") {
 
     $dr = $_GET['dr'];
 
-$query = "
+    $query = "
     SELECT 
         di.delivery_item_id,
         di.product_id,
@@ -187,6 +187,14 @@ if ($_GET['action'] == "update_delivery") {
     $databaseconn->begin_transaction();
 
     try {
+
+        $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
+
+        $query = "
+        DELETE FROM tbl_delivery_items
+        WHERE delivery_receipt_id = ?
+        AND delivery_item_id NOT IN ($placeholders)
+    ";
 
         // update DR number
         $query = "
