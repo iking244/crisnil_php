@@ -59,56 +59,41 @@ include "../controllers/products_controller.php";
 
                 <div class="col-md-3">
                     <div class="kpi-card blue d-flex justify-content-between align-items-center">
-
                         <div>
                             <h6>Total Products</h6>
                             <h3 class="fw-bold"><?= $stats['total_products'] ?></h3>
                         </div>
-
                         <i class="fa fa-box fa-2x text-white opacity-75"></i>
-
                     </div>
                 </div>
 
-
                 <div class="col-md-3">
                     <div class="kpi-card green d-flex justify-content-between align-items-center">
-
                         <div>
                             <h6>Total Stock</h6>
                             <h3 class="fw-bold"><?= number_format($stats['total_stock']) ?></h3>
                         </div>
-
                         <i class="fa fa-warehouse fa-2x text-white opacity-75"></i>
-
                     </div>
                 </div>
 
-
                 <div class="col-md-3">
                     <div class="kpi-card orange d-flex justify-content-between align-items-center">
-
                         <div>
                             <h6>Low Stock Items</h6>
                             <h3 class="fw-bold"><?= $stats['low_stock'] ?></h3>
                         </div>
-
                         <i class="fa fa-exclamation-triangle fa-2x text-white opacity-75"></i>
-
                     </div>
                 </div>
 
-
                 <div class="col-md-3">
                     <div class="kpi-card gray d-flex justify-content-between align-items-center">
-
                         <div>
                             <h6>Total Weight</h6>
                             <h3 class="fw-bold"><?= number_format($stats['total_weight']) ?> kg</h3>
                         </div>
-
                         <i class="fa fa-weight-hanging fa-2x text-white opacity-75"></i>
-
                     </div>
                 </div>
 
@@ -117,8 +102,9 @@ include "../controllers/products_controller.php";
 
             <!-- WAREHOUSE OPERATIONS -->
 
-            <div class="section-title">
-                <i class="fa fa-cogs me-2"></i> Warehouse Operations
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa fa-cogs text-muted me-2"></i>
+                <h6 class="fw-semibold text-muted mb-0">Warehouse Operations</h6>
             </div>
 
             <div class="row g-3 mb-4">
@@ -130,7 +116,7 @@ include "../controllers/products_controller.php";
 
                         <div class="card-body">
 
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
 
                                 <div>
 
@@ -153,17 +139,17 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <div class="small">
+                            <hr class="my-2">
 
-                                <div class="d-flex justify-content-between py-1">
-                                    <span class="text-muted">Pending DR</span>
-                                    <span class="fw-semibold">5</span>
-                                </div>
+                            <div class="d-flex gap-2">
 
-                                <div class="d-flex justify-content-between py-1">
-                                    <span class="text-muted">Items Waiting</span>
-                                    <span class="fw-semibold">5</span>
-                                </div>
+                                <span class="badge bg-light text-dark px-3 py-2">
+                                    Pending DR <strong class="ms-1">5</strong>
+                                </span>
+
+                                <span class="badge bg-light text-dark px-3 py-2">
+                                    Items Waiting <strong class="ms-1">5</strong>
+                                </span>
 
                             </div>
 
@@ -181,7 +167,7 @@ include "../controllers/products_controller.php";
 
                         <div class="card-body">
 
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
 
                                 <div>
 
@@ -204,17 +190,17 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <div class="small">
+                            <hr class="my-2">
 
-                                <div class="d-flex justify-content-between py-1">
-                                    <span class="text-muted">Recent Edits</span>
-                                    <span class="fw-semibold">3</span>
-                                </div>
+                            <div class="d-flex gap-2">
 
-                                <div class="d-flex justify-content-between py-1">
-                                    <span class="text-muted">Needs Review</span>
-                                    <span class="fw-semibold">1</span>
-                                </div>
+                                <span class="badge bg-light text-dark px-3 py-2">
+                                    Recent Edits <strong class="ms-1">3</strong>
+                                </span>
+
+                                <span class="badge bg-light text-dark px-3 py-2">
+                                    Needs Review <strong class="ms-1">1</strong>
+                                </span>
 
                             </div>
 
@@ -232,7 +218,7 @@ include "../controllers/products_controller.php";
 
                         <div class="card-body">
 
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
 
                                 <div>
 
@@ -253,17 +239,17 @@ include "../controllers/products_controller.php";
 
                             </div>
 
-                            <div class="small">
+                            <hr class="my-2">
 
-                                <div class="d-flex justify-content-between py-1">
-                                    <span class="text-muted">Items Pending</span>
-                                    <span class="fw-semibold">4</span>
-                                </div>
+                            <div class="d-flex gap-2">
 
-                                <div class="d-flex justify-content-between py-1">
-                                    <span class="text-muted">Boxes Remaining</span>
-                                    <span class="fw-semibold">12</span>
-                                </div>
+                                <span class="badge bg-light text-dark px-3 py-2">
+                                    Items Pending <strong class="ms-1">4</strong>
+                                </span>
+
+                                <span class="badge bg-light text-dark px-3 py-2">
+                                    Boxes Remaining <strong class="ms-1">12</strong>
+                                </span>
 
                             </div>
 
@@ -273,6 +259,7 @@ include "../controllers/products_controller.php";
                 </div>
 
             </div>
+
 
             <!-- INVENTORY ALERT -->
 
@@ -409,7 +396,6 @@ include "../controllers/products_controller.php";
                     </div>
 
                 </div>
-
 
             </div>
 
