@@ -172,7 +172,7 @@ if ($_GET['action'] == "add_delivery") {
 }
 
 if ($_GET['action'] == "update_delivery") {
-    var_dump($_POST['item_id'],$_POST['delivery_receipt_id']);
+    var_dump($_POST['item_id'], $_POST['delivery_receipt_id']);
     exit;
 
     $delivery_id = $_POST['delivery_receipt_id'];
@@ -199,11 +199,13 @@ if ($_GET['action'] == "update_delivery") {
     ";
 
 
+        $params = array_merge([$delivery_receipt_id], $item_ids);
+
         $stmt = mysqli_prepare($databaseconn, $deleteQuery);
 
-        $types = str_repeat('i', count($item_ids) + 1);
+        $types = str_repeat('i', count($params));
 
-        mysqli_stmt_bind_param($stmt, $types, $delivery_receipt_id, ...$item_ids);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
 
         mysqli_stmt_execute($stmt);
 
