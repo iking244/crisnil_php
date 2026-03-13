@@ -173,6 +173,13 @@ document.getElementById("deliveryForm").addEventListener("submit", function (e) 
 
 });
 
+function productOptions(products, selectedId){
+    return products.map(p => `
+        <option value="${p.product_id}" ${p.product_id == selectedId ? "selected" : ""}>
+            ${p.product_name}
+        </option>
+    `).join("");
+}
 
 document.getElementById("loadDRBtn").addEventListener("click", function () {
 
@@ -198,11 +205,7 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
                 <td>
                     <select name="product_id[]" class="form-control">
                         <option value="">Select product</option>
-                        ${data.products.map(p => `
-                            <option value="${p.product_id}" ${p.product_id == item.product_id ? "selected" : ""}>
-                                ${p.product_name}
-                            </option>
-                        `).join("")}                           
+                        ${productOptions(data.products, item.product_id)}                       
                     </select>
                 </td>
 
