@@ -6,8 +6,8 @@ require_once "../../config/database_conn.php";
 
 header('Content-Type: application/json');
 
-function haversine($lat1, $lon1, $lat2, $lon2) {
-
+function haversine($lat1, $lon1, $lat2, $lon2)
+{
     $earthRadius = 6371;
 
     $dLat = deg2rad($lat2 - $lat1);
@@ -30,7 +30,6 @@ try {
     // ================================
     // GET PENDING JOBS
     // ================================
-
     $jobsQuery = $databaseconn->query("
         SELECT *
         FROM tbl_job_orders
@@ -49,13 +48,12 @@ try {
     // ================================
     // GET AVAILABLE TRUCKS
     // ================================
-
     $trucksQuery = $databaseconn->query("
         SELECT f.PLATE_NUM
         FROM tbl_fleetlist f
         LEFT JOIN tbl_trips t
-        ON f.PLATE_NUM = t.truck_plate_number
-        AND t.status IN ('pending','in_transit','pending_loading')
+          ON f.PLATE_NUM = t.truck_plate_number
+          AND t.status IN ('pending','in_transit','pending_loading')
         WHERE t.trip_id IS NULL
         AND f.FLEET_STATUS = 'ACTIVE'
         FOR UPDATE
@@ -70,10 +68,8 @@ try {
     // ================================
     // CLUSTER JOBS
     // ================================
-
     $radius = 5; 
     $maxOrdersPerCluster = 5;
-
     $clusters = [];
 
     while (!empty($jobs)) {
@@ -109,7 +105,6 @@ try {
     // ================================
     // ROUTING START POINT
     // ================================
-
     $startLat = 14.6091;
     $startLng = 121.0223;
 
@@ -118,7 +113,6 @@ try {
     // ================================
     // ASSIGN CLUSTERS TO TRUCKS
     // ================================
-
     foreach ($clusters as $index => $cluster) {
 
         if (!isset($trucks[$index])) {
@@ -128,7 +122,6 @@ try {
         $plate = $trucks[$index]['PLATE_NUM'];
 
         // CREATE TRIP
-
         $stmt = $databaseconn->prepare("
             INSERT INTO tbl_trips
             (truck_plate_number, status, created_at, warehouse_id)
@@ -144,9 +137,8 @@ try {
         $tripId = $stmt->insert_id;
 
         // ================================
-        // DELIVERY SEQUENCING (NEAREST)
+        // DELIVERY SEQUENCING (Nearest)
         // ================================
-
         $jobsForRouting = $cluster;
         $sequence = 1;
 
@@ -202,9 +194,8 @@ try {
         }
 
         // ================================
-        // GENERATE PICKLIST PER TRIP
+        // GENERATE PICKLIST
         // ================================
-
         generatePickList($databaseconn, $tripId);
     }
 
@@ -253,12 +244,18 @@ function generatePickList($conn, $tripId)
         $productId = $row['product_id'];
         $qtyNeeded = $row['qty'];
 
+        // ================================
+        // FEFO PICKING (with FIFO fallback)
+        // ================================
         $boxes = $conn->prepare("
-            SELECT box_id
+            SELECT box_id, pallet_id
             FROM tbl_stock_boxes
             WHERE product_id = ?
             AND status = 'available'
-            ORDER BY expiry_date ASC
+            ORDER BY 
+                expiry_date IS NULL,
+                expiry_date ASC,
+                received_at ASC
             LIMIT " . intval($qtyNeeded)
         );
 
@@ -275,15 +272,16 @@ function generatePickList($conn, $tripId)
 
             $insert = $conn->prepare("
                 INSERT INTO tbl_trip_picklist
-                (trip_id, box_id, product_id)
-                VALUES (?, ?, ?)
+                (trip_id, box_id, product_id, pallet_id)
+                VALUES (?, ?, ?, ?)
             ");
 
             $insert->bind_param(
-                "iii",
+                "iiii",
                 $tripId,
                 $box['box_id'],
-                $productId
+                $productId,
+                $box['pallet_id']
             );
 
             $insert->execute();
