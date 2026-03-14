@@ -30,7 +30,7 @@ include "../controllers/warehouse_controller.php";
 
         <div class="container-fluid">
 
-            <!-- HEADER -->
+            <!-- PAGE HEADER -->
 
             <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -39,6 +39,99 @@ include "../controllers/warehouse_controller.php";
                 <a href="product_overview.php" class="btn btn-outline-dark">
                     <i class="fa fa-arrow-left me-1"></i> Back to Inventory
                 </a>
+
+            </div>
+
+
+            <!-- KPI DASHBOARD -->
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-3">
+
+                    <div class="kpi-card blue">
+
+                        <h6>Pending Delivery Items</h6>
+                        <h3>12</h3>
+                        <div class="kpi-sub">items waiting encoding</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="kpi-card orange">
+
+                        <h6>Boxes Pending</h6>
+                        <h3>56</h3>
+                        <div class="kpi-sub">boxes not yet received</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="kpi-card green">
+
+                        <h6>Active Pallets</h6>
+                        <h3>5</h3>
+                        <div class="kpi-sub">currently in use</div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="kpi-card gray">
+
+                        <h6>Completed Today</h6>
+                        <h3>8</h3>
+                        <div class="kpi-sub">fully received DRs</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PALLET DASHBOARD -->
+
+            <div class="card mb-4">
+
+                <div class="card-header">
+
+                    <h3>Active Pallets</h3>
+
+                </div>
+
+                <div class="row">
+
+                    <?php
+                    mysqli_data_seek($pallets, 0);
+                    while ($p = mysqli_fetch_assoc($pallets)):
+                    ?>
+
+                        <div class="col-md-2">
+
+                            <div class="card text-center p-3">
+
+                                <strong><?= $p['pallet_code'] ?></strong>
+
+                                <div class="small text-muted mt-1">
+                                    capacity soon
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    <?php endwhile; ?>
+
+                </div>
 
             </div>
 
@@ -87,6 +180,9 @@ include "../controllers/warehouse_controller.php";
 
                                 </div>
 
+
+                                <!-- PROGRESS -->
+
                                 <div class="progress mb-3">
 
                                     <div class="progress-bar bg-success"
@@ -95,14 +191,19 @@ include "../controllers/warehouse_controller.php";
 
                                 </div>
 
+
+                                <!-- METRICS -->
+
                                 <div class="row text-center mb-3">
 
                                     <div class="col">
 
                                         <div class="metric">
+
                                             Boxes
                                             <br>
                                             <strong><?= $row['expected_boxes'] ?></strong>
+
                                         </div>
 
                                     </div>
@@ -110,9 +211,11 @@ include "../controllers/warehouse_controller.php";
                                     <div class="col">
 
                                         <div class="metric">
+
                                             Assigned
                                             <br>
                                             <strong><?= $row['received_boxes'] ?></strong>
+
                                         </div>
 
                                     </div>
@@ -120,9 +223,11 @@ include "../controllers/warehouse_controller.php";
                                     <div class="col">
 
                                         <div class="metric">
+
                                             Remaining
                                             <br>
                                             <strong><?= $row['remaining_boxes'] ?></strong>
+
                                         </div>
 
                                     </div>
@@ -156,7 +261,7 @@ include "../controllers/warehouse_controller.php";
                                 </div>
 
 
-                                <!-- ASSIGN BUTTON -->
+                                <!-- ENCODE BUTTON -->
 
                                 <button class="btn btn-primary btn-sm assignBtn w-100"
                                     data-id="<?= $row['delivery_item_id'] ?>"
@@ -166,7 +271,6 @@ include "../controllers/warehouse_controller.php";
                                     <i class="fa fa-box"></i> Encode Boxes
 
                                 </button>
-
 
                             </div>
 
@@ -218,7 +322,6 @@ include "../controllers/warehouse_controller.php";
 
         });
     </script>
-
 
 </body>
 
