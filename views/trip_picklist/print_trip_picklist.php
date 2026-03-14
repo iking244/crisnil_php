@@ -126,7 +126,7 @@ $currentStop = null;
 
                 <h3>Stop <?= htmlspecialchars($row['delivery_sequence']) ?></h3>
 
-                <b>Client:</b> <?= htmlspecialchars($row['client_name']) ?><br>
+                <b>Client:</b> <?= htmlspecialchars($row['destination']) ?><br>
                 <b>Destination:</b> <?= htmlspecialchars($row['destination']) ?>
 
                 <table>
