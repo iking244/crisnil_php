@@ -328,15 +328,17 @@ include "../controllers/warehouse_controller.php";
 
                                             </button>
 
+                                            <button class="btn btn-outline-danger btn-sm reportIssueBtn safe-action w-100"
+                                                data-id="<?= $row['delivery_item_id'] ?>"
+                                                data-product="<?= htmlspecialchars($row['product_name']) ?>">
+
+                                                <i class="fa fa-exclamation-triangle"></i> Issue
+
+                                            </button>
+
                                         </div>
-                                        
-                                        <button class="btn btn-outline-danger btn-sm reportIssueBtn safe-action w-100"
-                                            data-id="<?= $row['delivery_item_id'] ?>"
-                                            data-product="<?= htmlspecialchars($row['product_name']) ?>">
 
-                                            <i class="fa fa-exclamation-triangle"></i> Issue
 
-                                        </button>
                                     </div>
 
                                 <?php else: ?>
