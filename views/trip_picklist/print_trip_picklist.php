@@ -22,10 +22,10 @@ SELECT
     sb.batch_code,
     sb.expiry_date
 FROM tbl_trip_picklist tp
+JOIN tbl_job_orders jo ON tp.job_order_id = jo.id
 JOIN tbl_stock_boxes sb ON tp.box_id = sb.box_id
 JOIN tbl_products p ON sb.product_id = p.product_id
 JOIN tbl_pallets pl ON tp.pallet_id = pl.pallet_id
-JOIN tbl_job_orders jo ON jo.trip_id = tp.trip_id
 WHERE tp.trip_id = ?
 ORDER BY jo.delivery_sequence, sb.expiry_date, sb.box_id
 ");
