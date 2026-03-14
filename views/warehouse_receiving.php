@@ -341,6 +341,7 @@ include "../controllers/warehouse_controller.php";
 
 
     <?php include 'modals/assign_boxes_modal.php'; ?>
+    <?php include 'modals/report_issue_modal.php'; ?>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -348,6 +349,7 @@ include "../controllers/warehouse_controller.php";
     <script src="../scripts/utils.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/assign_boxes.js"></script>
+    <script src="../scripts/report_issue.js"></script>
 
 
     <script>
