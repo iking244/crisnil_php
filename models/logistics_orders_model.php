@@ -283,24 +283,18 @@ function checkStockAvailability($conn, $warehouse_id, $product_ids, $quantities)
 function getAvailableStock($conn, $warehouse_id, $product_id)
 {
     $query = mysqli_query($conn, "
-        SELECT 
-            IFNULL(SUM(ws.quantity), 0)
-            - IFNULL((
-                SELECT SUM(r.quantity)
-                FROM tbl_stock_reservations r
-                WHERE r.product_id = $product_id
-                AND r.warehouse_id = $warehouse_id
-            ), 0) AS available_stock
-        FROM tbl_warehouse_stock ws
-        WHERE ws.product_id = $product_id
-        AND ws.warehouse_id = $warehouse_id
-        AND ws.expiration_date >= CURDATE()
+        SELECT COUNT(*) AS available_stock
+        FROM tbl_stock_boxes
+        WHERE product_id = $product_id
+        AND warehouse_id = $warehouse_id
+        AND status = 'available'
+        AND expiry_date >= CURDATE()
     ");
 
     $row = mysqli_fetch_assoc($query);
+
     return $row['available_stock'] ?? 0;
 }
-
 /* =========================
    STOCK RESERVATION LOGIC
 ========================= */
@@ -308,33 +302,22 @@ function getAvailableStock($conn, $warehouse_id, $product_id)
 function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 {
     foreach ($product_ids as $index => $product_id) {
+
         $product_id = (int)$product_id;
         $qty = (int)$quantities[$index];
 
         if ($product_id > 0 && $qty > 0) {
 
-            // Check available stock
-            $available = getAvailableStock($conn, $warehouse_id, $product_id);
-
-            if ($qty > $available) {
-                throw new Exception(
-                    "Insufficient stock for product ID: " . $product_id
-                );
-            }
-            // Insert reservation
-            $stmt = $conn->prepare("
-                INSERT INTO tbl_stock_reservations
-                (job_order_id, product_id, warehouse_id, quantity)
-                VALUES (?, ?, ?, ?)
+            mysqli_query($conn, "
+                UPDATE tbl_stock_boxes
+                SET status = 'reserved'
+                WHERE product_id = $product_id
+                AND warehouse_id = $warehouse_id
+                AND status = 'available'
+                ORDER BY expiry_date ASC
+                LIMIT $qty
             ");
-            $stmt->bind_param(
-                "iiii",
-                $job_id,
-                $product_id,
-                $warehouse_id,
-                $qty
-            );
-            $stmt->execute();
+
         }
     }
 }
