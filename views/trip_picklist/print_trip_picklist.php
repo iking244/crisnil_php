@@ -14,7 +14,7 @@ $tripId = intval($_GET['trip_id']);
 $query = $databaseconn->prepare("
 SELECT
     jo.delivery_sequence,
-    jo.client_name,
+    jo.origin,
     jo.destination,
     pl.pallet_code,
     p.product_name,
