@@ -335,7 +335,6 @@ function reportDeliveryIssue($conn, $delivery_item_id, $type, $qty)
         SET missing_boxes = missing_boxes + ?
         WHERE delivery_item_id = ?
         ";
-
     } elseif ($type === "damaged") {
 
         $query = "
@@ -343,7 +342,6 @@ function reportDeliveryIssue($conn, $delivery_item_id, $type, $qty)
         SET damaged_boxes = damaged_boxes + ?
         WHERE delivery_item_id = ?
         ";
-
     } else {
         return false;
     }
@@ -352,4 +350,38 @@ function reportDeliveryIssue($conn, $delivery_item_id, $type, $qty)
     $stmt->bind_param("ii", $qty, $delivery_item_id);
 
     return $stmt->execute();
+}
+
+function getBoxesByPallet($conn, $pallet_id)
+{
+    $query = "
+        SELECT 
+            sb.box_id,
+            sb.box_weight,
+            sb.batch_code,
+            sb.expiry_date,
+            p.product_name
+        FROM tbl_stock_boxes sb
+
+        JOIN tbl_products p
+            ON p.product_id = sb.product_id
+
+        WHERE sb.pallet_id = ?
+
+        ORDER BY sb.created_at DESC
+    ";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $pallet_id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $boxes = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $boxes[] = $row;
+    }
+
+    return $boxes;
 }

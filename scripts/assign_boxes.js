@@ -162,6 +162,16 @@ document.querySelectorAll(".viewPalletBtn").forEach(card => {
 
             .then(boxes => {
 
+                if (boxes.length === 0) {
+                    container.innerHTML = `
+        <tr>
+            <td colspan="4" class="text-center text-muted">
+                No boxes on this pallet
+            </td>
+        </tr>
+    `;
+                }
+
                 let container = document.getElementById("palletBoxesContainer");
 
                 container.innerHTML = "";

@@ -52,6 +52,22 @@ if (isset($_GET['action']) && $_GET['action'] == "get_boxes") {
     exit();
 }
 
+# --------------------------------
+# AJAX: GET PALLET BOXES
+# --------------------------------
+
+if (isset($_GET['action']) && $_GET['action'] == "get_pallet_boxes") {
+
+    $pallet_id = $_GET['pallet_id'];
+
+    $boxes = getBoxesByPallet($databaseconn, $pallet_id);
+
+    header('Content-Type: application/json');
+    echo json_encode($boxes);
+
+    exit();
+}
+
 
 # --------------------------------
 # SAVE BOX ASSIGNMENT
@@ -123,14 +139,12 @@ if (isset($_GET['action']) && $_GET['action'] == "report_issue") {
         echo json_encode([
             "status" => "success"
         ]);
-
     } else {
 
         echo json_encode([
             "status" => "error",
             "message" => "Failed to report issue"
         ]);
-
     }
 
     exit();
