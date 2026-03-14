@@ -41,12 +41,11 @@ if ($action) {
         $product_id = (int)$_GET['product_id'];
 
         $query = mysqli_query($databaseconn, "
-            SELECT COUNT(*) AS quantity
-            FROM tbl_stock_boxes
-            WHERE product_id = $product_id
-            AND status = 'available'
-            AND expiry_date >= CURDATE()
-        ");
+        SELECT COUNT(*) AS quantity
+        FROM tbl_stock_boxes
+        WHERE product_id = $product_id
+        AND status = 'available'
+    ");
 
         $stock = mysqli_fetch_assoc($query);
 
