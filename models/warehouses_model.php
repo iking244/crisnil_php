@@ -1,8 +1,8 @@
 <?php
-function getActiveWarehouses($conn)
+function getActiveWarehouses($databaseconn)
 {
     $sql = "SELECT * FROM tbl_warehouses WHERE is_active = 1";
-    return $conn->query($sql);
+    return $databaseconn->query($sql);
 }
 
 function getDeliveryItemsForAssignment($databaseconn)
@@ -148,7 +148,7 @@ function getBoxesByDeliveryItem($databaseconn, $delivery_item_id)
     return $boxes;
 }
 
-function getPendingDeliveryItems($conn)
+function getPendingDeliveryItems($databaseconn)
 {
     $query = "
         SELECT COUNT(*) AS pending_items
@@ -165,7 +165,7 @@ function getPendingDeliveryItems($conn)
         WHERE received_boxes < qty
     ";
 
-    $result = mysqli_query($conn, $query);
+    $result = mysqli_query($databaseconn, $query);
     $row = mysqli_fetch_assoc($result);
 
     return $row['pending_items'] ?? 0;
@@ -173,12 +173,13 @@ function getPendingDeliveryItems($conn)
 
 
 
-function getBoxesPending($conn)
+function getBoxesPending($databaseconn)
 {
     $query = "
         SELECT SUM(qty - received_boxes) AS boxes_pending
         FROM (
             SELECT 
+                di.delivery_item_id,
                 di.qty,
                 COUNT(sb.box_id) AS received_boxes
             FROM tbl_delivery_items di
@@ -189,39 +190,41 @@ function getBoxesPending($conn)
         WHERE received_boxes < qty
     ";
 
-    $result = mysqli_query($conn, $query);
+    $result = mysqli_query($databaseconn, $query);
     $row = mysqli_fetch_assoc($result);
 
     return $row['boxes_pending'] ?? 0;
 }
 
 
-
-function getActivePallets($conn)
+function getActivePallets($databaseconn)
 {
-    $query = "SELECT COUNT(*) AS active_pallets FROM tbl_pallets";
+    $query = "
+        SELECT COUNT(*) AS active_pallets
+        FROM tbl_pallets
+        WHERE status = 'active'
+    ";
 
-    $result = mysqli_query($conn, $query);
+    $result = mysqli_query($databaseconn, $query);
     return mysqli_fetch_assoc($result)['active_pallets'] ?? 0;
 }
 
 
-
-function getReceivedToday($conn)
+function getReceivedToday($databaseconn)
 {
     $query = "
         SELECT COUNT(*) AS received_today
         FROM tbl_stock_boxes
-        WHERE DATE(created_at) = CURDATE()
+        WHERE created_at >= CURDATE()
     ";
 
-    $result = mysqli_query($conn, $query);
+    $result = mysqli_query($databaseconn, $query);
     $row = mysqli_fetch_assoc($result);
 
     return $row['received_today'] ?? 0;
 }
 
-function getReceivingItems($conn)
+function getReceivingItems($databaseconn)
 {
     $query = "
         SELECT 
@@ -247,16 +250,16 @@ function getReceivingItems($conn)
 
         GROUP BY di.delivery_item_id
 
-        HAVING remaining_boxes > 0
+        HAVING (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)) > 0
 
         ORDER BY dr.dr_number DESC
     ";
 
-    return mysqli_query($conn, $query);
+    return mysqli_query($databaseconn, $query);
 }
 
 
-function getActivePalletList($conn)
+function getActivePalletList($databaseconn)
 {
     $query = "
         SELECT pallet_id, pallet_code
@@ -265,10 +268,10 @@ function getActivePalletList($conn)
         ORDER BY pallet_code
     ";
 
-    return mysqli_query($conn, $query);
+    return mysqli_query($databaseconn, $query);
 }
 
-function getDeliveryItemInfo($conn, $delivery_item_id)
+function getDeliveryItemInfo($databaseconn, $delivery_item_id)
 {
     $query = "
         SELECT 
@@ -280,7 +283,7 @@ function getDeliveryItemInfo($conn, $delivery_item_id)
         WHERE di.delivery_item_id = ?
     ";
 
-    $stmt = $conn->prepare($query);
+    $stmt = $databaseconn->prepare($query);
     $stmt->bind_param("i", $delivery_item_id);
     $stmt->execute();
 
