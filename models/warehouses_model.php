@@ -148,7 +148,7 @@ function getBoxesByDeliveryItem($databaseconn, $delivery_item_id)
     return $boxes;
 }
 
-function getPendingDeliveryItems($databaseconn)
+function getPendingDeliveryItems($conn)
 {
     $query = "
         SELECT COUNT(*) AS pending_items
@@ -156,16 +156,16 @@ function getPendingDeliveryItems($databaseconn)
             SELECT 
                 di.delivery_item_id,
                 di.qty,
-                COUNT(sb.box_id) AS received_boxes
+                COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) AS received_boxes
             FROM tbl_delivery_items di
             LEFT JOIN tbl_stock_boxes sb
                 ON sb.delivery_item_id = di.delivery_item_id
             GROUP BY di.delivery_item_id
-        ) t
-        WHERE received_boxes < qty
+            HAVING (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)) > 0
+        ) pending
     ";
 
-    $result = mysqli_query($databaseconn, $query);
+    $result = mysqli_query($conn, $query);
     $row = mysqli_fetch_assoc($result);
 
     return $row['pending_items'] ?? 0;
