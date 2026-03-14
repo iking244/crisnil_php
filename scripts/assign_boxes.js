@@ -222,7 +222,7 @@ document.querySelectorAll(".viewPalletBtn").forEach(card => {
                             container.innerHTML += `
                 <tr class="collapse box-row" id="${collapseId}">
                     <td colspan="3" class="ps-4 text-muted">
-                        └ ${parseFloat(box.box_weight).toFixed(2)} kg — Batch ${box.batch_code}
+                        └ ${parseFloat(box.box_weight).toFixed(2)} kg | Batch ${box.batch_code} | Exp ${box.expiry_date}
                     </td>
                 </tr>
                 `;
