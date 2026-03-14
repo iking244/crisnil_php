@@ -197,7 +197,7 @@ function getBoxesPending($conn)
 
 function getActivePallets($conn)
 {
-    $query = "SELECT COUNT(*) AS active_pallets FROM pallets";
+    $query = "SELECT COUNT(*) AS active_pallets FROM tbl_pallets";
 
     $result = mysqli_query($conn, $query);
     return mysqli_fetch_assoc($result)['active_pallets'] ?? 0;
