@@ -4,16 +4,21 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
 
-        let qty = this.dataset.qty;
-        let product = this.dataset.product;
-        let id = this.dataset.id;
-
         let palletSelect = this.closest(".card-body").querySelector(".palletSelect");
 
         if (!palletSelect.value) {
-            return;
 
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            alert("Please select a pallet first.");
+
+            return;
         }
+
+        let qty = this.dataset.qty;
+        let product = this.dataset.product;
+        let id = this.dataset.id;
 
         let palletId = palletSelect.value;
 
