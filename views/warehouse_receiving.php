@@ -184,6 +184,18 @@ include "../controllers/warehouse_controller.php";
 
                                     </div>
 
+                                    <?php
+                                    $totalIssues = ($row['missing_boxes'] ?? 0) + ($row['damaged_boxes'] ?? 0);
+                                    ?>
+
+                                    <?php if ($totalIssues > 0): ?>
+
+                                        <span class="badge bg-danger">
+                                            ⚠ <?= $totalIssues ?> Issue<?= $totalIssues > 1 ? 's' : '' ?>
+                                        </span>
+
+                                    <?php endif; ?>
+
                                 </div>
 
 
