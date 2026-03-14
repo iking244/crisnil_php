@@ -176,15 +176,17 @@ function getPendingDeliveryItems($conn)
 function getBoxesPending($conn)
 {
     $query = "
-        SELECT SUM(di.qty - IFNULL(sb.box_count,0)) AS boxes_pending
-        FROM tbl_delivery_items di
-        LEFT JOIN (
-            SELECT delivery_item_id, COUNT(*) AS box_count
-            FROM tbl_stock_boxes
-            GROUP BY delivery_item_id
-        ) sb
-        ON sb.delivery_item_id = di.delivery_item_id
-        WHERE (di.qty - IFNULL(sb.box_count,0)) > 0
+        SELECT SUM(qty - received_boxes) AS boxes_pending
+        FROM (
+            SELECT 
+                di.qty,
+                COUNT(sb.box_id) AS received_boxes
+            FROM tbl_delivery_items di
+            LEFT JOIN tbl_stock_boxes sb
+                ON sb.delivery_item_id = di.delivery_item_id
+            GROUP BY di.delivery_item_id
+        ) t
+        WHERE received_boxes < qty
     ";
 
     $result = mysqli_query($conn, $query);
@@ -210,11 +212,13 @@ function getReceivedToday($conn)
     $query = "
         SELECT COUNT(*) AS received_today
         FROM tbl_stock_boxes
-        WHERE DATE(encoded_at) = CURDATE()
+        WHERE DATE(created_at) = CURDATE()
     ";
 
     $result = mysqli_query($conn, $query);
-    return mysqli_fetch_assoc($result)['received_today'] ?? 0;
+    $row = mysqli_fetch_assoc($result);
+
+    return $row['received_today'] ?? 0;
 }
 
 function getReceivingItems($conn)
