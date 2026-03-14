@@ -311,3 +311,31 @@ function getPalletCapacity($conn)
 
     return mysqli_query($conn, $query);
 }
+
+function reportDeliveryIssue($conn, $delivery_item_id, $type, $qty)
+{
+    if ($type === "missing") {
+
+        $query = "
+        UPDATE tbl_delivery_items
+        SET missing_boxes = missing_boxes + ?
+        WHERE delivery_item_id = ?
+        ";
+
+    } elseif ($type === "damaged") {
+
+        $query = "
+        UPDATE tbl_delivery_items
+        SET damaged_boxes = damaged_boxes + ?
+        WHERE delivery_item_id = ?
+        ";
+
+    } else {
+        return false;
+    }
+
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $qty, $delivery_item_id);
+
+    return $stmt->execute();
+}

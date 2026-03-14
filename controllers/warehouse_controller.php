@@ -107,3 +107,29 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
 
     exit();
 }
+
+if (isset($_GET['action']) && $_GET['action'] == "report_issue") {
+
+    $delivery_item_id = $_POST['delivery_item_id'];
+    $type = $_POST['issue_type'];
+    $qty = intval($_POST['qty']);
+
+    $success = reportDeliveryIssue($databaseconn, $delivery_item_id, $type, $qty);
+
+    if ($success) {
+
+        echo json_encode([
+            "status" => "success"
+        ]);
+
+    } else {
+
+        echo json_encode([
+            "status" => "error",
+            "message" => "Failed to report issue"
+        ]);
+
+    }
+
+    exit();
+}
