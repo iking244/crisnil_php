@@ -155,15 +155,17 @@ function getPendingDeliveryItems($conn)
         FROM (
             SELECT di.delivery_item_id
             FROM tbl_delivery_items di
-            LEFT JOIN tbl_stock_boxes sb 
+            LEFT JOIN tbl_stock_boxes sb
                 ON sb.delivery_item_id = di.delivery_item_id
             GROUP BY di.delivery_item_id
-            HAVING COUNT(sb.box_id) < di.expected_boxes
+            HAVING COUNT(sb.box_id) < di.qty
         ) t
     ";
 
     $result = mysqli_query($conn, $query);
-    return mysqli_fetch_assoc($result)['pending_items'] ?? 0;
+    $row = mysqli_fetch_assoc($result);
+
+    return $row['pending_items'] ?? 0;
 }
 
 
@@ -171,7 +173,7 @@ function getPendingDeliveryItems($conn)
 function getBoxesPending($conn)
 {
     $query = "
-        SELECT SUM(di.expected_boxes - IFNULL(sb.box_count,0)) AS boxes_pending
+        SELECT SUM(di.qty - IFNULL(sb.box_count,0)) AS boxes_pending
         FROM tbl_delivery_items di
         LEFT JOIN (
             SELECT delivery_item_id, COUNT(*) AS box_count
@@ -179,11 +181,13 @@ function getBoxesPending($conn)
             GROUP BY delivery_item_id
         ) sb
         ON sb.delivery_item_id = di.delivery_item_id
-        WHERE (di.expected_boxes - IFNULL(sb.box_count,0)) > 0
+        WHERE (di.qty - IFNULL(sb.box_count,0)) > 0
     ";
 
     $result = mysqli_query($conn, $query);
-    return mysqli_fetch_assoc($result)['boxes_pending'] ?? 0;
+    $row = mysqli_fetch_assoc($result);
+
+    return $row['boxes_pending'] ?? 0;
 }
 
 
