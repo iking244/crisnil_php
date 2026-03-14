@@ -1,0 +1,23 @@
+.pallet-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #f1f5f9;
+}
+
+.pallet-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--fill, 0%);
+    background: var(--color, #28a745);
+    opacity: 0.25;
+    transition: width 0.3s ease;
+}
+
+.pallet-card-content {
+    position: relative;
+    z-index: 1;
+}
