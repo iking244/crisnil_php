@@ -120,7 +120,7 @@ while (!empty($jobs)) {
         }
 
         $tripId = $stmt->insert_id;
-        generatePickList($databaseconn, $tripId);
+        
 
         // ---------- DELIVERY SEQUENCING ----------
         $jobsForRouting = $cluster;
@@ -177,6 +177,7 @@ while (!empty($jobs)) {
 
     // COMMIT if everything succeeded
     $databaseconn->commit();
+    generatePickList($databaseconn, $tripId);
 
     echo json_encode([
         "success" => true,
