@@ -18,26 +18,32 @@ if (!isset($_SESSION['USER_ID'])) {
 $deliveryItems = getDeliveryItemsForAssignment($databaseconn);
 
 $receivingItems = mysqli_query($databaseconn, "
-SELECT 
-    dr.dr_number,
-    di.delivery_item_id,
-    p.product_name,
-    di.qty AS expected_boxes,
-    COUNT(sb.box_id) AS received_boxes,
-    (di.qty - COUNT(sb.box_id)) AS remaining_boxes
+SELECT
+dr.dr_number,
+di.delivery_item_id,
+p.product_name,
+di.qty AS expected_boxes,
+
+COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) AS received_boxes,
+
+(di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)) AS remaining_boxes
+
 FROM tbl_delivery_items di
-JOIN tbl_delivery_receipts dr 
-    ON di.delivery_receipt_id = dr.delivery_receipt_id
-LEFT JOIN tbl_stock_boxes sb 
-    ON sb.delivery_item_id = di.delivery_item_id
-JOIN tbl_products p 
-    ON di.product_id = p.product_id
+JOIN tbl_delivery_receipts dr
+ON di.delivery_receipt_id = dr.delivery_receipt_id
+
+LEFT JOIN tbl_stock_boxes sb
+ON sb.delivery_item_id = di.delivery_item_id
+
+JOIN tbl_products p
+ON di.product_id = p.product_id
+
 GROUP BY di.delivery_item_id
-HAVING (di.qty - COUNT(sb.box_id)) > 0
+HAVING remaining_boxes > 0
 ORDER BY dr.dr_number DESC
 ");
 
-$pallets = mysqli_query($databaseconn,"
+$pallets = mysqli_query($databaseconn, "
 SELECT pallet_id,pallet_code
 FROM tbl_pallets
 WHERE status='active'

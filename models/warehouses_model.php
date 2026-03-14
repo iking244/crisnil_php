@@ -52,61 +52,58 @@ function insertBoxes(
     $expiries
 ) {
 
-    for ($i = 0; $i < count($weights); $i++) {
+    foreach ($weights as $i => $weight) {
 
         $box_id = $box_ids[$i];
-        $weight = $weights[$i];
         $size = $sizes[$i];
         $batch = $batches[$i];
-        $pallet = $pallets[$i];
         $expiry = $expiries[$i];
+        $pallet_code = $pallets[$i];
+
+        /* SKIP EMPTY ROWS */
+
+        if (
+            empty($weight) &&
+            empty($batch) &&
+            empty($expiry)
+        ) {
+            continue;
+        }
 
         if ($box_id) {
 
-            $query = "
-UPDATE tbl_stock_boxes
-SET
-box_weight = ?,
-box_size = ?,
-batch_code = ?,
-pallet_code = ?,
-expiry_date = ?
-WHERE box_id = ?
-";
+            /* UPDATE EXISTING BOX */
 
-            $stmt = $databaseconn->prepare($query);
+            $stmt = mysqli_prepare($databaseconn, "
+        UPDATE tbl_stock_boxes
+        SET box_weight=?, box_size=?, batch_code=?, expiry_date=?, pallet_code=?
+        WHERE box_id=?
+        ");
 
-            $stmt->bind_param(
+            mysqli_stmt_bind_param(
+                $stmt,
                 "dssssi",
                 $weight,
                 $size,
                 $batch,
-                $pallet,
                 $expiry,
+                $pallet_code,
                 $box_id
             );
 
-            $stmt->execute();
+            mysqli_stmt_execute($stmt);
         } else {
 
-            $query = "
-INSERT INTO tbl_stock_boxes
-(
-delivery_item_id,
-warehouse_id,
-product_id,
-box_weight,
-box_size,
-batch_code,
-pallet_code,
-expiry_date
-)
-VALUES (?,?,?,?,?,?,?,?)
-";
+            /* INSERT NEW BOX */
 
-            $stmt = $databaseconn->prepare($query);
+            $stmt = mysqli_prepare($databaseconn, "
+        INSERT INTO tbl_stock_boxes
+        (delivery_item_id, warehouse_id, product_id, box_weight, box_size, batch_code, pallet_code, expiry_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
 
-            $stmt->bind_param(
+            mysqli_stmt_bind_param(
+                $stmt,
                 "iiidssss",
                 $delivery_item_id,
                 $warehouse_id,
@@ -114,11 +111,11 @@ VALUES (?,?,?,?,?,?,?,?)
                 $weight,
                 $size,
                 $batch,
-                $pallet,
+                $pallet_code,
                 $expiry
             );
 
-            $stmt->execute();
+            mysqli_stmt_execute($stmt);
         }
     }
 }
