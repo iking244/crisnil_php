@@ -295,6 +295,7 @@ function getAvailableStock($conn, $warehouse_id, $product_id)
 
     return $row['available_stock'] ?? 0;
 }
+
 /* =========================
    STOCK RESERVATION LOGIC
 ========================= */
@@ -308,16 +309,18 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 
         if ($product_id > 0 && $qty > 0) {
 
-            mysqli_query($conn, "
+            $stmt = $conn->prepare("
                 UPDATE tbl_stock_boxes
-                SET status = 'reserved'
-                WHERE product_id = $product_id
-                AND warehouse_id = $warehouse_id
-                AND status = 'available'
+                SET status='reserved'
+                WHERE product_id=?
+                AND warehouse_id=?
+                AND status='available'
                 ORDER BY expiry_date ASC
-                LIMIT $qty
+                LIMIT ?
             ");
 
+            $stmt->bind_param("iii", $product_id, $warehouse_id, $qty);
+            $stmt->execute();
         }
     }
 }
@@ -653,13 +656,13 @@ function getLogisticsOrderItems($conn, $job_id)
             joi.product_id,
             p.product_name,
             joi.quantity,
-            COALESCE(SUM(ws.quantity), 0) AS stock_qty
+            COUNT(sb.box_id) AS stock_qty
         FROM tbl_job_order_items joi
         LEFT JOIN tbl_products p 
             ON joi.product_id = p.product_id
-        LEFT JOIN tbl_warehouse_stock ws
-            ON joi.product_id = ws.product_id
-            AND ws.warehouse_id = 1
+        LEFT JOIN tbl_stock_boxes sb
+            ON joi.product_id = sb.product_id
+            AND sb.status='available'
         WHERE joi.job_order_id = ?
         GROUP BY 
             joi.job_item_id,
@@ -674,6 +677,7 @@ function getLogisticsOrderItems($conn, $job_id)
     $result = $stmt->get_result();
 
     $items = [];
+
     while ($row = $result->fetch_assoc()) {
         $items[] = $row;
     }
