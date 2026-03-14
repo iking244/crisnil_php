@@ -11,8 +11,6 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
         let palletSelect = this.closest(".card-body").querySelector(".palletSelect");
 
         if (!palletSelect.value) {
-
-            alert("Select pallet first");
             return;
 
         }
