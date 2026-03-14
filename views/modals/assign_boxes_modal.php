@@ -3,6 +3,7 @@
     action="../controllers/warehouse_controller.php?action=assign_boxes">
 
     <input type="hidden" name="delivery_item_id" id="delivery_item_id">
+    <input type="hidden" name="pallet_id" id="pallet_id">
 
     <div class="modal-body">
 
