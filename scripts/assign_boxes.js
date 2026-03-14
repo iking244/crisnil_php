@@ -17,6 +17,10 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
         }
 
+        let palletId = palletSelect.value;
+
+        document.getElementById("pallet_id").value = palletId;
+
         let palletCode = palletSelect.options[palletSelect.selectedIndex].text;
 
         document.getElementById("delivery_item_id").value = id;

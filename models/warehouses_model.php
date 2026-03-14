@@ -44,6 +44,7 @@ function insertBoxes(
     $delivery_item_id,
     $warehouse_id,
     $product_id,
+    $pallet_id,
     $box_ids,
     $weights,
     $sizes,
@@ -74,18 +75,19 @@ function insertBoxes(
 
             $stmt = mysqli_prepare($databaseconn, "
         UPDATE tbl_stock_boxes
-        SET box_weight=?, box_size=?, batch_code=?, expiry_date=?, pallet_code=?
+        SET box_weight=?, box_size=?, batch_code=?, expiry_date=?, pallet_code=?,pallet_id=?
         WHERE box_id=?
         ");
 
             mysqli_stmt_bind_param(
                 $stmt,
-                "dssssi",
+                "dssssii",
                 $weight,
                 $size,
                 $batch,
                 $expiry,
                 $pallet_code,
+                $pallet_id,
                 $box_id
             );
 
@@ -94,13 +96,13 @@ function insertBoxes(
 
             $stmt = mysqli_prepare($databaseconn, "
         INSERT INTO tbl_stock_boxes
-        (delivery_item_id, warehouse_id, product_id, box_weight, box_size, batch_code, pallet_code, expiry_date)
-        VALUES (?,?,?,?,?,?,?,?)
+        (delivery_item_id, warehouse_id, product_id, box_weight, box_size, batch_code, pallet_code, expiry_date,pallet_id)
+        VALUES (?,?,?,?,?,?,?,?,?)
         ");
 
             mysqli_stmt_bind_param(
                 $stmt,
-                "iiidssss",
+                "iiidssssi",
                 $delivery_item_id,
                 $warehouse_id,
                 $product_id,
@@ -108,7 +110,8 @@ function insertBoxes(
                 $size,
                 $batch,
                 $pallet_code,
-                $expiry
+                $expiry,
+                $pallet_id
             );
 
             mysqli_stmt_execute($stmt);
