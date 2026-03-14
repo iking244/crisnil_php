@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "../config/database_conn.php";
+include "../../config/database_conn.php";
 
 if (!isset($_GET['trip_id'])) {
     die("Error: trip_id not provided");
