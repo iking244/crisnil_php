@@ -23,6 +23,21 @@ include "../controllers/logistics_orders_controller.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= $_SESSION['error'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php unset($_SESSION['error']);
+endif; ?>
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $_SESSION['success'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php unset($_SESSION['success']);
+endif; ?>
+
 <body>
 
     <?php include '../includes/header.php'; ?>
@@ -297,7 +312,7 @@ include "../controllers/logistics_orders_controller.php";
                                                 while ($p = $products->fetch_assoc()):
                                                 ?>
                                                     <option value="<?= $p['product_id'] ?>">
-                                                        <?= $p['product_name'] ?> (<?= $p['unit'] ?>)
+                                                        <?= $p['product_name'] ?> (<?= $p['available_boxes'] ?> available)
                                                     </option>
                                                 <?php endwhile; ?>
                                             </select>
