@@ -299,7 +299,7 @@ function getPalletCapacity($conn)
             p.pallet_id,
             p.pallet_code,
             COUNT(sb.box_id) AS box_count,
-            (60 - COUNT(sb.box_id)) AS remaining_slots
+            (COUNT(sb.box_id) / 60 * 100) AS percent_used
         FROM tbl_pallets p
         LEFT JOIN tbl_stock_boxes sb
             ON sb.pallet_id = p.pallet_id

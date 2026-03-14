@@ -106,15 +106,35 @@ include "../controllers/warehouse_controller.php";
                     <h3>Active Pallets</h3>
                 </div>
 
-                <div class="row">
+                <div class="row g-3">
 
                     <?php while ($p = mysqli_fetch_assoc($palletCapacity)): ?>
+
+                        <?php
+                        $percent = $p['percent_used'];
+
+                        if ($percent > 80) {
+                            $color = "bg-danger";
+                        } elseif ($percent > 40) {
+                            $color = "bg-warning";
+                        } else {
+                            $color = "bg-success";
+                        }
+                        ?>
 
                         <div class="col-md-2">
 
                             <div class="card text-center p-3">
 
                                 <strong><?= $p['pallet_code'] ?></strong>
+
+                                <div class="progress mt-2" style="height:8px;">
+
+                                    <div class="progress-bar <?= $color ?>"
+                                        style="width: <?= $percent ?>%">
+                                    </div>
+
+                                </div>
 
                                 <div class="small text-muted mt-1">
                                     <?= $p['box_count'] ?> / 60 boxes
@@ -129,7 +149,6 @@ include "../controllers/warehouse_controller.php";
                 </div>
 
             </div>
-
 
             <!-- RECEIVING ITEMS -->
 
