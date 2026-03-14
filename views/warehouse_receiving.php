@@ -373,6 +373,7 @@ include "../controllers/warehouse_controller.php";
 
     <?php include 'modals/assign_boxes_modal.php'; ?>
     <?php include 'modals/report_issue_modal.php'; ?>
+    <?php include 'modals/view_pallet_modal.php'; ?>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

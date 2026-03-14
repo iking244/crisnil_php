@@ -148,6 +148,7 @@ document.addEventListener("input", function (e) {
 let palletModal = new bootstrap.Modal(document.getElementById("viewPalletModal"));
 
 document.querySelectorAll(".viewPalletBtn").forEach(card => {
+    console.log(card);
 
     card.addEventListener("click", function () {
 
