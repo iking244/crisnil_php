@@ -16,7 +16,7 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
             e.stopImmediatePropagation();
 
             alert("Please select a pallet first.");
-
+            btn.dataset.loading = "false";
             return;
         }
 
