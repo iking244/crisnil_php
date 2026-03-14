@@ -14,6 +14,7 @@ include "../controllers/warehouse_controller.php";
     <link rel="stylesheet" href="../styles/layout.css">
     <link rel="stylesheet" href="../styles/components.css">
     <link rel="stylesheet" href="../styles/products/products.css">
+    <link rel="stylesheet" href="../styles/warehouse/warehouse_receiving.css">
     <link rel="stylesheet" href="../styles/modals.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -114,30 +115,27 @@ include "../controllers/warehouse_controller.php";
                         $percent = $p['percent_used'];
 
                         if ($percent > 80) {
-                            $color = "bg-danger";
+                            $color = "#dc3545";
                         } elseif ($percent > 40) {
-                            $color = "bg-warning";
+                            $color = "#ffc107";
                         } else {
-                            $color = "bg-success";
+                            $color = "#28a745";
                         }
                         ?>
 
                         <div class="col-md-2">
 
-                            <div class="card text-center p-3">
+                            <div class="card pallet-card text-center p-3"
+                                style="--fill: <?= $percent ?>%; --color: <?= $color ?>;">
 
-                                <strong><?= $p['pallet_code'] ?></strong>
+                                <div class="pallet-card-content">
 
-                                <div class="progress mt-2" style="height:8px;">
+                                    <strong><?= $p['pallet_code'] ?></strong>
 
-                                    <div class="progress-bar <?= $color ?>"
-                                        style="width: <?= $percent ?>%">
+                                    <div class="small text-muted mt-1">
+                                        <?= $p['box_count'] ?> / 60 boxes
                                     </div>
 
-                                </div>
-
-                                <div class="small text-muted mt-1">
-                                    <?= $p['box_count'] ?> / 60 boxes
                                 </div>
 
                             </div>
