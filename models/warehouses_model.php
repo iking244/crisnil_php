@@ -232,7 +232,8 @@ function getReceivingItems($databaseconn)
             di.delivery_item_id,
             p.product_name,
             di.qty AS expected_boxes,
-
+            di.missing_boxes,
+            di.damaged_boxes,
             COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) AS received_boxes,
 
             (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)) AS remaining_boxes
