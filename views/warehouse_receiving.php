@@ -270,24 +270,32 @@ include "../controllers/warehouse_controller.php";
 
                                 <!-- ACTION BUTTONS -->
 
-                                <div class="d-grid gap-2">
+                                <div class="row g-2">
 
-                                    <button class="btn btn-primary btn-sm assignBtn w-100"
-                                        data-id="<?= $row['delivery_item_id'] ?>"
-                                        data-product="<?= htmlspecialchars($row['product_name']) ?>"
-                                        data-qty="<?= $row['remaining_boxes'] ?>">
+                                    <div class="col-6">
 
-                                        <i class="fa fa-box"></i> Encode Boxes
+                                        <button class="btn btn-primary btn-sm assignBtn w-100"
+                                            data-id="<?= $row['delivery_item_id'] ?>"
+                                            data-product="<?= htmlspecialchars($row['product_name']) ?>"
+                                            data-qty="<?= $row['remaining_boxes'] ?>">
 
-                                    </button>
+                                            <i class="fa fa-box"></i> Encode
 
-                                    <button class="btn btn-outline-danger btn-sm reportIssueBtn w-100"
-                                        data-id="<?= $row['delivery_item_id'] ?>"
-                                        data-product="<?= htmlspecialchars($row['product_name']) ?>">
+                                        </button>
 
-                                        <i class="fa fa-exclamation-triangle"></i> Report Issue
+                                    </div>
 
-                                    </button>
+                                    <div class="col-6">
+
+                                        <button class="btn btn-outline-danger btn-sm reportIssueBtn w-100"
+                                            data-id="<?= $row['delivery_item_id'] ?>"
+                                            data-product="<?= htmlspecialchars($row['product_name']) ?>">
+
+                                            <i class="fa fa-exclamation-triangle"></i> Issue
+
+                                        </button>
+
+                                    </div>
 
                                 </div>
 
