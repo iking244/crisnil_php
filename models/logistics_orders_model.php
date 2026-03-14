@@ -481,6 +481,65 @@ function blockJobOrder($conn, $job_id, $reason = '')
 
 function completeJobOrder($conn, $job_id)
 {
+    $conn->begin_transaction();
+
+    try {
+
+        // 1. Update job order status
+        $stmt = $conn->prepare("
+            UPDATE tbl_job_orders
+            SET status = 'completed'
+            WHERE id = ?
+            AND status = 'in_transit'
+        ");
+        $stmt->bind_param("i", $job_id);
+        $stmt->execute();
+
+        if ($stmt->affected_rows === 0) {
+            throw new Exception("Job cannot be completed");
+        }
+
+        // 2. Mark boxes as SOLD
+        $boxes = $conn->prepare("
+            UPDATE tbl_stock_boxes
+            SET status = 'sold'
+            WHERE box_id IN (
+                SELECT box_id
+                FROM tbl_trip_picklist
+                WHERE job_order_id = ?
+            )
+        ");
+        $boxes->bind_param("i", $job_id);
+        $boxes->execute();
+
+        // 3. Insert log
+        $log = $conn->prepare("
+            INSERT INTO tbl_job_order_logs (job_id, action, notes)
+            VALUES (?, 'completed', 'Completed by driver')
+        ");
+        $log->bind_param("i", $job_id);
+        $log->execute();
+
+        $conn->commit();
+
+        return [
+            "success" => true,
+            "message" => "Job completed"
+        ];
+
+    } catch (Exception $e) {
+
+        $conn->rollback();
+
+        return [
+            "success" => false,
+            "message" => $e->getMessage()
+        ];
+    }
+}
+
+function completeJobOrderOld($conn, $job_id)
+{
     $stmt = $conn->prepare("
         UPDATE tbl_job_orders
         SET status = 'completed'
