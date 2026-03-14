@@ -236,7 +236,7 @@ function getReceivingItems($databaseconn)
             di.damaged_boxes,
             COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) AS received_boxes,
 
-            (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)) AS remaining_boxes
+            (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) - di.missing_boxes - di.damaged_boxes) AS remaining_boxes
 
         FROM tbl_delivery_items di
 
