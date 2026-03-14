@@ -155,13 +155,11 @@ include "../controllers/warehouse_controller.php";
                 <?php while ($row = mysqli_fetch_assoc($receivingItems)): ?>
 
                     <?php
-
                     $progress = 0;
 
                     if ($row['expected_boxes'] > 0) {
                         $progress = ($row['received_boxes'] / $row['expected_boxes']) * 100;
                     }
-
                     ?>
 
                     <div class="col-lg-4">
@@ -169,6 +167,8 @@ include "../controllers/warehouse_controller.php";
                         <div class="card receiving-card h-100">
 
                             <div class="card-body">
+
+                                <!-- HEADER -->
 
                                 <div class="d-flex justify-content-between align-items-start mb-2">
 
@@ -186,10 +186,11 @@ include "../controllers/warehouse_controller.php";
 
                                 </div>
 
+
+                                <!-- EXPECTED -->
+
                                 <div class="small text-muted mb-2">
-
                                     Expected Boxes: <?= $row['expected_boxes'] ?>
-
                                 </div>
 
 
@@ -211,11 +212,9 @@ include "../controllers/warehouse_controller.php";
                                     <div class="col">
 
                                         <div class="metric">
-
                                             Boxes
                                             <br>
                                             <strong><?= $row['expected_boxes'] ?></strong>
-
                                         </div>
 
                                     </div>
@@ -223,11 +222,9 @@ include "../controllers/warehouse_controller.php";
                                     <div class="col">
 
                                         <div class="metric">
-
                                             Assigned
                                             <br>
                                             <strong><?= $row['received_boxes'] ?></strong>
-
                                         </div>
 
                                     </div>
@@ -235,11 +232,9 @@ include "../controllers/warehouse_controller.php";
                                     <div class="col">
 
                                         <div class="metric">
-
                                             Remaining
                                             <br>
                                             <strong><?= $row['remaining_boxes'] ?></strong>
-
                                         </div>
 
                                     </div>
@@ -273,16 +268,29 @@ include "../controllers/warehouse_controller.php";
                                 </div>
 
 
-                                <!-- ENCODE BUTTON -->
+                                <!-- ACTION BUTTONS -->
 
-                                <button class="btn btn-primary btn-sm assignBtn w-100"
-                                    data-id="<?= $row['delivery_item_id'] ?>"
-                                    data-product="<?= htmlspecialchars($row['product_name']) ?>"
-                                    data-qty="<?= $row['remaining_boxes'] ?>">
+                                <div class="d-grid gap-2">
 
-                                    <i class="fa fa-box"></i> Encode Boxes
+                                    <button class="btn btn-primary btn-sm assignBtn w-100"
+                                        data-id="<?= $row['delivery_item_id'] ?>"
+                                        data-product="<?= htmlspecialchars($row['product_name']) ?>"
+                                        data-qty="<?= $row['remaining_boxes'] ?>">
 
-                                </button>
+                                        <i class="fa fa-box"></i> Encode Boxes
+
+                                    </button>
+
+                                    <button class="btn btn-outline-danger btn-sm reportIssueBtn w-100"
+                                        data-id="<?= $row['delivery_item_id'] ?>"
+                                        data-product="<?= htmlspecialchars($row['product_name']) ?>">
+
+                                        <i class="fa fa-exclamation-triangle"></i> Report Issue
+
+                                    </button>
+
+                                </div>
+
 
                             </div>
 
