@@ -103,17 +103,12 @@ include "../controllers/warehouse_controller.php";
             <div class="card mb-4">
 
                 <div class="card-header">
-
                     <h3>Active Pallets</h3>
-
                 </div>
 
                 <div class="row">
 
-                    <?php
-                    mysqli_data_seek($pallets, 0);
-                    while ($p = mysqli_fetch_assoc($pallets)):
-                    ?>
+                    <?php while ($p = mysqli_fetch_assoc($palletCapacity)): ?>
 
                         <div class="col-md-2">
 
@@ -122,7 +117,7 @@ include "../controllers/warehouse_controller.php";
                                 <strong><?= $p['pallet_code'] ?></strong>
 
                                 <div class="small text-muted mt-1">
-                                    capacity soon
+                                    <?= $p['box_count'] ?> / 60 boxes
                                 </div>
 
                             </div>

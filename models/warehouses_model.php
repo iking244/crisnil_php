@@ -291,3 +291,22 @@ function getDeliveryItemInfo($databaseconn, $delivery_item_id)
 
     return $result->fetch_assoc();
 }
+
+function getPalletCapacity($conn)
+{
+    $query = "
+        SELECT 
+            p.pallet_id,
+            p.pallet_code,
+            COUNT(sb.box_id) AS box_count,
+            (60 - COUNT(sb.box_id)) AS remaining_slots
+        FROM tbl_pallets p
+        LEFT JOIN tbl_stock_boxes sb
+            ON sb.pallet_id = p.pallet_id
+        WHERE p.status = 'active'
+        GROUP BY p.pallet_id
+        ORDER BY p.pallet_code
+    ";
+
+    return mysqli_query($conn, $query);
+}

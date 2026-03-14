@@ -32,6 +32,8 @@ $activePallets = getActivePallets($databaseconn);
 
 $receivedToday = getReceivedToday($databaseconn);
 
+$palletCapacity = getPalletCapacity($databaseconn);
+
 
 # --------------------------------
 # AJAX: GET BOXES
