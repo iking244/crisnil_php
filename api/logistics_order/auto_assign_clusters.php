@@ -222,44 +222,41 @@ function generatePickList($conn, $tripId)
 
     $items = $conn->prepare("
         SELECT 
+            jo.id AS job_order_id,
             joi.product_id,
             SUM(joi.quantity) AS qty
         FROM tbl_job_orders jo
         JOIN tbl_job_order_items joi
         ON jo.id = joi.job_order_id
         WHERE jo.trip_id = ?
-        GROUP BY joi.product_id
+        GROUP BY jo.id, joi.product_id
     ");
 
     $items->bind_param("i", $tripId);
     $items->execute();
-
     $result = $items->get_result();
 
     while ($row = $result->fetch_assoc()) {
 
+        $jobOrderId = $row['job_order_id'];
         $productId = $row['product_id'];
         $qtyNeeded = $row['qty'];
 
-        // ================================
-        // FEFO PICKING (with FIFO fallback)
-        // ================================
-        $boxes = $conn->prepare(
-            "
-    SELECT box_id, pallet_id
-    FROM tbl_stock_boxes
-    WHERE product_id = ?
-    AND status = 'available'
-    ORDER BY 
-        expiry_date IS NULL,
-        expiry_date ASC,
-        box_id ASC
-    LIMIT " . intval($qtyNeeded)
+        // FEFO box selection
+        $boxes = $conn->prepare("
+            SELECT box_id, pallet_id
+            FROM tbl_stock_boxes
+            WHERE product_id = ?
+            AND status = 'available'
+            ORDER BY 
+                expiry_date IS NULL,
+                expiry_date ASC,
+                box_id ASC
+            LIMIT " . intval($qtyNeeded)
         );
 
         $boxes->bind_param("i", $productId);
         $boxes->execute();
-
         $boxResult = $boxes->get_result();
 
         if ($boxResult->num_rows == 0) {
@@ -270,13 +267,14 @@ function generatePickList($conn, $tripId)
 
             $insert = $conn->prepare("
                 INSERT INTO tbl_trip_picklist
-                (trip_id, box_id, product_id, pallet_id)
-                VALUES (?, ?, ?, ?)
+                (trip_id, job_order_id, box_id, product_id, pallet_id)
+                VALUES (?, ?, ?, ?, ?)
             ");
 
             $insert->bind_param(
-                "iiii",
+                "iiiii",
                 $tripId,
+                $jobOrderId,
                 $box['box_id'],
                 $productId,
                 $box['pallet_id']
@@ -284,6 +282,7 @@ function generatePickList($conn, $tripId)
 
             $insert->execute();
 
+            // reserve box
             $update = $conn->prepare("
                 UPDATE tbl_stock_boxes
                 SET status = 'reserved'
