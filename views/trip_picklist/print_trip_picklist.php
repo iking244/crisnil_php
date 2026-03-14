@@ -3,16 +3,19 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "../../config/database_conn.php";
+include "../config/database_conn.php";
 
 if (!isset($_GET['trip_id'])) {
-    die("Error: trip_id not provided");
+    die("Trip ID missing.");
 }
 
 $tripId = intval($_GET['trip_id']);
 
 $query = $databaseconn->prepare("
 SELECT
+    jo.delivery_sequence,
+    jo.client_name,
+    jo.destination,
     pl.pallet_code,
     p.product_name,
     sb.box_id,
@@ -22,24 +25,20 @@ FROM tbl_trip_picklist tp
 JOIN tbl_stock_boxes sb ON tp.box_id = sb.box_id
 JOIN tbl_products p ON sb.product_id = p.product_id
 JOIN tbl_pallets pl ON tp.pallet_id = pl.pallet_id
+JOIN tbl_job_orders jo ON jo.trip_id = tp.trip_id
 WHERE tp.trip_id = ?
-ORDER BY 
-    sb.expiry_date IS NULL,
-    sb.expiry_date ASC,
-    sb.box_id ASC
+ORDER BY jo.delivery_sequence, sb.expiry_date, sb.box_id
 ");
 
 if (!$query) {
-    die("Prepare failed: " . $databaseconn->error);
+    die("SQL Error: " . $databaseconn->error);
 }
 
 $query->bind_param("i", $tripId);
-
-if (!$query->execute()) {
-    die("Execute failed: " . $query->error);
-}
-
+$query->execute();
 $result = $query->get_result();
+
+$currentStop = null;
 
 ?>
 
@@ -48,83 +47,146 @@ $result = $query->get_result();
 
 <head>
 
-<title>Trip Pick List</title>
+    <title>Trip Pick List</title>
 
-<style>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
 
-body{
-    font-family: Arial, sans-serif;
-}
+        h1 {
+            margin-bottom: 5px;
+        }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+        h3 {
+            margin-top: 30px;
+        }
 
-th, td{
-    border:1px solid black;
-    padding:6px;
-    font-size:12px;
-    text-align:left;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
 
-th{
-    background:#f0f0f0;
-}
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 6px;
+            font-size: 13px;
+        }
 
-h2{
-    margin-bottom:20px;
-}
+        th {
+            background: #f2f2f2;
+        }
 
-</style>
+        .stop-box {
+            margin-top: 25px;
+            padding: 10px;
+            border: 1px solid #999;
+        }
+
+        .signature {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sig {
+            width: 200px;
+            text-align: center;
+        }
+
+        .line {
+            border-top: 1px solid black;
+            margin-top: 40px;
+        }
+    </style>
 
 </head>
 
 <body>
 
-<h2>Trip Pick List (Trip #<?= htmlspecialchars($tripId) ?>)</h2>
+    <h1>Trip Pick List</h1>
+    <b>Trip #<?= htmlspecialchars($tripId) ?></b>
 
-<table>
+    <?php while ($row = $result->fetch_assoc()): ?>
 
-<tr>
-<th>Pallet Code</th>
-<th>Product</th>
-<th>Box ID</th>
-<th>Batch</th>
-<th>Expiry</th>
-</tr>
+        <?php if ($currentStop !== $row['delivery_sequence']): ?>
 
-<?php if ($result->num_rows == 0): ?>
+            <?php
+            if ($currentStop !== null) {
+                echo "</tbody></table></div>";
+            }
 
-<tr>
-<td colspan="5">No picklist data found.</td>
-</tr>
+            $currentStop = $row['delivery_sequence'];
+            ?>
 
-<?php endif; ?>
+            <div class="stop-box">
 
-<?php while ($row = $result->fetch_assoc()): ?>
+                <h3>Stop <?= htmlspecialchars($row['delivery_sequence']) ?></h3>
 
-<tr>
+                <b>Client:</b> <?= htmlspecialchars($row['client_name']) ?><br>
+                <b>Destination:</b> <?= htmlspecialchars($row['destination']) ?>
 
-<td><?= htmlspecialchars($row['pallet_code']) ?></td>
+                <table>
 
-<td><?= htmlspecialchars($row['product_name']) ?></td>
+                    <thead>
+                        <tr>
+                            <th>Pallet</th>
+                            <th>Product</th>
+                            <th>Box ID</th>
+                            <th>Batch</th>
+                            <th>Expiry</th>
+                        </tr>
+                    </thead>
 
-<td><?= htmlspecialchars($row['box_id']) ?></td>
+                    <tbody>
 
-<td><?= htmlspecialchars($row['batch_code']) ?></td>
+                    <?php endif; ?>
 
-<td><?= htmlspecialchars($row['expiry_date']) ?></td>
+                    <tr>
 
-</tr>
+                        <td><?= htmlspecialchars($row['pallet_code']) ?></td>
 
-<?php endwhile; ?>
+                        <td><?= htmlspecialchars($row['product_name']) ?></td>
 
-</table>
+                        <td><?= htmlspecialchars($row['box_id']) ?></td>
 
-<script>
-window.print();
-</script>
+                        <td><?= htmlspecialchars($row['batch_code']) ?></td>
+
+                        <td><?= htmlspecialchars($row['expiry_date']) ?></td>
+
+                    </tr>
+
+                <?php endwhile; ?>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="signature">
+
+                <div class="sig">
+                    <div class="line"></div>
+                    Prepared By
+                </div>
+
+                <div class="sig">
+                    <div class="line"></div>
+                    Checked By
+                </div>
+
+                <div class="sig">
+                    <div class="line"></div>
+                    Driver
+                </div>
+
+            </div>
+
+            <script>
+                window.print();
+            </script>
 
 </body>
 
