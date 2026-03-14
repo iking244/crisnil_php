@@ -6,7 +6,6 @@ include "../config/database_conn.php";
 include "../models/warehouses_model.php";
 
 if (!isset($_SESSION['USER_ID'])) {
-
     header("Location: ../index.php");
     exit();
 }
@@ -17,42 +16,22 @@ if (!isset($_SESSION['USER_ID'])) {
 
 $deliveryItems = getDeliveryItemsForAssignment($databaseconn);
 
-$receivingItems = mysqli_query($databaseconn, "
-SELECT 
-    dr.dr_number,
-    di.delivery_item_id,
-    p.product_name,
-    di.qty AS expected_boxes,
+$receivingItems = getReceivingItems($databaseconn);
 
-    COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) AS received_boxes,
+$pallets = getActivePalletList($databaseconn);
 
-    (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)) AS remaining_boxes
+$pendingItems = getPendingDeliveryItems($databaseconn);
 
-FROM tbl_delivery_items di
+$boxesPending = getBoxesPending($databaseconn);
 
-JOIN tbl_delivery_receipts dr 
-ON di.delivery_receipt_id = dr.delivery_receipt_id
+$activePallets = getActivePallets($databaseconn);
 
-JOIN tbl_products p 
-ON di.product_id = p.product_id
+$receivedToday = getReceivedToday($databaseconn);
 
-LEFT JOIN tbl_stock_boxes sb
-ON sb.delivery_item_id = di.delivery_item_id
 
-GROUP BY di.delivery_item_id
-
-HAVING remaining_boxes > 0
-
-ORDER BY dr.dr_number DESC
-");
-
-$pallets = mysqli_query($databaseconn, "
-SELECT pallet_id,pallet_code
-FROM tbl_pallets
-WHERE status='active'
-ORDER BY pallet_code
-");
-
+# --------------------------------
+# AJAX: GET BOXES
+# --------------------------------
 
 if (isset($_GET['action']) && $_GET['action'] == "get_boxes") {
 
@@ -64,6 +43,8 @@ if (isset($_GET['action']) && $_GET['action'] == "get_boxes") {
     echo json_encode($boxes);
     exit();
 }
+
+
 # --------------------------------
 # SAVE BOX ASSIGNMENT
 # --------------------------------
@@ -73,7 +54,6 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
     try {
 
         $databaseconn->begin_transaction();
-
 
         $delivery_item_id = $_POST['delivery_item_id'];
 
@@ -85,25 +65,10 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
         $box_ids = $_POST['box_id'];
         $pallet_id = $_POST['pallet_id'];
 
-        $query = "
-SELECT 
-dr.warehouse_id,
-di.product_id
-FROM tbl_delivery_items di
-JOIN tbl_delivery_receipts dr
-ON dr.delivery_receipt_id = di.delivery_receipt_id
-WHERE di.delivery_item_id = ?
-";
-        $stmt = $databaseconn->prepare($query);
-        $stmt->bind_param("i", $delivery_item_id);
-        $stmt->execute();
+        $info = getDeliveryItemInfo($databaseconn, $delivery_item_id);
 
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-
-        $warehouse_id = $row['warehouse_id'];
-        $product_id = $row['product_id'];
-
+        $warehouse_id = $info['warehouse_id'];
+        $product_id = $info['product_id'];
 
         insertBoxes(
             $databaseconn,
