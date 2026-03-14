@@ -120,6 +120,7 @@ while (!empty($jobs)) {
         }
 
         $tripId = $stmt->insert_id;
+        generatePickList($databaseconn, $tripId);
 
         // ---------- DELIVERY SEQUENCING ----------
         $jobsForRouting = $cluster;
@@ -193,4 +194,73 @@ while (!empty($jobs)) {
         "success" => false,
         "error" => $e->getMessage()
     ]);
+}
+
+
+
+function generatePickList($conn, $tripId)
+{
+
+    $items = $conn->prepare("
+        SELECT 
+            joi.product_id,
+            SUM(joi.quantity) AS qty
+        FROM tbl_job_orders jo
+        JOIN tbl_job_order_items joi
+        ON jo.id = joi.job_order_id
+        WHERE jo.trip_id = ?
+        GROUP BY joi.product_id
+    ");
+
+    $items->bind_param("i", $tripId);
+    $items->execute();
+    $result = $items->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+
+        $productId = $row['product_id'];
+        $qtyNeeded = $row['qty'];
+
+        $boxes = $conn->prepare("
+            SELECT box_id
+            FROM tbl_stock_boxes
+            WHERE product_id = ?
+            AND status = 'available'
+            ORDER BY expiry_date ASC
+            LIMIT ?
+        ");
+
+        $boxes->bind_param("ii", $productId, $qtyNeeded);
+        $boxes->execute();
+
+        $boxResult = $boxes->get_result();
+
+        while ($box = $boxResult->fetch_assoc()) {
+
+            $insert = $conn->prepare("
+                INSERT INTO tbl_trip_picklist
+                (trip_id, box_id, product_id)
+                VALUES (?, ?, ?)
+            ");
+
+            $insert->bind_param(
+                "iii",
+                $tripId,
+                $box['box_id'],
+                $productId
+            );
+
+            $insert->execute();
+
+            // mark box reserved
+            $update = $conn->prepare("
+                UPDATE tbl_stock_boxes
+                SET status = 'reserved'
+                WHERE box_id = ?
+            ");
+
+            $update->bind_param("i", $box['box_id']);
+            $update->execute();
+        }
+    }
 }
