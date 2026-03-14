@@ -175,7 +175,7 @@ function getBoxesPending($conn)
         FROM tbl_delivery_items di
         LEFT JOIN (
             SELECT delivery_item_id, COUNT(*) AS box_count
-            FROM stock_boxes
+            FROM tbl_stock_boxes
             GROUP BY delivery_item_id
         ) sb
         ON sb.delivery_item_id = di.delivery_item_id
@@ -202,7 +202,7 @@ function getReceivedToday($conn)
 {
     $query = "
         SELECT COUNT(*) AS received_today
-        FROM stock_boxes
+        FROM tbl_stock_boxes
         WHERE DATE(encoded_at) = CURDATE()
     ";
 
