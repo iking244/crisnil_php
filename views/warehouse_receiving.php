@@ -98,16 +98,6 @@ include "../controllers/warehouse_controller.php";
 
             </div>
 
-            <!--- FILTERS -->
-
-            <div class="mb-3">
-
-                <a href="?view=active" class="btn btn-primary btn-sm">Active</a>
-
-                <a href="?view=completed" class="btn btn-outline-secondary btn-sm">Completed</a>
-
-            </div>
-
 
             <!-- PALLET DASHBOARD -->
 
@@ -155,6 +145,16 @@ include "../controllers/warehouse_controller.php";
                     <?php endwhile; ?>
 
                 </div>
+
+            </div>
+
+            <!--- FILTERS -->
+
+            <div class="mb-3">
+
+                <a href="?view=active" class="btn btn-primary btn-sm">Active</a>
+
+                <a href="?view=completed" class="btn btn-outline-secondary btn-sm">Completed</a>
 
             </div>
 
