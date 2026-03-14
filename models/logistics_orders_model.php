@@ -514,8 +514,44 @@ function completeJobOrder($conn, $job_id)
 /* =========================================================
    TRIP LOADING (FEFO STOCK DEDUCTION)
 ========================================================= */
-
 function confirmTripLoaded($conn, $trip_id)
+{
+    // 1. Check if trip has blocked job orders
+    $check = $conn->prepare("
+        SELECT COUNT(*) as total
+        FROM tbl_job_orders
+        WHERE trip_id = ?
+        AND status = 'blocked'
+    ");
+    $check->bind_param("i", $trip_id);
+    $check->execute();
+    $result = $check->get_result()->fetch_assoc();
+
+    if ($result['total'] > 0) {
+        return [
+            "success" => false,
+            "message" => "Trip has blocked job orders"
+        ];
+    }
+
+    // 2. Update trip status
+    $stmt = $conn->prepare("
+        UPDATE tbl_trips
+        SET status = 'ready_to_depart'
+        WHERE trip_id = ?
+        AND status NOT IN ('completed','cancelled')
+    ");
+
+    $stmt->bind_param("i", $trip_id);
+    $stmt->execute();
+
+    return [
+        "success" => true,
+        "message" => "Trip is ready to depart"
+    ];
+}
+
+function confirmTripLoadedOld($conn, $trip_id)
 {
     // 1. Check for blocked job orders
     $check = $conn->prepare("
