@@ -36,7 +36,7 @@ include "../controllers/warehouse_controller.php";
 
                 <h1 class="page-title">Warehouse Receiving</h1>
 
-                <a href="products_overview.php" class="btn btn-outline-dark">
+                <a href="product_overview.php" class="btn btn-outline-dark">
                     <i class="fa fa-arrow-left me-1"></i> Back to Inventory
                 </a>
 
