@@ -2,7 +2,7 @@ let assignModal = new bootstrap.Modal(document.getElementById('assignBoxesModal'
 
 document.querySelectorAll(".assignBtn").forEach(btn => {
 
-    btn.addEventListener("click", function () {
+    btn.addEventListener("click", function (e) {
 
         if (this.dataset.loading === "true") return;
 
