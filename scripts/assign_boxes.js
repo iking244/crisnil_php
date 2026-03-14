@@ -148,7 +148,6 @@ document.addEventListener("input", function (e) {
 let palletModal = new bootstrap.Modal(document.getElementById("viewPalletModal"));
 
 document.querySelectorAll(".viewPalletBtn").forEach(card => {
-    console.log(card);
 
     card.addEventListener("click", function () {
 
@@ -159,40 +158,58 @@ document.querySelectorAll(".viewPalletBtn").forEach(card => {
 
         fetch("../controllers/warehouse_controller.php?action=get_pallet_boxes&pallet_id=" + palletId)
 
-            .then(res => res.json())
+        .then(res => res.json())
 
-            .then(boxes => {
+        .then(boxes => {
 
-                if (boxes.length === 0) {
-                    container.innerHTML = `
-        <tr>
-            <td colspan="4" class="text-center text-muted">
-                No boxes on this pallet
-            </td>
-        </tr>
-    `;
-                }
+            let container = document.getElementById("palletBoxesContainer");
 
-                let container = document.getElementById("palletBoxesContainer");
+            container.innerHTML = "";
 
-                container.innerHTML = "";
+            let totalWeight = 0;
+
+            if (boxes.length === 0) {
+
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">
+                            No boxes on this pallet
+                        </td>
+                    </tr>
+                `;
+
+                document.getElementById("palletBoxCount").innerText = 0;
+                document.getElementById("palletTotalWeight").innerText = "0.00";
+
+            } else {
 
                 boxes.forEach(box => {
 
+                    let weight = parseFloat(box.box_weight);
+
+                    totalWeight += weight;
+
                     container.innerHTML += `
-                <tr>
-                    <td>${box.product_name}</td>
-                    <td>${box.box_weight} kg</td>
-                    <td>${box.batch_code}</td>
-                    <td>${box.expiry_date}</td>
-                </tr>
-                `;
+                        <tr>
+                            <td>${box.product_name}</td>
+                            <td>${weight.toFixed(2)} kg</td>
+                            <td>${box.batch_code}</td>
+                            <td>${box.expiry_date}</td>
+                        </tr>
+                    `;
 
                 });
 
-                palletModal.show();
+                document.getElementById("palletBoxCount").innerText = boxes.length;
 
-            });
+                document.getElementById("palletTotalWeight").innerText =
+                    totalWeight.toFixed(2);
+
+            }
+
+            palletModal.show();
+
+        });
 
     });
 
