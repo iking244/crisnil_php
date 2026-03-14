@@ -154,7 +154,7 @@ function getPendingDeliveryItems($conn)
         SELECT COUNT(*) AS pending_items
         FROM (
             SELECT di.delivery_item_id
-            FROM delivery_items di
+            FROM tbl_delivery_items di
             LEFT JOIN stock_boxes sb 
                 ON sb.delivery_item_id = di.delivery_item_id
             GROUP BY di.delivery_item_id
@@ -172,7 +172,7 @@ function getBoxesPending($conn)
 {
     $query = "
         SELECT SUM(di.expected_boxes - IFNULL(sb.box_count,0)) AS boxes_pending
-        FROM delivery_items di
+        FROM tbl_delivery_items di
         LEFT JOIN (
             SELECT delivery_item_id, COUNT(*) AS box_count
             FROM stock_boxes
