@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "../config/database_conn.php";
+include "../../config/database_conn.php";
 
 $tripId = isset($_GET['trip_id']) ? intval($_GET['trip_id']) : 0;
 
