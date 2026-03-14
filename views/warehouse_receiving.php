@@ -125,7 +125,7 @@ include "../controllers/warehouse_controller.php";
 
                         <div class="col-md-2">
 
-                            <div class="card pallet-card text-center p-3"
+                            <div class="card pallet-card viewPalletBtn text-center p-3"
                                 data-id="<?= $p['pallet_id'] ?>"
                                 data-code="<?= $p['pallet_code'] ?>"
                                 style="--fill: <?= $percent ?>%; --color: <?= $color ?>;">
