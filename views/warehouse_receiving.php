@@ -150,11 +150,19 @@ include "../controllers/warehouse_controller.php";
 
             <!--- FILTERS -->
 
-            <div class="mb-3">
+            <div class="d-flex align-items-center gap-2 mb-3">
 
-                <a href="?view=active" class="btn btn-primary btn-sm">Active</a>
+                <span class="text-muted small">View:</span>
 
-                <a href="?view=completed" class="btn btn-outline-secondary btn-sm">Completed</a>
+                <a href="?view=active"
+                    class="btn btn-sm <?= $view === 'active' ? 'btn-primary' : 'btn-outline-primary' ?>">
+                    Active
+                </a>
+
+                <a href="?view=completed"
+                    class="btn btn-sm <?= $view === 'completed' ? 'btn-primary' : 'btn-outline-primary' ?>">
+                    Completed
+                </a>
 
             </div>
 
