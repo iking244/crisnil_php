@@ -25,21 +25,22 @@ document.addEventListener("submit", function (e) {
 
 document.addEventListener("click", function (e) {
 
-    let btn = e.target.closest(".safe-action");
+    const btn = e.target.closest(".safe-action");
 
     if (!btn) return;
 
-    if (btn.dataset.locked === "true") {
+    // only protect navigation links
+    if (btn.tagName !== "A") return;
+
+    if (btn.dataset.loading === "true") {
         e.preventDefault();
         return;
     }
 
-    btn.dataset.locked = "true";
+    btn.dataset.loading = "true";
 
     btn.dataset.originalText = btn.innerHTML;
 
-    btn.innerHTML = `
-        <span class="loading-spinner"></span>
-    `;
+    btn.innerHTML = `<span class="loading-spinner"></span>`;
 
 });

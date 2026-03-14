@@ -4,6 +4,10 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
 
+        if (this.dataset.loading === "true") return;
+
+        this.dataset.loading = "true";
+
         let palletSelect = this.closest(".card-body").querySelector(".palletSelect");
 
         if (!palletSelect.value) {
@@ -108,6 +112,7 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
                 }
 
                 assignModal.show();
+                btn.dataset.loading = "false";
 
             });
 
