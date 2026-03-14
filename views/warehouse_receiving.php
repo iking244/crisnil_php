@@ -155,12 +155,12 @@ include "../controllers/warehouse_controller.php";
                 <span class="text-muted small">View:</span>
 
                 <a href="?view=active"
-                    class="btn btn-sm <?= $view === 'active' ? 'btn-primary' : 'btn-outline-primary' ?>">
+                    class="btn btn-sm safe-action <?= $view === 'active' ? 'btn-primary' : 'btn-outline-primary' ?>">
                     Active
                 </a>
 
                 <a href="?view=completed"
-                    class="btn btn-sm <?= $view === 'completed' ? 'btn-primary' : 'btn-outline-primary' ?>">
+                    class="btn btn-sm safe-action <?= $view === 'completed' ? 'btn-primary' : 'btn-outline-primary' ?>">
                     Completed
                 </a>
 

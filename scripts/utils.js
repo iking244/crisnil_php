@@ -22,3 +22,24 @@ document.addEventListener("submit", function (e) {
     `;
 
 });
+
+document.addEventListener("click", function (e) {
+
+    let btn = e.target.closest(".safe-action");
+
+    if (!btn) return;
+
+    if (btn.classList.contains("loading")) {
+        e.preventDefault();
+        return;
+    }
+
+    btn.classList.add("loading");
+
+    btn.dataset.originalText = btn.innerHTML;
+
+    btn.innerHTML = `
+        <span class="loading-spinner"></span>
+    `;
+
+});
