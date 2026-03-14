@@ -4,8 +4,10 @@
 
         <div class="modal-content">
 
-            <form class="auto-loading-form" id="assignBoxesForm" method="POST"
+            <form id="assignBoxesForm" method="POST"
                 action="../controllers/warehouse_controller.php?action=assign_boxes">
+
+                <input type="hidden" name="delivery_item_id" id="delivery_item_id">
                 <input type="hidden" name="pallet_id" id="pallet_id">
 
                 <div class="modal-header">
@@ -22,8 +24,6 @@
                 </div>
 
                 <div class="modal-body">
-
-                    <input type="hidden" name="delivery_item_id" id="delivery_item_id">
 
                     <div class="mb-3">
 
@@ -47,9 +47,7 @@
 
                         </thead>
 
-                        <tbody id="boxesContainer">
-
-                        </tbody>
+                        <tbody id="boxesContainer"></tbody>
 
                     </table>
 

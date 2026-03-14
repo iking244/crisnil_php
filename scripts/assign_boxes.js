@@ -1,10 +1,32 @@
 let assignModal = new bootstrap.Modal(document.getElementById('assignBoxesModal'));
+
 document.querySelectorAll(".assignBtn").forEach(btn => {
 
     btn.addEventListener("click", function () {
+
         let qty = this.dataset.qty;
         let product = this.dataset.product;
         let id = this.dataset.id;
+
+        /* get pallet selected in the card */
+
+        let palletSelect = this.closest(".card-body").querySelector(".palletSelect");
+
+        if (!palletSelect || palletSelect.value === "") {
+
+            alert("Please select a pallet first");
+            return;
+
+        }
+
+        let palletId = palletSelect.value;
+        let palletCode = palletSelect.options[palletSelect.selectedIndex].text;
+
+        /* store pallet in hidden modal input */
+
+        document.getElementById("pallet_id").value = palletId;
+
+        /* set modal values */
 
         document.getElementById("delivery_item_id").value = id;
         document.getElementById("assign_product").value = product;
@@ -13,88 +35,83 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
         container.innerHTML = "";
 
         fetch("../controllers/warehouse_controller.php?action=get_boxes&delivery_item_id=" + id)
+
             .then(res => res.json())
             .then(boxes => {
 
-
-
                 let existing = boxes.length;
 
-                /* show existing boxes */
+                /* existing boxes */
 
                 boxes.forEach(box => {
 
                     container.innerHTML += `
-                <tr>
-                
+                    <tr>
 
-                    <td>
-                        <input type="hidden" name="box_id[]" value="${box.box_id}">
-                        <input type="number" step="0.01" name="weight[]" 
-                        value="${box.box_weight}" class="form-control weight">
-                    </td>
+                        <td>
+                            <input type="hidden" name="box_id[]" value="${box.box_id}">
+                            <input type="number" step="0.01" name="weight[]" 
+                            value="${box.box_weight}" class="form-control weight">
+                        </td>
 
-                    <td>
-                        <input type="text" name="size[]" 
-                        value="${box.box_size}" class="form-control size">
-                    </td>
+                        <td>
+                            <input type="text" name="size[]" 
+                            value="${box.box_size}" class="form-control size">
+                        </td>
 
-                    <td>
-                        <input type="text" name="batch[]" 
-                        value="${box.batch_code}" class="form-control">
-                    </td>
+                        <td>
+                            <input type="text" name="batch[]" 
+                            value="${box.batch_code}" class="form-control">
+                        </td>
 
-                    <td>
-                        <input type="text" name="pallet[]" 
-                        value="${box.pallet_code}" class="form-control">
-                    </td>
+                        <td>
+                            <input type="hidden" name="pallet[]" value="${palletCode}">
+                            <input type="text" class="form-control" value="${palletCode}" readonly>
+                        </td>
 
-                    <td>
-                        <input type="date" name="expiry[]" 
-                        value="${box.expiry_date}" class="form-control">
-                    </td>
+                        <td>
+                            <input type="date" name="expiry[]" 
+                            value="${box.expiry_date}" class="form-control">
+                        </td>
 
-                </tr>
-                `;
-
+                    </tr>
+                    `;
                 });
 
-                /* add missing rows */
+                /* missing rows */
 
                 let remaining = qty - existing;
 
                 for (let i = 0; i < remaining; i++) {
 
                     container.innerHTML += `
-                <tr>
-                    
+                    <tr>
 
-                    <td>
-                        <input type="hidden" name="box_id[]" value="">
-                        <input type="number" step="0.01" name="weight[]" class="form-control weight">
-                    </td>
+                        <td>
+                            <input type="hidden" name="box_id[]" value="">
+                            <input type="number" step="0.01" name="weight[]" class="form-control weight">
+                        </td>
 
-                    <td>
-                        <input type="text" name="size[]" class="form-control size" readonly>
-                    </td>
+                        <td>
+                            <input type="text" name="size[]" class="form-control size" readonly>
+                        </td>
 
-                    <td>
-                        <input type="text" name="batch[]" class="form-control">
-                    </td>
+                        <td>
+                            <input type="text" name="batch[]" class="form-control">
+                        </td>
 
-                    <td>
-                        <input type="text" name="pallet[]" class="form-control">
-                    </td>
+                        <td>
+                            <input type="hidden" name="pallet[]" value="${palletCode}">
+                            <input type="text" class="form-control" value="${palletCode}" readonly>
+                        </td>
 
-                    <td>
-                        <input type="date" name="expiry[]" class="form-control">
-                    </td>
+                        <td>
+                            <input type="date" name="expiry[]" class="form-control">
+                        </td>
 
-                </tr>
-                `;
-
+                    </tr>
+                    `;
                 }
-
 
                 assignModal.show();
 
@@ -131,12 +148,11 @@ document.addEventListener("input", function (e) {
 });
 
 
-/* SUBMIT FORM VIA AJAX */
+/* AJAX SUBMIT */
 
 document.getElementById("assignBoxesForm").addEventListener("submit", function (e) {
 
-    e.preventDefault(); // stop page reload 
-
+    e.preventDefault();
 
     let form = this;
     let formData = new FormData(form);
@@ -151,7 +167,6 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
             if (data.status === "success") {
 
                 alert("Boxes saved successfully");
-
                 location.reload();
 
             } else {
@@ -162,11 +177,10 @@ document.getElementById("assignBoxesForm").addEventListener("submit", function (
 
         })
         .catch(err => {
+
             console.error("Error:", err);
             alert("Something went wrong");
 
         });
-
-
 
 });
