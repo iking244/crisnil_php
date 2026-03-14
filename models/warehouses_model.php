@@ -153,13 +153,16 @@ function getPendingDeliveryItems($conn)
     $query = "
         SELECT COUNT(*) AS pending_items
         FROM (
-            SELECT di.delivery_item_id
+            SELECT 
+                di.delivery_item_id,
+                di.qty,
+                COUNT(sb.box_id) AS received_boxes
             FROM tbl_delivery_items di
             LEFT JOIN tbl_stock_boxes sb
                 ON sb.delivery_item_id = di.delivery_item_id
             GROUP BY di.delivery_item_id
-            HAVING COUNT(sb.box_id) < di.qty
         ) t
+        WHERE received_boxes < qty
     ";
 
     $result = mysqli_query($conn, $query);
