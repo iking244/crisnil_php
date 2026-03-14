@@ -144,3 +144,45 @@ document.addEventListener("input", function (e) {
     }
 
 });
+
+let palletModal = new bootstrap.Modal(document.getElementById("viewPalletModal"));
+
+document.querySelectorAll(".viewPalletBtn").forEach(card => {
+
+    card.addEventListener("click", function () {
+
+        let palletId = this.dataset.id;
+        let palletCode = this.dataset.code;
+
+        document.getElementById("palletCodeTitle").innerText = palletCode;
+
+        fetch("../controllers/warehouse_controller.php?action=get_pallet_boxes&pallet_id=" + palletId)
+
+            .then(res => res.json())
+
+            .then(boxes => {
+
+                let container = document.getElementById("palletBoxesContainer");
+
+                container.innerHTML = "";
+
+                boxes.forEach(box => {
+
+                    container.innerHTML += `
+                <tr>
+                    <td>${box.product_name}</td>
+                    <td>${box.box_weight} kg</td>
+                    <td>${box.batch_code}</td>
+                    <td>${box.expiry_date}</td>
+                </tr>
+                `;
+
+                });
+
+                palletModal.show();
+
+            });
+
+    });
+
+});
