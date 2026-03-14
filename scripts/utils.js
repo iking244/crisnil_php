@@ -29,12 +29,12 @@ document.addEventListener("click", function (e) {
 
     if (!btn) return;
 
-    if (btn.classList.contains("loading")) {
+    if (btn.dataset.locked === "true") {
         e.preventDefault();
         return;
     }
 
-    btn.classList.add("loading");
+    btn.dataset.locked = "true";
 
     btn.dataset.originalText = btn.innerHTML;
 

@@ -319,7 +319,7 @@ include "../controllers/warehouse_controller.php";
 
                                         <div class="col-6">
 
-                                            <button class="btn btn-primary btn-sm assignBtn w-100"
+                                            <button class="btn btn-primary btn-sm assignBtn safe-action w-100"
                                                 data-id="<?= $row['delivery_item_id'] ?>"
                                                 data-product="<?= htmlspecialchars($row['product_name']) ?>"
                                                 data-qty="<?= $row['expected_boxes'] - $row['missing_boxes'] - $row['damaged_boxes'] ?>">
@@ -329,19 +329,14 @@ include "../controllers/warehouse_controller.php";
                                             </button>
 
                                         </div>
+                                        
+                                        <button class="btn btn-outline-danger btn-sm reportIssueBtn safe-action w-100"
+                                            data-id="<?= $row['delivery_item_id'] ?>"
+                                            data-product="<?= htmlspecialchars($row['product_name']) ?>">
 
-                                        <div class="col-6">
+                                            <i class="fa fa-exclamation-triangle"></i> Issue
 
-                                            <button class="btn btn-outline-danger btn-sm reportIssueBtn w-100"
-                                                data-id="<?= $row['delivery_item_id'] ?>"
-                                                data-product="<?= htmlspecialchars($row['product_name']) ?>">
-
-                                                <i class="fa fa-exclamation-triangle"></i> Issue
-
-                                            </button>
-
-                                        </div>
-
+                                        </button>
                                     </div>
 
                                 <?php else: ?>
