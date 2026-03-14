@@ -52,7 +52,7 @@ include "../controllers/warehouse_controller.php";
                     <div class="kpi-card blue">
 
                         <h6>Pending Delivery Items</h6>
-                        <h3>12</h3>
+                        <h3><?= $pendingItems ?></h3>
                         <div class="kpi-sub">items waiting encoding</div>
 
                     </div>
@@ -64,7 +64,7 @@ include "../controllers/warehouse_controller.php";
                     <div class="kpi-card orange">
 
                         <h6>Boxes Pending</h6>
-                        <h3>56</h3>
+                        <h3><?= $boxesPending ?></h3>
                         <div class="kpi-sub">boxes not yet received</div>
 
                     </div>
@@ -76,7 +76,7 @@ include "../controllers/warehouse_controller.php";
                     <div class="kpi-card green">
 
                         <h6>Active Pallets</h6>
-                        <h3>5</h3>
+                        <h3><?= $activePallets ?></h3>
                         <div class="kpi-sub">currently in use</div>
 
                     </div>
@@ -88,7 +88,7 @@ include "../controllers/warehouse_controller.php";
                     <div class="kpi-card gray">
 
                         <h6>Completed Today</h6>
-                        <h3>8</h3>
+                        <h3><?= $receivedToday ?></h3>
                         <div class="kpi-sub">fully received DRs</div>
 
                     </div>
