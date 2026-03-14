@@ -234,9 +234,15 @@ function getReceivingItems($databaseconn)
             di.qty AS expected_boxes,
             di.missing_boxes,
             di.damaged_boxes,
+
             COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) AS received_boxes,
 
-            (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) - di.missing_boxes - di.damaged_boxes) AS remaining_boxes
+            (
+                di.qty 
+                - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)
+                - di.missing_boxes
+                - di.damaged_boxes
+            ) AS remaining_boxes
 
         FROM tbl_delivery_items di
 
@@ -251,14 +257,17 @@ function getReceivingItems($databaseconn)
 
         GROUP BY di.delivery_item_id
 
-        HAVING (di.qty - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)) > 0
+        HAVING (
+            di.qty 
+            - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)
+            - di.missing_boxes
+        ) > 0
 
         ORDER BY dr.dr_number DESC
     ";
 
     return mysqli_query($databaseconn, $query);
 }
-
 
 function getActivePalletList($databaseconn)
 {
