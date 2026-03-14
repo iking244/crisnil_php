@@ -291,7 +291,7 @@ include "../controllers/logistics_orders_controller.php";
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <select name="product_id[]" class="form-control">
+                                            <select name="product_id[]" class="form-control productSelect">
                                                 <?php
                                                 mysqli_data_seek($products, 0);
                                                 while ($p = $products->fetch_assoc()):
@@ -301,6 +301,10 @@ include "../controllers/logistics_orders_controller.php";
                                                     </option>
                                                 <?php endwhile; ?>
                                             </select>
+
+                                            <div class="stockLabel small text-muted mt-1">
+                                                Stock: -
+                                            </div>
                                         </td>
                                         <td>
                                             <input type="number"
@@ -335,11 +339,11 @@ include "../controllers/logistics_orders_controller.php";
     <!-- KEEP YOUR EXISTING MODAL AND SCRIPTS BELOW UNCHANGED -->
     <!-- ================= SCRIPTS ================= -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-     <script src="../scripts/table.js"></script>
-     <script src="../scripts/orders.js"></script>
-     <script src="../scripts/notif.js"></script>
-     <script src="../scripts/sidenav.js"></script>
-     <script src="../scripts/dropdown2.js"></script>
+    <script src="../scripts/table.js"></script>
+    <script src="../scripts/orders.js"></script>
+    <script src="../scripts/notif.js"></script>
+    <script src="../scripts/sidenav.js"></script>
+    <script src="../scripts/dropdown2.js"></script>
     <script>
         window.productList = [
             <?php
@@ -363,6 +367,25 @@ include "../controllers/logistics_orders_controller.php";
                     addItemRow('createItemsTable');
                 }
             });
+    </script>
+    <script>
+        document.addEventListener("change", function(e) {
+
+            if (!e.target.classList.contains("productSelect")) return;
+
+            let productId = e.target.value;
+
+            let stockLabel = e.target.closest("td").querySelector(".stockLabel");
+
+            fetch(`../controllers/logistics_orders_controller.php?action=get_stock&product_id=${productId}`)
+                .then(res => res.json())
+                .then(data => {
+
+                    stockLabel.innerHTML = "Stock: " + data.quantity + " boxes";
+
+                });
+
+        });
     </script>
 
 </body>
