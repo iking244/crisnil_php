@@ -56,14 +56,11 @@
                     <table class="table table-sm align-middle">
 
                         <thead class="table-light">
-
                             <tr>
                                 <th>Product</th>
-                                <th>Weight (kg)</th>
-                                <th>Batch</th>
-                                <th>Expiry</th>
+                                <th>Boxes</th>
+                                <th>Total Weight (kg)</th>
                             </tr>
-
                         </thead>
 
                         <tbody id="palletBoxesContainer">

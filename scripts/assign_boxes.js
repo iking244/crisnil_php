@@ -158,58 +158,84 @@ document.querySelectorAll(".viewPalletBtn").forEach(card => {
 
         fetch("../controllers/warehouse_controller.php?action=get_pallet_boxes&pallet_id=" + palletId)
 
-        .then(res => res.json())
+            .then(res => res.json())
 
-        .then(boxes => {
+            .then(boxes => {
 
-            let container = document.getElementById("palletBoxesContainer");
+                let container = document.getElementById("palletBoxesContainer");
+                container.innerHTML = "";
 
-            container.innerHTML = "";
-
-            let totalWeight = 0;
-
-            if (boxes.length === 0) {
-
-                container.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="text-center text-muted">
-                            No boxes on this pallet
-                        </td>
-                    </tr>
-                `;
-
-                document.getElementById("palletBoxCount").innerText = 0;
-                document.getElementById("palletTotalWeight").innerText = "0.00";
-
-            } else {
+                let grouped = {};
+                let totalWeight = 0;
 
                 boxes.forEach(box => {
 
+                    let product = box.product_name;
                     let weight = parseFloat(box.box_weight);
 
                     totalWeight += weight;
 
-                    container.innerHTML += `
-                        <tr>
-                            <td>${box.product_name}</td>
-                            <td>${weight.toFixed(2)} kg</td>
-                            <td>${box.batch_code}</td>
-                            <td>${box.expiry_date}</td>
-                        </tr>
-                    `;
+                    if (!grouped[product]) {
+
+                        grouped[product] = {
+                            boxes: [],
+                            totalWeight: 0
+                        };
+
+                    }
+
+                    grouped[product].boxes.push(box);
+                    grouped[product].totalWeight += weight;
 
                 });
 
                 document.getElementById("palletBoxCount").innerText = boxes.length;
+                document.getElementById("palletTotalWeight").innerText = totalWeight.toFixed(2);
 
-                document.getElementById("palletTotalWeight").innerText =
-                    totalWeight.toFixed(2);
+                if (boxes.length === 0) {
 
-            }
+                    container.innerHTML = `
+        <tr>
+            <td colspan="3" class="text-center text-muted">
+                No boxes on this pallet
+            </td>
+        </tr>
+        `;
 
-            palletModal.show();
+                } else {
 
-        });
+                    Object.keys(grouped).forEach((product, index) => {
+
+                        let group = grouped[product];
+                        let collapseId = "productBoxes" + index;
+
+                        container.innerHTML += `
+            <tr class="product-row" data-bs-toggle="collapse" data-bs-target="#${collapseId}" style="cursor:pointer;">
+                <td><strong>${product}</strong></td>
+                <td>${group.boxes.length}</td>
+                <td>${group.totalWeight.toFixed(2)} kg</td>
+            </tr>
+            `;
+
+                        group.boxes.forEach(box => {
+
+                            container.innerHTML += `
+                <tr class="collapse box-row" id="${collapseId}">
+                    <td colspan="3" class="ps-4 text-muted">
+                        └ ${parseFloat(box.box_weight).toFixed(2)} kg — Batch ${box.batch_code}
+                    </td>
+                </tr>
+                `;
+
+                        });
+
+                    });
+
+                }
+
+                palletModal.show();
+
+            });
 
     });
 
