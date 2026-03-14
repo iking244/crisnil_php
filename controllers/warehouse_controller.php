@@ -20,7 +20,9 @@ if (!isset($_SESSION['USER_ID'])) {
 
 $deliveryItems = getDeliveryItemsForAssignment($databaseconn);
 
-$receivingItems = getReceivingItems($databaseconn);
+$view = $_GET['view'] ?? 'active';
+
+$receivingItems = getReceivingItems($databaseconn, $view);
 
 $pallets = getActivePalletList($databaseconn);
 

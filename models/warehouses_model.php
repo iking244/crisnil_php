@@ -224,8 +224,16 @@ function getReceivedToday($databaseconn)
     return $row['received_today'] ?? 0;
 }
 
-function getReceivingItems($databaseconn)
+function getReceivingItems($conn, $view = 'active')
 {
+    $havingCondition = "";
+
+    if ($view === 'completed') {
+        $havingCondition = "= 0";
+    } else {
+        $havingCondition = "> 0";
+    }
+
     $query = "
         SELECT 
             dr.dr_number,
@@ -238,35 +246,32 @@ function getReceivingItems($databaseconn)
             COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END) AS received_boxes,
 
             (
-                di.qty 
+                di.qty
                 - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)
                 - di.missing_boxes
                 - di.damaged_boxes
             ) AS remaining_boxes
 
         FROM tbl_delivery_items di
-
-        JOIN tbl_delivery_receipts dr 
-        ON di.delivery_receipt_id = dr.delivery_receipt_id
-
-        JOIN tbl_products p 
-        ON di.product_id = p.product_id
-
+        JOIN tbl_delivery_receipts dr
+            ON di.delivery_receipt_id = dr.delivery_receipt_id
+        JOIN tbl_products p
+            ON di.product_id = p.product_id
         LEFT JOIN tbl_stock_boxes sb
-        ON sb.delivery_item_id = di.delivery_item_id
+            ON sb.delivery_item_id = di.delivery_item_id
 
         GROUP BY di.delivery_item_id
 
         HAVING (
-            di.qty 
+            di.qty
             - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)
             - di.missing_boxes
-        ) > 0
+        ) $havingCondition
 
         ORDER BY dr.dr_number DESC
     ";
 
-    return mysqli_query($databaseconn, $query);
+    return mysqli_query($conn, $query);
 }
 
 function getActivePalletList($databaseconn)
