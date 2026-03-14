@@ -162,6 +162,8 @@ document.querySelectorAll(".viewPalletBtn").forEach(card => {
 
             .then(boxes => {
 
+                boxes.sort((a, b) => new Date(a.expiry_date) - new Date(b.expiry_date));
+
                 let container = document.getElementById("palletBoxesContainer");
                 container.innerHTML = "";
 
