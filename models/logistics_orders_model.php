@@ -84,13 +84,30 @@ function getActiveProducts($conn)
         SELECT 
             p.product_id,
             p.product_name,
-            u.unit_name AS unit
+            u.unit_name AS unit,
+            COUNT(sb.box_id) AS available_boxes
         FROM tbl_products p
+
         LEFT JOIN tbl_units u
             ON p.unit_id = u.unit_id
+
+        LEFT JOIN tbl_stock_boxes sb
+            ON sb.product_id = p.product_id
+            AND sb.status = 'available'
+            AND sb.expiry_date >= CURDATE()
+
         WHERE p.is_active = 1
+
+        GROUP BY 
+            p.product_id,
+            p.product_name,
+            u.unit_name
+
+        HAVING available_boxes > 0
+
         ORDER BY p.product_name
     ";
+
     return $conn->query($sql);
 }
 
