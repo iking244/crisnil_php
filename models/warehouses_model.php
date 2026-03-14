@@ -60,7 +60,7 @@ function insertBoxes(
         $expiry = $expiries[$i];
         $pallet_code = $pallets[$i];
 
-        /* SKIP EMPTY ROWS */
+        /* skip empty rows */
 
         if (
             empty($weight) &&
@@ -71,8 +71,6 @@ function insertBoxes(
         }
 
         if ($box_id) {
-
-            /* UPDATE EXISTING BOX */
 
             $stmt = mysqli_prepare($databaseconn, "
         UPDATE tbl_stock_boxes
@@ -94,12 +92,10 @@ function insertBoxes(
             mysqli_stmt_execute($stmt);
         } else {
 
-            /* INSERT NEW BOX */
-
             $stmt = mysqli_prepare($databaseconn, "
         INSERT INTO tbl_stock_boxes
         (delivery_item_id, warehouse_id, product_id, box_weight, box_size, batch_code, pallet_code, expiry_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?,?,?,?,?,?,?,?)
         ");
 
             mysqli_stmt_bind_param(

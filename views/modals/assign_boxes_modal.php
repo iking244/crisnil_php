@@ -1,73 +1,37 @@
-<div class="modal fade" id="assignBoxesModal" tabindex="-1">
+<form class="auto-loading-form" id="assignBoxesForm"
+    method="POST"
+    action="../controllers/warehouse_controller.php?action=assign_boxes">
 
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <input type="hidden" name="delivery_item_id" id="delivery_item_id">
 
-        <div class="modal-content">
+    <div class="modal-body">
 
-            <form
-                class="auto-loading-form"
-                id="assignBoxesForm"
-                method="POST"
-                action="../controllers/warehouse_controller.php?action=assign_boxes">
+        <label class="form-label">Product</label>
 
-                <input type="hidden" name="delivery_item_id" id="delivery_item_id">
-                <input type="hidden" name="pallet_id" id="pallet_id">
+        <input type="text" id="assign_product" class="form-control" readonly>
 
-                <div class="modal-header">
+        <table class="table table-bordered">
 
-                    <h5 class="modal-title">
+            <thead>
 
-                        <i class="fa fa-boxes text-warning"></i>
-                        Assign Boxes
+                <tr>
+                    <th>Weight</th>
+                    <th>Size</th>
+                    <th>Batch</th>
+                    <th>Pallet</th>
+                    <th>Expiry</th>
+                </tr>
 
-                    </h5>
+            </thead>
 
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <tbody id="boxesContainer"></tbody>
 
-                </div>
+        </table>
 
-                <div class="modal-body">
-
-                    <div class="mb-3">
-
-                        <label class="form-label">Product</label>
-
-                        <input type="text" id="assign_product" class="form-control" readonly>
-
-                    </div>
-
-                    <table class="table table-bordered">
-
-                        <thead>
-
-                            <tr>
-                                <th>Box Weight (kg)</th>
-                                <th>Size</th>
-                                <th>Batch</th>
-                                <th>Pallet</th>
-                                <th>Expiry</th>
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="boxesContainer"></tbody>
-
-                    </table>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button type="submit" class="btn btn-success w-100">
-
-                        Save Boxes
-
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
     </div>
-</div>
+
+    <button type="submit" class="btn btn-success w-100">
+        Save Boxes
+    </button>
+
+</form>
