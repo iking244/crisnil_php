@@ -13,12 +13,12 @@ function haversine($lat1, $lon1, $lat2, $lon2)
     $dLat = deg2rad($lat2 - $lat1);
     $dLon = deg2rad($lon2 - $lon1);
 
-    $a = sin($dLat/2) * sin($dLat/2) +
-         cos(deg2rad($lat1)) *
-         cos(deg2rad($lat2)) *
-         sin($dLon/2) * sin($dLon/2);
+    $a = sin($dLat / 2) * sin($dLat / 2) +
+        cos(deg2rad($lat1)) *
+        cos(deg2rad($lat2)) *
+        sin($dLon / 2) * sin($dLon / 2);
 
-    $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
     return $earthRadius * $c;
 }
@@ -68,7 +68,7 @@ try {
     // ================================
     // CLUSTER JOBS
     // ================================
-    $radius = 5; 
+    $radius = 5;
     $maxOrdersPerCluster = 5;
     $clusters = [];
 
@@ -94,7 +94,6 @@ try {
 
                 $cluster[] = $job;
                 unset($jobs[$key]);
-
             }
         }
 
@@ -163,7 +162,6 @@ try {
 
                     $nearestDistance = $dist;
                     $nearestIndex = $key;
-
                 }
             }
 
@@ -207,7 +205,6 @@ try {
         "jobs_assigned" => $assigned,
         "clusters_created" => count($clusters)
     ]);
-
 } catch (Exception $e) {
 
     $databaseconn->rollback();
@@ -247,16 +244,17 @@ function generatePickList($conn, $tripId)
         // ================================
         // FEFO PICKING (with FIFO fallback)
         // ================================
-        $boxes = $conn->prepare("
-            SELECT box_id, pallet_id
-            FROM tbl_stock_boxes
-            WHERE product_id = ?
-            AND status = 'available'
-            ORDER BY 
-                expiry_date IS NULL,
-                expiry_date ASC,
-                received_at ASC
-            LIMIT " . intval($qtyNeeded)
+        $boxes = $conn->prepare(
+            "
+    SELECT box_id, pallet_id
+    FROM tbl_stock_boxes
+    WHERE product_id = ?
+    AND status = 'available'
+    ORDER BY 
+        expiry_date IS NULL,
+        expiry_date ASC,
+        box_id ASC
+    LIMIT " . intval($qtyNeeded)
         );
 
         $boxes->bind_param("i", $productId);
