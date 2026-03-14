@@ -155,7 +155,7 @@ function getPendingDeliveryItems($conn)
         FROM (
             SELECT di.delivery_item_id
             FROM tbl_delivery_items di
-            LEFT JOIN stock_boxes sb 
+            LEFT JOIN tbl_stock_boxes sb 
                 ON sb.delivery_item_id = di.delivery_item_id
             GROUP BY di.delivery_item_id
             HAVING COUNT(sb.box_id) < di.expected_boxes
