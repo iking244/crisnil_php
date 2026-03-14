@@ -295,34 +295,48 @@ include "../controllers/warehouse_controller.php";
 
                                 <!-- ACTION BUTTONS -->
 
-                                <div class="row g-2">
+                                <?php if ($row['remaining_boxes'] > 0): ?>
 
-                                    <div class="col-6">
+                                    <div class="row g-2">
 
-                                        <button class="btn btn-primary btn-sm assignBtn w-100"
-                                            data-id="<?= $row['delivery_item_id'] ?>"
-                                            data-product="<?= htmlspecialchars($row['product_name']) ?>"
-                                            data-qty="<?= $row['expected_boxes'] - $row['missing_boxes'] - $row['damaged_boxes'] ?>">
+                                        <div class="col-6">
 
-                                            <i class="fa fa-box"></i> Encode
+                                            <button class="btn btn-primary btn-sm assignBtn w-100"
+                                                data-id="<?= $row['delivery_item_id'] ?>"
+                                                data-product="<?= htmlspecialchars($row['product_name']) ?>"
+                                                data-qty="<?= $row['expected_boxes'] - $row['missing_boxes'] - $row['damaged_boxes'] ?>">
 
-                                        </button>
+                                                <i class="fa fa-box"></i> Encode
+
+                                            </button>
+
+                                        </div>
+
+                                        <div class="col-6">
+
+                                            <button class="btn btn-outline-danger btn-sm reportIssueBtn w-100"
+                                                data-id="<?= $row['delivery_item_id'] ?>"
+                                                data-product="<?= htmlspecialchars($row['product_name']) ?>">
+
+                                                <i class="fa fa-exclamation-triangle"></i> Issue
+
+                                            </button>
+
+                                        </div>
 
                                     </div>
 
-                                    <div class="col-6">
+                                <?php else: ?>
 
-                                        <button class="btn btn-outline-danger btn-sm reportIssueBtn w-100"
-                                            data-id="<?= $row['delivery_item_id'] ?>"
-                                            data-product="<?= htmlspecialchars($row['product_name']) ?>">
+                                    <div class="text-center mt-2">
 
-                                            <i class="fa fa-exclamation-triangle"></i> Issue
-
-                                        </button>
+                                        <span class="badge bg-success p-2">
+                                            ✓ Delivery Resolved
+                                        </span>
 
                                     </div>
 
-                                </div>
+                                <?php endif; ?>
 
 
                             </div>
