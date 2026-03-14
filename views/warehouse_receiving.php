@@ -302,7 +302,7 @@ include "../controllers/warehouse_controller.php";
                                         <button class="btn btn-primary btn-sm assignBtn w-100"
                                             data-id="<?= $row['delivery_item_id'] ?>"
                                             data-product="<?= htmlspecialchars($row['product_name']) ?>"
-                                            data-qty="<?= $row['remaining_boxes'] ?>">
+                                            data-qty="<?= $row['expected_boxes'] ?>">
 
                                             <i class="fa fa-box"></i> Encode
 
