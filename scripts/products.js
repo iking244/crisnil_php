@@ -1,7 +1,19 @@
 // products.js ─ product-specific logic
 document.addEventListener('DOMContentLoaded', () => {
 
-    setupModalRowReset();
+
+    document.querySelectorAll('.modal').forEach(modal => {
+
+        // reset every open
+        modal.addEventListener("show.bs.modal", function () {
+            resetModal(modal);
+        });
+
+        // confirm before close
+        setupCloseConfirmation(modal);
+
+    });
+
 
     // Use event delegation for dynamically loaded icons
     document.addEventListener('click', function (e) {
@@ -287,66 +299,68 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
 
 });
 
-function setupModalRowReset() {
+function resetModal(modal) {
+    const tableBody = modal.querySelector('#itemsTable tbody');
+    const firstRow = modal.querySelector('.item-row');
 
-    document.querySelectorAll('.modal').forEach(modal => {
+    if (!tableBody || !firstRow) return;
 
-        modal.addEventListener("hide.bs.modal", function (e) {
+    tableBody.innerHTML = "";
 
-            const tableBody = modal.querySelector("#itemsTable tbody");
-            const firstRow = modal.querySelector(".item-row");
+    let newRow = firstRow.cloneNode(true);
 
-            if (!tableBody || !firstRow) return;
+    newRow.querySelectorAll("input").forEach(input => {
+        if (input.classList.contains("unit-field")) {
+            input.value = "BOX";
+        } else {
+            input.value = "";
+        }
+    });
 
-            // check if user entered something
-            const hasData = [...tableBody.querySelectorAll("input")]
-                .some(input =>
-                    input.value.trim() !== "" &&
-                    !input.classList.contains("unit-field")
-                );
+    newRow.querySelectorAll("select").forEach(select => {
+        select.selectedIndex = 0;
+    });
 
-            if (hasData) {
+    tableBody.appendChild(newRow);
 
-                e.preventDefault();
+    modal.querySelector("#deliveryForm").reset();
+}
 
-                Swal.fire({
-                    title: "Discard changes?",
-                    text: "All added items will be removed.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes, close",
-                    cancelButtonText: "Stay"
-                }).then((result) => {
+function setupCloseConfirmation(modal) {
 
-                    if (result.isConfirmed) {
+    let allowClose = false; // control flag
 
-                        // KEEP ONE ROW ONLY
-                        tableBody.innerHTML = "";
+    modal.addEventListener("hide.bs.modal", function (e) {
 
-                        let newRow = firstRow.cloneNode(true);
+        if (allowClose) {
+            allowClose = false;
+            return; // allow closing
+        }
 
-                        // reset inputs
-                        newRow.querySelectorAll("input").forEach(input => {
-                            if (input.classList.contains("unit-field")) {
-                                input.value = "BOX";
-                            } else {
-                                input.value = "";
-                            }
-                        });
+        const hasData = [...modal.querySelectorAll("input")]
+            .some(input =>
+                input.value.trim() !== "" &&
+                !input.classList.contains("unit-field")
+            );
 
-                        // reset dropdown
-                        newRow.querySelectorAll("select").forEach(select => {
-                            select.selectedIndex = 0;
-                        });
+        if (!hasData) return; // no data → close normally
 
-                        tableBody.appendChild(newRow);
+        e.preventDefault(); // STOP closing
 
-                        // close modal manually
-                        const instance = bootstrap.Modal.getInstance(modal);
-                        instance.hide();
-                    }
+        Swal.fire({
+            title: "Discard changes?",
+            text: "All entered data will be lost.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, close",
+            cancelButtonText: "Stay"
+        }).then((result) => {
 
-                });
+            if (result.isConfirmed) {
+                allowClose = true;
+
+                const instance = bootstrap.Modal.getInstance(modal);
+                instance.hide(); // trigger close again
             }
         });
     });
