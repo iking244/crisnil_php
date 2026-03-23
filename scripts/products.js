@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
 
-    const modalId = "myModal";
     const tableBody = document.getElementById("tableBody");
     const templateRow = document.getElementById("templateRow");
 
@@ -292,15 +291,24 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
 
 });
 
-function clearRowsOnModalClose(modalId, tableBody, templateRow) {
-    const modal = document.getElementById(modalId);
+function clearRowsOnAllModals(tableBody, templateRow) {
 
-    if (!modal.dataset.listenerAttached) {
-        modal.dataset.listenerAttached = "true";
+    // select ALL modals
+    const modals = document.querySelectorAll('.modal');
+
+    modals.forEach(modal => {
 
         modal.addEventListener("hide.bs.modal", function (e) {
 
-            if (tableBody.children.length > 1) {
+            // check if THIS modal contains your table
+            if (!modal.contains(tableBody)) return;
+
+            // check if there are rows to clear
+            const hasData = [...tableBody.querySelectorAll("input")]
+                .some(input => input.value.trim() !== "" && input.name !== "unit[]");
+
+            if (hasData) {
+
                 e.preventDefault();
 
                 Swal.fire({
@@ -314,9 +322,12 @@ function clearRowsOnModalClose(modalId, tableBody, templateRow) {
 
                     if (result.isConfirmed) {
 
+                        // clear rows
                         tableBody.innerHTML = "";
 
+                        // recreate row
                         let newRow = templateRow.cloneNode(true);
+                        newRow.style.display = "";
 
                         newRow.querySelectorAll("input").forEach(input => {
                             if (input.name === "unit[]") {
@@ -328,11 +339,13 @@ function clearRowsOnModalClose(modalId, tableBody, templateRow) {
 
                         tableBody.appendChild(newRow);
 
+                        // close THIS modal properly
                         const bsModal = bootstrap.Modal.getInstance(modal);
                         bsModal.hide();
                     }
+
                 });
             }
         });
-    }
+    });
 }
