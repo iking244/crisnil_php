@@ -354,9 +354,7 @@ function setupCloseConfirmation(modal) {
             showCancelButton: true,
             confirmButtonText: "Yes, close",
             cancelButtonText: "Stay",
-            customClass: {
-                popup: 'swal-on-top'
-            }
+            target: modal
         }).then((result) => {
 
             if (result.isConfirmed) {
