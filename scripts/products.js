@@ -353,7 +353,10 @@ function setupCloseConfirmation(modal) {
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes, close",
-            cancelButtonText: "Stay"
+            cancelButtonText: "Stay",
+            customClass: {
+                popup: 'swal-on-top'
+            }
         }).then((result) => {
 
             if (result.isConfirmed) {
