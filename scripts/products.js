@@ -84,7 +84,13 @@ function addItemRow(templateRow, tableBody, container) {
     let newRow = templateRow.cloneNode(true);
 
     // clear inputs
-    newRow.querySelectorAll("input").forEach(input => input.value = "");
+    newRow.querySelectorAll("input").forEach(input => {
+        if (input.classList.contains("unit-field")) {
+            input.value = "BOX";
+        } else {
+            input.value = "";
+        }
+    });
 
     // reset dropdowns
     newRow.querySelectorAll("select").forEach(select => select.selectedIndex = 0);
@@ -168,7 +174,7 @@ document.getElementById("deliveryForm").addEventListener("submit", function (e) 
     let errorBox = document.getElementById("deliveryError");
 
     errorBox.classList.add("d-none");
-     console.log(formData);
+    console.log(formData);
     fetch(form.action, {
         method: "POST",
         body: formData

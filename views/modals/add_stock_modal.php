@@ -81,7 +81,7 @@
                                         </td>
 
                                         <td>
-                                            <input type="text" name="unit[]" class="form-control" value="BOX" readonly>
+                                            <input type="text" name="unit[]" class="form-control unit-field" value="BOX" readonly>
                                         </td>
 
                                         <td>
