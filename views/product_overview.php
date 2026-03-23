@@ -426,7 +426,7 @@ include "../controllers/products_controller.php";
     <!-- SCRIPTS -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../scripts/utils.js"></script>
     <script src="../scripts/table.js"></script>
     <script src="../scripts/products.js"></script>

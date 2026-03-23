@@ -1,6 +1,13 @@
 // products.js ─ product-specific logic
 document.addEventListener('DOMContentLoaded', () => {
 
+
+    const modalId = "myModal";
+    const tableBody = document.getElementById("tableBody");
+    const templateRow = document.getElementById("templateRow");
+
+    clearRowsOnModalClose(modalId, tableBody, templateRow);
+
     // Use event delegation for dynamically loaded icons
     document.addEventListener('click', function (e) {
         const icon = e.target.closest('.edit-product');
@@ -284,3 +291,48 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
         });
 
 });
+
+function clearRowsOnModalClose(modalId, tableBody, templateRow) {
+    const modal = document.getElementById(modalId);
+
+    if (!modal.dataset.listenerAttached) {
+        modal.dataset.listenerAttached = "true";
+
+        modal.addEventListener("hide.bs.modal", function (e) {
+
+            if (tableBody.children.length > 1) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "All added rows will be removed.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, close it",
+                    cancelButtonText: "Cancel"
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        tableBody.innerHTML = "";
+
+                        let newRow = templateRow.cloneNode(true);
+
+                        newRow.querySelectorAll("input").forEach(input => {
+                            if (input.name === "unit[]") {
+                                input.value = "BOX";
+                            } else {
+                                input.value = "";
+                            }
+                        });
+
+                        tableBody.appendChild(newRow);
+
+                        const bsModal = bootstrap.Modal.getInstance(modal);
+                        bsModal.hide();
+                    }
+                });
+            }
+        });
+    }
+}
