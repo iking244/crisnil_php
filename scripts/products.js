@@ -291,19 +291,20 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
 
 });
 
-function clearRowsOnAllModals(tableBody, templateRow) {
+function clearRowsOnAllModals() {
 
-    // select ALL modals
-    const modals = document.querySelectorAll('.modal');
-
-    modals.forEach(modal => {
+    document.querySelectorAll('.modal').forEach(modal => {
 
         modal.addEventListener("hide.bs.modal", function (e) {
 
-            // check if THIS modal contains your table
-            if (!modal.contains(tableBody)) return;
+            // find elements INSIDE THIS MODAL ONLY
+            const tableBody = modal.querySelector("#tableBody");
+            const templateRow = modal.querySelector("#templateRow");
 
-            // check if there are rows to clear
+            // if this modal doesn't have your table → ignore
+            if (!tableBody || !templateRow) return;
+
+            // check if user entered something
             const hasData = [...tableBody.querySelectorAll("input")]
                 .some(input => input.value.trim() !== "" && input.name !== "unit[]");
 
@@ -322,10 +323,8 @@ function clearRowsOnAllModals(tableBody, templateRow) {
 
                     if (result.isConfirmed) {
 
-                        // clear rows
                         tableBody.innerHTML = "";
 
-                        // recreate row
                         let newRow = templateRow.cloneNode(true);
                         newRow.style.display = "";
 
@@ -339,11 +338,9 @@ function clearRowsOnAllModals(tableBody, templateRow) {
 
                         tableBody.appendChild(newRow);
 
-                        // close THIS modal properly
                         const bsModal = bootstrap.Modal.getInstance(modal);
                         bsModal.hide();
                     }
-
                 });
             }
         });
