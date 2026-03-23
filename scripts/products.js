@@ -1,11 +1,7 @@
 // products.js ─ product-specific logic
 document.addEventListener('DOMContentLoaded', () => {
 
-
-    const tableBody = document.getElementById("tableBody");
-    const templateRow = document.getElementById("templateRow");
-
-    clearRowsOnModalClose(modalId, tableBody, templateRow);
+    setupModalRowReset();
 
     // Use event delegation for dynamically loaded icons
     document.addEventListener('click', function (e) {
@@ -291,56 +287,65 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
 
 });
 
-function clearRowsOnAllModals() {
+function setupModalRowReset() {
 
     document.querySelectorAll('.modal').forEach(modal => {
 
         modal.addEventListener("hide.bs.modal", function (e) {
 
-            // find elements INSIDE THIS MODAL ONLY
-            const tableBody = modal.querySelector("#tableBody");
-            const templateRow = modal.querySelector("#templateRow");
+            const tableBody = modal.querySelector("#itemsTable tbody");
+            const firstRow = modal.querySelector(".item-row");
 
-            // if this modal doesn't have your table → ignore
-            if (!tableBody || !templateRow) return;
+            if (!tableBody || !firstRow) return;
 
             // check if user entered something
             const hasData = [...tableBody.querySelectorAll("input")]
-                .some(input => input.value.trim() !== "" && input.name !== "unit[]");
+                .some(input =>
+                    input.value.trim() !== "" &&
+                    !input.classList.contains("unit-field")
+                );
 
             if (hasData) {
 
                 e.preventDefault();
 
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: "All added rows will be removed.",
+                    title: "Discard changes?",
+                    text: "All added items will be removed.",
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonText: "Yes, close it",
-                    cancelButtonText: "Cancel"
+                    confirmButtonText: "Yes, close",
+                    cancelButtonText: "Stay"
                 }).then((result) => {
 
                     if (result.isConfirmed) {
 
+                        // KEEP ONE ROW ONLY
                         tableBody.innerHTML = "";
 
-                        let newRow = templateRow.cloneNode(true);
-                        newRow.style.display = "";
+                        let newRow = firstRow.cloneNode(true);
 
+                        // reset inputs
                         newRow.querySelectorAll("input").forEach(input => {
-                            if (input.name === "unit[]") {
+                            if (input.classList.contains("unit-field")) {
                                 input.value = "BOX";
                             } else {
                                 input.value = "";
                             }
                         });
 
+                        // reset dropdown
+                        newRow.querySelectorAll("select").forEach(select => {
+                            select.selectedIndex = 0;
+                        });
+
                         tableBody.appendChild(newRow);
 
-                        const bsModal = bootstrap.Modal.getInstance(modal);
-                        bsModal.hide();
+                        // close modal manually
+                        const instance = bootstrap.Modal.getInstance(modal);
+                        instance.hide();
                     }
+
                 });
             }
         });
