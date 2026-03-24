@@ -38,7 +38,6 @@ $products = getProductsPaginated(
                 <th><input type="checkbox" id="selectAll"></th>
                 <th>Product Code</th>
                 <th>Product Name</th>
-                <th>Unit</th>
                 <th class="text-end">Quantity</th>
                 <th class="text-end">Weight</th>
                 <th>Status</th>
@@ -53,7 +52,6 @@ $products = getProductsPaginated(
 
                     <td><strong><?= $row['product_code'] ?></strong></td>
                     <td><?= htmlspecialchars($row['product_name']) ?></td>
-                    <td><?= htmlspecialchars($row['unit']) ?></td>
 
                     <td class="text-end fw-semibold">
                         <?= number_format($row['quantity']) ?>
@@ -64,7 +62,9 @@ $products = getProductsPaginated(
                     </td>
 
                     <td>
-                        <?php if ($row['quantity'] <= 10): ?>
+                        <?php if ($row['quantity'] == 0): ?>
+                            <span class="status-badge danger">Out of Stock</span>
+                        <?php elseif ($row['quantity'] <= 10): ?>
                             <span class="status-badge pending">Low Stock</span>
                         <?php else: ?>
                             <span class="status-badge available">Available</span>
@@ -77,9 +77,6 @@ $products = getProductsPaginated(
                             data-code="<?= $row['product_code'] ?>"
                             data-name="<?= htmlspecialchars($row['product_name']) ?>"
                             data-qty="<?= $row['quantity'] ?>"
-                            data-unit-id="<?= $row['unit_id'] ?>"
-                            data-weight-per-unit="<?= $row['weight_per_unit'] ?>"
-                            data-units-per-pallet="<?= $row['units_per_pallet'] ?>"
                             title="Edit">
                         </i>
                     </td>
