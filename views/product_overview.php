@@ -41,7 +41,7 @@ include "../controllers/products_controller.php";
                     <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#createProductModal">
-                        <i class="fa fa-plus me-1"></i> Create Product
+                        <i class="fa fa-plus me-1"></i> New Product
                     </button>
 
                     <a href="product_management.php" class="btn btn-outline-dark">
