@@ -280,7 +280,8 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
 
         .then(data => {
 
-            let tbody = document.querySelector("#editItemsTable tbody");
+            const modal = document.getElementById("editDeliveryModal");
+            let tbody = modal.querySelector("#editItemsTable tbody");
 
             tbody.innerHTML = "";
 
