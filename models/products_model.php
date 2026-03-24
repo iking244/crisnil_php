@@ -41,7 +41,8 @@ function getAllProducts($conn)
     return mysqli_query($conn, $query);
 }
 
-function getAllProductsName($conn) {
+function getAllProductsName($conn)
+{
     $sql = "SELECT product_id, product_name FROM tbl_products ORDER BY product_name ASC";
     return mysqli_query($conn, $sql);
 }
@@ -90,58 +91,59 @@ function getProductsPaginated_0218($conn, $warehouse_id, $limit, $offset)
     return mysqli_query($conn, $query);
 }
 
-function getProductsPaginated($conn, $warehouse_id, $limit, $offset) {
+function getProductsPaginated($conn, $warehouse_id, $limit, $offset)
+{
 
     // If warehouse_id = 0 → show all warehouses
     if ($warehouse_id == 0) {
 
         $query = "
-            SELECT 
-                p.product_id,
-                p.product_code,
-                p.product_name,
-                p.unit_id,
-                p.weight_per_unit,
-                p.units_per_pallet,
-                u.unit_name AS unit,
-                IFNULL(SUM(ws.quantity), 0) AS quantity,
-                IFNULL(SUM(ws.quantity) * p.weight_per_unit, 0) AS weight,
-                IFNULL(FLOOR(SUM(ws.quantity) / p.units_per_pallet), 0) AS pallets
-            FROM tbl_products p
-            LEFT JOIN tbl_units u
-                ON p.unit_id = u.unit_id
-            LEFT JOIN tbl_warehouse_stock ws 
-                ON p.product_id = ws.product_id
-            GROUP BY p.product_id
-            ORDER BY p.product_name ASC
-            LIMIT $limit OFFSET $offset
-        ";
+    SELECT 
+        p.product_id,
+        p.product_code,
+        p.product_name,
 
+        COUNT(sb.box_id) AS quantity,
+        COALESCE(SUM(sb.box_weight), 0) AS weight
+
+    FROM tbl_products p
+
+    LEFT JOIN tbl_stock_boxes sb
+        ON p.product_id = sb.product_id
+
+    GROUP BY 
+        p.product_id,
+        p.product_code,
+        p.product_name
+
+    ORDER BY p.product_name ASC
+    LIMIT $limit OFFSET $offset
+        ";
     } else {
 
         $query = "
-            SELECT 
-                p.product_id,
-                p.product_code,
-                p.product_name,
-                p.unit_id,
-                p.weight_per_unit,
-                p.units_per_pallet,
-                u.unit_name AS unit,
-                IFNULL(SUM(ws.quantity), 0) AS quantity,
-                IFNULL(SUM(ws.quantity) * p.weight_per_unit, 0) AS weight,
-                IFNULL(FLOOR(SUM(ws.quantity) / p.units_per_pallet), 0) AS pallets
-            FROM tbl_products p
-            LEFT JOIN tbl_units u
-                ON p.unit_id = u.unit_id
-            LEFT JOIN tbl_warehouse_stock ws 
-                ON p.product_id = ws.product_id
-                AND ws.warehouse_id = $warehouse_id
-                AND ws.expiration_date >= CURDATE() 
-            GROUP BY p.product_id
-            ORDER BY p.product_name ASC
-            LIMIT $limit OFFSET $offset
-        ";
+    SELECT 
+        p.product_id,
+        p.product_code,
+        p.product_name,
+
+        COUNT(sb.box_id) AS quantity,
+        COALESCE(SUM(sb.box_weight), 0) AS weight
+
+    FROM tbl_products p
+
+    LEFT JOIN tbl_stock_boxes sb
+        ON p.product_id = sb.product_id
+        AND ($warehouse_id = 0 OR sb.warehouse_id = $warehouse_id)
+
+    GROUP BY 
+        p.product_id,
+        p.product_code,
+        p.product_name
+
+    ORDER BY p.product_name ASC
+    LIMIT $limit OFFSET $offset
+";
     }
 
     return mysqli_query($conn, $query);
@@ -211,7 +213,8 @@ function createProduct($conn, $warehouse_id, $code, $name, $unit_id, $qty, $weig
 /* =========================
    UPDATE PRODUCT
 ========================= */
-function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, $weight_per_unit, $units_per_pallet) {
+function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, $weight_per_unit, $units_per_pallet)
+{
 
     mysqli_begin_transaction($conn);
 
@@ -249,7 +252,6 @@ function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, 
         }
 
         mysqli_commit($conn);
-
     } catch (Exception $e) {
         mysqli_rollback($conn);
         die("Product update failed: " . $e->getMessage());
@@ -332,7 +334,3 @@ function getRecentStockActivity($conn, $limit = 5)
 
     return mysqli_query($conn, $query);
 }
-
-
-
-
