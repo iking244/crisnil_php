@@ -278,21 +278,21 @@ function addStockBatch($conn, $warehouse_id, $product_id, $quantity, $production
 function getProductsStats($conn)
 {
     $query = "
-        SELECT
-            COUNT(*) AS total_products,
-            SUM(quantity) AS total_stock,
-            SUM(weight) AS total_weight,
-            SUM(CASE WHEN quantity <= 10 THEN 1 ELSE 0 END) AS low_stock
-        FROM (
-            SELECT
-                p.product_id,
-                IFNULL(SUM(ws.quantity), 0) AS quantity,
-                IFNULL(SUM(ws.quantity) * p.weight_per_unit, 0) AS weight
-            FROM tbl_products p
-            LEFT JOIN tbl_warehouse_stock ws
-                ON p.product_id = ws.product_id
-            GROUP BY p.product_id
-        ) AS product_totals
+SELECT
+    COUNT(*) AS total_products,
+    SUM(quantity) AS total_stock,
+    SUM(weight) AS total_weight,
+    SUM(CASE WHEN quantity <= 10 THEN 1 ELSE 0 END) AS low_stock
+FROM (
+    SELECT
+        p.product_id,
+        COUNT(sb.box_id) AS quantity,
+        COALESCE(SUM(sb.box_weight), 0) AS weight
+    FROM tbl_products p
+    LEFT JOIN tbl_stock_boxes sb
+        ON p.product_id = sb.product_id
+    GROUP BY p.product_id
+) AS product_totals
     ";
 
     $result = mysqli_query($conn, $query);
