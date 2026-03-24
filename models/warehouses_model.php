@@ -266,6 +266,7 @@ function getReceivingItems($conn, $view = 'active')
             di.qty
             - COUNT(CASE WHEN sb.box_weight > 0 THEN 1 END)
             - di.missing_boxes
+            - di.damaged_boxes
         ) $havingCondition
 
         ORDER BY dr.dr_number DESC
