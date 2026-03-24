@@ -98,7 +98,46 @@
 
                                 <tbody>
 
-                                    <!-- Rows will be inserted via JS -->
+                                    <tr class="item-row">
+
+                                        <td>
+                                            <select name="product_id[]" class="form-control" required>
+                                                <option value="">Select product</option>
+                                                <?php
+                                                mysqli_data_seek($productsDropdown, 0);
+                                                while ($p = mysqli_fetch_assoc($productsDropdown)): ?>
+                                                    <option value="<?= $p['product_id'] ?>">
+                                                        <?= htmlspecialchars($p['product_name']) ?>
+                                                    </option>
+                                                <?php endwhile; ?>
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            <input type="number" name="qty[]" class="form-control qty" placeholder="Boxes" required>
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="unit[]" class="form-control unit-field" value="BOX" readonly>
+                                        </td>
+
+                                        <td>
+                                            <input type="number" step="0.01" name="weight[]" class="form-control weight" placeholder="kg" required>
+                                        </td>
+
+                                        <td>
+                                            <input type="number" step="0.01" name="price[]" class="form-control price" placeholder="Price/kg" required>
+                                        </td>
+
+                                        <td>
+                                            <input type="number" step="0.01" name="amount[]" class="form-control amount" readonly>
+                                        </td>
+
+                                        <td>
+                                            <button type="button" class="btn btn-danger removeRow">X</button>
+                                        </td>
+
+                                    </tr>
 
                                 </tbody>
 
