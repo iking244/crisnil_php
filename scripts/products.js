@@ -301,30 +301,41 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
 });
 
 function resetModal(modal) {
-    const tableBody = modal.querySelector('#itemsTable tbody');
+
+    // reset ANY form inside modal
+    const form = modal.querySelector('form');
+    if (form) form.reset();
+
+    // find delivery table (works for both add/edit)
+    const tableBody = modal.querySelector('.delivery-table tbody');
+
+    if (!tableBody) return;
+
+    // check if there's a template row to clone
     const firstRow = modal.querySelector('.item-row');
 
-    if (!tableBody || !firstRow) return;
-
+    // clear all rows
     tableBody.innerHTML = "";
 
-    let newRow = firstRow.cloneNode(true);
+    // if template exists → recreate one row
+    if (firstRow) {
+        let newRow = firstRow.cloneNode(true);
 
-    newRow.querySelectorAll("input").forEach(input => {
-        if (input.classList.contains("unit-field")) {
-            input.value = "BOX";
-        } else {
-            input.value = "";
-        }
-    });
+        newRow.querySelectorAll("input").forEach(input => {
+            if (input.classList.contains("unit-field")) {
+                input.value = "BOX";
+            } else {
+                input.value = "";
+            }
+        });
 
-    newRow.querySelectorAll("select").forEach(select => {
-        select.selectedIndex = 0;
-    });
+        newRow.querySelectorAll("select").forEach(select => {
+            select.selectedIndex = 0;
+        });
 
-    tableBody.appendChild(newRow);
+        tableBody.appendChild(newRow);
+    }
 
-    modal.querySelector("#deliveryForm").reset();
 }
 
 function setupCloseConfirmation(modal) {
