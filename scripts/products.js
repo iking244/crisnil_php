@@ -318,7 +318,7 @@ function resetModal(modal) {
     tableBody.innerHTML = "";
 
     // if template exists → recreate one row
-    if (firstRow) {
+    if (modal.id === "addStockModal" && firstRow) {
         let newRow = firstRow.cloneNode(true);
 
         newRow.querySelectorAll("input").forEach(input => {
