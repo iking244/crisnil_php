@@ -224,7 +224,6 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
         mysqli_commit($conn);
 
         return $job_id;
-
     } catch (Exception $e) {
 
         mysqli_rollback($conn);
@@ -326,18 +325,37 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 
         if ($product_id > 0 && $qty > 0) {
 
+            // 1. SELECT exact boxes (FIFO)
             $stmt = $conn->prepare("
-                UPDATE tbl_stock_boxes
-                SET status='reserved'
-                WHERE product_id=?
-                AND warehouse_id=?
-                AND status='available'
+                SELECT box_id 
+                FROM tbl_stock_boxes
+                WHERE product_id = ?
+                AND warehouse_id = ?
+                AND status = 'available'
                 ORDER BY expiry_date ASC
                 LIMIT ?
             ");
 
             $stmt->bind_param("iii", $product_id, $warehouse_id, $qty);
             $stmt->execute();
+
+            $result = $stmt->get_result();
+
+            $boxIds = [];
+            while ($row = $result->fetch_assoc()) {
+                $boxIds[] = $row['box_id'];
+            }
+
+            if (!empty($boxIds)) {
+                $ids = implode(',', $boxIds);
+
+                // 2. UPDATE only those selected boxes
+                $conn->query("
+                    UPDATE tbl_stock_boxes
+                    SET status = 'reserved'
+                    WHERE box_id IN ($ids)
+                ");
+            }
         }
     }
 }
@@ -526,7 +544,6 @@ function completeJobOrder($conn, $job_id)
             "success" => true,
             "message" => "Job completed"
         ];
-
     } catch (Exception $e) {
 
         $conn->rollback();
@@ -740,7 +757,6 @@ function confirmTripLoadedOld($conn, $trip_id)
             "success" => true,
             "message" => "Trip is ready to depart"
         ];
-
     } catch (Exception $e) {
         $conn->rollback();
 
