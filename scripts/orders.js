@@ -106,7 +106,7 @@ function addItemRow(tableId = 'itemsTable') {
             <select name="product_id[]" class="form-select product-select" required>
                 <option value="">Select Product</option>
                 ${window.productList.map(p =>
-        `<option value="${p.id}">${p.name}</option>`
+        `<option value="${p.id}">${p.name} (${p.unit})</option>`
     ).join('')}
             </select>
         </td>
