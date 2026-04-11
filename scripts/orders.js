@@ -1,4 +1,9 @@
 // orders.js ─ job order specific logic only
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.product-select').forEach(select => {
+        select.dispatchEvent(new Event('change'));
+    });
+});
 
 document.addEventListener('DOMContentLoaded', () => {
 
