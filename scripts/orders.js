@@ -1,10 +1,4 @@
 // orders.js ─ job order specific logic only
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.product-select').forEach(select => {
-        select.dispatchEvent(new Event('change'));
-    });
-});
-
 document.addEventListener('DOMContentLoaded', () => {
 
     // ── Edit icons → open modal ─────────────────────────────
@@ -174,19 +168,28 @@ document.addEventListener('click', function (e) {
 // ── Stock lookup ───────────────────────────────────────────
 document.addEventListener('change', function (e) {
     if (e.target.classList.contains('product-select')) {
-        const productId = e.target.value;
         const row = e.target.closest('tr');
         const stockCell = row.querySelector('.stock-cell');
 
-        if (!productId) {
-            stockCell.textContent = "0";
-            return;
-        }
+        const selected = e.target.options[e.target.selectedIndex];
+        const stock = selected.getAttribute('data-stock') || 0;
 
-        fetch(`../controllers/logistics_orders_controller.php?action=get_stock&product_id=${productId}`)
-            .then(res => res.json())
-            .then(data => {
-                stockCell.textContent = data.quantity ?? 0;
-            });
+        if (stockCell) {
+            stockCell.textContent = stock;
+        }
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.product-select').forEach(select => {
+        const selected = select.options[select.selectedIndex];
+        const stock = selected.getAttribute('data-stock') || 0;
+
+        const row = select.closest('tr');
+        const stockCell = row.querySelector('.stock-cell');
+
+        if (stockCell) {
+            stockCell.textContent = stock;
+        }
+    });
 });

@@ -184,14 +184,15 @@
                                                     mysqli_data_seek($products, 0);
                                                     while ($p = $products->fetch_assoc()):
                                                     ?>
-                                                     <option value="<?= $p['product_id'] ?>">
+                                                     <option
+                                                         value="<?= $p['product_id'] ?>"
+                                                         data-stock="<?= $p['available_boxes'] ?>">
                                                          <?= $p['product_name'] ?> (<?= $p['unit'] ?>)
                                                      </option>
                                                  <?php endwhile; ?>
                                              </select>
                                          </td>
-
-                                         <!-- ✅ REQUIRED for your JS -->
+                                         
                                          <td class="stock-cell">0</td>
 
                                          <td>
