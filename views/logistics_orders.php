@@ -179,7 +179,7 @@
                                  <tbody>
                                      <tr>
                                          <td>
-                                             <select name="product_id[]" class="form-control">
+                                             <select name="product_id[]" class="form-control product-select">
                                                  <?php
                                                     mysqli_data_seek($products, 0);
                                                     while ($p = $products->fetch_assoc()):
@@ -190,14 +190,19 @@
                                                  <?php endwhile; ?>
                                              </select>
                                          </td>
+
+                                         <!-- ✅ REQUIRED for your JS -->
+                                         <td class="stock-cell">0</td>
+
                                          <td>
                                              <input type="number"
                                                  name="quantity[]"
                                                  class="form-control"
                                                  value="1" min="1">
                                          </td>
+
                                          <td class="text-center">
-                                             <button type="button" class="btn btn-sm btn-danger remove-row" title="Remove">
+                                             <button type="button" class="btn btn-sm btn-danger remove-row">
                                                  <i class="fas fa-trash-alt"></i>
                                              </button>
                                          </td>
