@@ -325,37 +325,24 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 
         if ($product_id > 0 && $qty > 0) {
 
-            // 1. SELECT exact boxes (FIFO)
+            // Insert soft reservation (NO box updates)
             $stmt = $conn->prepare("
-                SELECT box_id 
-                FROM tbl_stock_boxes
-                WHERE product_id = ?
-                AND warehouse_id = ?
-                AND status = 'available'
-                ORDER BY expiry_date ASC
-                LIMIT ?
+                INSERT INTO tbl_stock_reservations
+                (job_order_id, warehouse_id, product_id, quantity)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE 
+                    quantity = quantity + VALUES(quantity)
             ");
 
-            $stmt->bind_param("iii", $product_id, $warehouse_id, $qty);
+            $stmt->bind_param(
+                "iiii",
+                $job_id,
+                $warehouse_id,
+                $product_id,
+                $qty
+            );
+
             $stmt->execute();
-
-            $result = $stmt->get_result();
-
-            $boxIds = [];
-            while ($row = $result->fetch_assoc()) {
-                $boxIds[] = $row['box_id'];
-            }
-
-            if (!empty($boxIds)) {
-                $ids = implode(',', $boxIds);
-
-                // 2. UPDATE only those selected boxes
-                $conn->query("
-                    UPDATE tbl_stock_boxes
-                    SET status = 'reserved'
-                    WHERE box_id IN ($ids)
-                ");
-            }
         }
     }
 }
