@@ -196,14 +196,6 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
         /* =========================
            RESERVE STOCK
         ========================== */
-        reserveStock(
-            $conn,
-            $job_id,
-            $warehouse_id,
-            $product_ids,
-            $quantities
-        );
-
         mysqli_commit($conn);
 
         return $job_id;
@@ -307,6 +299,7 @@ function getAvailableStock($conn, $warehouse_id, $product_id)
 
 function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 {
+    
     foreach ($product_ids as $index => $product_id) {
         $product_id = (int)$product_id;
         $qty = (int)$quantities[$index];
