@@ -196,8 +196,6 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
         /* =========================
            RESERVE STOCK
         ========================== */
-
-
         mysqli_commit($conn);
 
         return $job_id;
