@@ -12,7 +12,7 @@ require_once __DIR__ . '/../config/database_conn.php';
 require_once __DIR__ . '/../models/products_model.php';
 
 // Get product ID from URL
-$product_id = (int)($_GET['id'] ?? 0);
+$product_id = (int) ($_GET['id'] ?? 0);
 
 if ($product_id <= 0) {
     $_SESSION['error'] = "Invalid product ID.";
@@ -102,8 +102,8 @@ $expiring_alerts = getExpiringBatches($databaseconn, $product_id);
                 <div class="card-body d-flex align-items-start gap-4">
                     <!-- Photo -->
                     <img src="<?= $product['image_url'] ?? '../imgs/placeholder-meat.jpg' ?>"
-                        alt="<?= htmlspecialchars($product['product_name']) ?>"
-                        class="rounded" style="width: 180px; height: 180px; object-fit: cover;">
+                        alt="<?= htmlspecialchars($product['product_name']) ?>" class="rounded"
+                        style="width: 180px; height: 180px; object-fit: cover;">
 
                     <div class="flex-grow-1">
                         <h3 class="mb-1">
@@ -116,7 +116,8 @@ $expiring_alerts = getExpiringBatches($databaseconn, $product_id);
                             • Supplier: <?= htmlspecialchars($product['supplier'] ?? 'Unknown') ?>
                         </p>
                         <p class="text-muted">
-                            High-grade imported A5 Wagyu Ribeye cut. Requires strict cold chain maintenance at -2°C to 2°C. Vacuum sealed to maintain freshness and marbling integrity.
+                            High-grade imported A5 Wagyu Ribeye cut. Requires strict cold chain maintenance at -2°C to
+                            2°C. Vacuum sealed to maintain freshness and marbling integrity.
                         </p>
                     </div>
                 </div>
@@ -220,7 +221,9 @@ $expiring_alerts = getExpiringBatches($databaseconn, $product_id);
                                         <td><?= htmlspecialchars($batch['prod_date'] . ' → ' . $batch['arr_date']) ?></td>
                                         <td><?= htmlspecialchars($batch['expiration_date']) ?></td>
                                         <td><?= number_format($batch['qty']) ?></td>
-                                        <td><span class="badge bg-<?= $batch['status'] === 'Safe' ? 'success' : 'warning' ?>"><?= $batch['status'] ?></span></td>
+                                        <td><span
+                                                class="badge bg-<?= $batch['status'] === 'Safe' ? 'success' : 'warning' ?>"><?= $batch['status'] ?></span>
+                                        </td>
                                         <td><?= htmlspecialchars($batch['storage_info']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -263,6 +266,13 @@ $expiring_alerts = getExpiringBatches($databaseconn, $product_id);
             }
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/table.js"></script>
+    <script src="../scripts/products.js"></script>
+    <script src="../scripts/notif.js"></script>
+    <script src="../scripts/sidenav.js"></script>
+    <script src="../scripts/dropdown2.js"></script>
 </body>
 
 </html>
