@@ -5,9 +5,9 @@ include "../models/products_model.php";
 /* =========================
    PAGINATION
 ========================= */
-$limit = isset($_GET['pageSize']) ? (int)$_GET['pageSize'] : 10;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$warehouse_id = isset($_GET['warehouse_id']) ? (int)$_GET['warehouse_id'] : 0;
+$limit = isset($_GET['pageSize']) ? (int) $_GET['pageSize'] : 10;
+$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+$warehouse_id = isset($_GET['warehouse_id']) ? (int) $_GET['warehouse_id'] : 0;
 
 $page = max($page, 1);
 $limit = max($limit, 1);
@@ -72,11 +72,13 @@ $products = getProductsPaginated(
                     </td>
 
                     <td class="text-center">
-                        <i class="fa fa-pencil edit-product action-icon"
-                            data-id="<?= $row['product_id'] ?>"
+
+                        <a href="views/product_details.php?id=<?= $row['product_id'] ?>" title="View Details">
+                            <i class="fa fa-eye action-icon"></i>
+                        </a>
+                        <i class="fa fa-pencil edit-product action-icon" data-id="<?= $row['product_id'] ?>"
                             data-code="<?= $row['product_code'] ?>"
-                            data-name="<?= htmlspecialchars($row['product_name']) ?>"
-                            data-qty="<?= $row['quantity'] ?>"
+                            data-name="<?= htmlspecialchars($row['product_name']) ?>" data-qty="<?= $row['quantity'] ?>"
                             title="Edit">
                         </i>
                     </td>
@@ -94,8 +96,7 @@ $products = getProductsPaginated(
 
     <div class="table-footer-right">
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <button class="page-btn <?= $i == $page ? 'active' : '' ?>"
-                onclick="loadProducts(<?= $i ?>)">
+            <button class="page-btn <?= $i == $page ? 'active' : '' ?>" onclick="loadProducts(<?= $i ?>)">
                 <?= $i ?>
             </button>
         <?php endfor; ?>
