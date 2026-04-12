@@ -31,10 +31,10 @@ if (!$product) {
 
 // Fetch additional data (you'll need to add these functions to products_model.php)
 $stats = getProductStats($databaseconn, $product_id);
-//$batches = getProductBatches($databaseconn, $product_id);
+$batches = getProductBatches($databaseconn, $product_id);
 //$inventory_movements = getProductInventoryMovements($databaseconn, $product_id);
 //$active_orders = getActiveOrdersForProduct($databaseconn, $product_id);
-//$expiring_alerts = getExpiringBatches($databaseconn, $product_id);
+$expiring_alerts = getExpiringBatches($databaseconn, $product_id);
 ?>
 
 <!DOCTYPE html>

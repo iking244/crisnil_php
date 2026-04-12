@@ -351,3 +351,57 @@ function getProductStats($conn, $product_id) {
 }
 
 // Add similar functions for batches, movements, orders, expiring alerts
+function getProductBatches($conn, $product_id)
+{
+    $sql = "
+        SELECT 
+            batch_code AS batch_id,
+            DATE(created_at) AS arr_date,
+            DATE(expiry_date) AS expiration_date,
+            SUM(box_weight) AS qty,
+            pallet_code AS storage_info,
+
+            CASE 
+                WHEN expiry_date <= CURDATE() THEN 'Expired'
+                WHEN expiry_date <= DATE_ADD(CURDATE(), INTERVAL 3 DAY) THEN 'Expiring'
+                ELSE 'Safe'
+            END AS status
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+        AND status = 'available'
+
+        GROUP BY batch_code, expiry_date, pallet_code
+        ORDER BY expiry_date ASC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result();
+}
+
+function getExpiringBatches($conn, $product_id)
+{
+    $sql = "
+        SELECT 
+            batch_code AS batch_id,
+            DATEDIFF(expiry_date, CURDATE()) AS days_left,
+            SUM(box_weight) AS qty
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+        AND status = 'available'
+        AND expiry_date <= DATE_ADD(CURDATE(), INTERVAL 5 DAY)
+
+        GROUP BY batch_code, expiry_date
+        ORDER BY expiry_date ASC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result();
+}
