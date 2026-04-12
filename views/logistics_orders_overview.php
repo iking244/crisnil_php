@@ -57,6 +57,7 @@ endif; ?>
                         <i class="fa fa-list"></i> View All Orders
                     </a>
                     <button class="btn btn-primary"
+                        style="display:none;"
                         data-bs-toggle="modal"
                         data-bs-target="#createOrderModal">
                         <i class="fa fa-plus"></i> Create Order
