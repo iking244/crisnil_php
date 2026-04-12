@@ -866,9 +866,17 @@ function getLogisticsOverviewStats($conn)
     $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='pending'");
     $stats['pending'] = mysqli_fetch_assoc($result)['total'];
 
-    // In Transit
-    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='in_transit'");
-    $stats['in_transit'] = mysqli_fetch_assoc($result)['total'];
+    // Assigned
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='assigned'");
+    $stats['assigned'] = mysqli_fetch_assoc($result)['total'];
+
+    // Overdue
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='overdue'");
+    $stats['overdue'] = mysqli_fetch_assoc($result)['total'];
+
+    // Blocked
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='blocked'");
+    $stats['blocked'] = mysqli_fetch_assoc($result)['total'];
 
     // Completed Today
     $result = mysqli_query($conn, "
