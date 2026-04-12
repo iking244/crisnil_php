@@ -405,3 +405,58 @@ function getExpiringBatches($conn, $product_id)
 
     return $stmt->get_result();
 }
+
+function getProductInventoryMovements($conn, $product_id)
+{
+    $sql = "
+        SELECT 
+            box_id,
+            delivery_item_id,
+            batch_code,
+            box_weight,
+            status,
+            created_at,
+
+            CASE 
+                WHEN status = 'available' THEN 'IN'
+                WHEN status = 'reserved' THEN 'OUT'
+                ELSE status
+            END AS movement_type
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+
+        ORDER BY created_at DESC
+        LIMIT 50
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result();
+}
+
+function getActiveOrdersForProduct($conn, $product_id)
+{
+    $sql = "
+        SELECT 
+            delivery_item_id,
+            batch_code,
+            SUM(box_weight) AS reserved_weight,
+            COUNT(box_id) AS total_boxes
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+        AND status = 'reserved'
+
+        GROUP BY delivery_item_id, batch_code
+        ORDER BY delivery_item_id DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result();
+}

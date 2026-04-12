@@ -32,8 +32,18 @@ if (!$product) {
 // Fetch additional data (you'll need to add these functions to products_model.php)
 $stats = getProductStats($databaseconn, $product_id);
 $batches = getProductBatches($databaseconn, $product_id);
-//$inventory_movements = getProductInventoryMovements($databaseconn, $product_id);
-//$active_orders = getActiveOrdersForProduct($databaseconn, $product_id);
+$result3 = getProductInventoryMovements($databaseconn, $product_id);
+$inventory_movements = [];
+
+while ($row = $result3->fetch_assoc()) {
+    $inventory_movements[] = $row;
+}
+$result4 = getActiveOrdersForProduct($databaseconn, $product_id);
+$active_orders = [];
+
+while ($row = $result4->fetch_assoc()) {
+    $active_orders[] = $row;
+}
 $expiring_alerts = getExpiringBatches($databaseconn, $product_id);
 ?>
 
