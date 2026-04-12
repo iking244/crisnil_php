@@ -342,12 +342,36 @@ function getProductById($conn, $id) {
     return $stmt->get_result()->fetch_assoc();
 }
 
-function getProductStats($conn, $product_id) {
-    // Run multiple queries or one big one to get totals
-    $stats = [];
-    $stats['total_inventory'] = 1450; // placeholder - implement real query
-    // ... add others
-    return $stats;
+function getProductStats($conn, $product_id)
+{
+    $sql = "
+        SELECT 
+            SUM(box_weight) AS total_inventory,
+
+            SUM(CASE WHEN status = 'available' THEN box_weight ELSE 0 END) AS available,
+
+            SUM(CASE WHEN status = 'reserved' THEN box_weight ELSE 0 END) AS reserved,
+
+            SUM(CASE WHEN condition_status = 'damaged' THEN box_weight ELSE 0 END) AS spoiled,
+
+            SUM(
+                CASE 
+                    WHEN expiry_date <= DATE_ADD(CURDATE(), INTERVAL 5 DAY) 
+                    AND status = 'available'
+                    THEN box_weight 
+                    ELSE 0 
+                END
+            ) AS expiring
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc();
 }
 
 // Add similar functions for batches, movements, orders, expiring alerts
