@@ -27,7 +27,6 @@ $sql = "
     FROM action_logs al
     LEFT JOIN crisnil_users u ON al.user_id = u.USER_ID
     ORDER BY al.created_at DESC 
-    LIMIT $offset, $per_page
 ";
 
 $result = mysqli_query($databaseconn, $sql);
