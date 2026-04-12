@@ -73,7 +73,7 @@ $products = getProductsPaginated(
 
                     <td class="text-center">
 
-                        <a href="views/product_details.php?id=<?= $row['product_id'] ?>" title="View Details">
+                        <a href="product_details.php?id=<?= $row['product_id'] ?>" title="View Details">
                             <i class="fa fa-eye action-icon"></i>
                         </a>
                         <i class="fa fa-pencil edit-product action-icon" data-id="<?= $row['product_id'] ?>"
