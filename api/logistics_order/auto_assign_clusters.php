@@ -4,18 +4,19 @@ ini_set('display_errors', 0);
 require_once "../../config/database_conn.php";
 header('Content-Type: application/json');
 
-function haversine($lat1, $lon1, $lat2, $lon2) {
+function haversine($lat1, $lon1, $lat2, $lon2)
+{
     $earthRadius = 6371;
 
     $dLat = deg2rad($lat2 - $lat1);
     $dLon = deg2rad($lon2 - $lon1);
 
-    $a = sin($dLat/2) * sin($dLat/2) +
-         cos(deg2rad($lat1)) *
-         cos(deg2rad($lat2)) *
-         sin($dLon/2) * sin($dLon/2);
+    $a = sin($dLat / 2) * sin($dLat / 2) +
+        cos(deg2rad($lat1)) *
+        cos(deg2rad($lat2)) *
+        sin($dLon / 2) * sin($dLon / 2);
 
-    $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
     return $earthRadius * $c;
 }
 
@@ -58,38 +59,38 @@ try {
         throw new Exception("No available trucks");
     }
 
-// 3. Cluster jobs (radius-based with max size)
-$radius = 5; // km
-$maxOrdersPerCluster = 5; // editable limit
-$clusters = [];
+    // 3. Cluster jobs (radius-based with max size)
+    $radius = 5; // km
+    $maxOrdersPerCluster = 5; // editable limit
+    $clusters = [];
 
-while (!empty($jobs)) {
-    $base = array_shift($jobs);
-    $cluster = [$base];
+    while (!empty($jobs)) {
+        $base = array_shift($jobs);
+        $cluster = [$base];
 
-    foreach ($jobs as $key => $job) {
+        foreach ($jobs as $key => $job) {
 
-        // stop if cluster reached limit
-        if (count($cluster) >= $maxOrdersPerCluster) {
-            break;
+            // stop if cluster reached limit
+            if (count($cluster) >= $maxOrdersPerCluster) {
+                break;
+            }
+
+            $dist = haversine(
+                $base['destination_lat'],
+                $base['destination_lng'],
+                $job['destination_lat'],
+                $job['destination_lng']
+            );
+
+            if ($dist <= $radius) {
+                $cluster[] = $job;
+                unset($jobs[$key]);
+            }
         }
 
-        $dist = haversine(
-            $base['destination_lat'],
-            $base['destination_lng'],
-            $job['destination_lat'],
-            $job['destination_lng']
-        );
-
-        if ($dist <= $radius) {
-            $cluster[] = $job;
-            unset($jobs[$key]);
-        }
+        $clusters[] = $cluster;
+        $jobs = array_values($jobs);
     }
-
-    $clusters[] = $cluster;
-    $jobs = array_values($jobs);
-}
 
 
     // Starting point (warehouse or default)
@@ -191,6 +192,8 @@ while (!empty($jobs)) {
 
     echo json_encode([
         "success" => false,
-        "error" => $e->getMessage()
+        "error" => $e->getMessage(),
+        "file" => $e->getFile(),   // 👈 WHERE
+        "line" => $e->getLine(),   // 👈 EXACT LINE
     ]);
 }
