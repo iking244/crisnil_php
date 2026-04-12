@@ -12,7 +12,7 @@ if (!isset($_SESSION['USER_ID'])) {
     exit();
 }
 
-include "../config/database_conn.php";
+include "../../config/database_conn.php";
 
 // Fetch logs - newest first, limit to recent ones
 $sql = "
