@@ -1,6 +1,5 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 /* =========================================================
    JOB ORDER LISTING & SEARCH
 ========================================================= */
@@ -326,25 +325,63 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 
         if ($product_id > 0 && $qty_needed > 0) {
 
-            // ✅ STEP 1: COUNT available stock FIRST
-            $check = $conn->prepare("
-                SELECT COUNT(*) as total
+            // 1. Check AVAILABLE stock
+            $stmt = $conn->prepare("
+                SELECT COUNT(*) as available_boxes
                 FROM tbl_stock_boxes
                 WHERE product_id = ?
                 AND warehouse_id = ?
                 AND status = 'available'
             ");
 
-            $check->bind_param("ii", $product_id, $warehouse_id);
-            $check->execute();
-            $count = $check->get_result()->fetch_assoc()['total'];
+            $stmt->bind_param("ii", $product_id, $warehouse_id);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
 
-            if ($count < $qty_needed) {
-                die("Not enough stock for product ID: $product_id");
+            $available = (int)$result['available_boxes'];
+
+            // 2. Check already reserved (soft)
+            $stmt2 = $conn->prepare("
+                SELECT IFNULL(SUM(quantity), 0) as reserved_qty
+                FROM tbl_stock_reservations
+                WHERE product_id = ?
+                AND warehouse_id = ?
+            ");
+
+            $stmt2->bind_param("ii", $product_id, $warehouse_id);
+            $stmt2->execute();
+            $result2 = $stmt2->get_result()->fetch_assoc();
+
+            $reserved = (int)$result2['reserved_qty'];
+
+            $true_available = $available - $reserved;
+
+            // 3. Validate
+            if ($true_available < $qty_needed) {
+                throw new Exception("Not enough stock for product ID: $product_id");
             }
 
-            // ✅ STEP 2: GET FIFO boxes
-            $stmt = $conn->prepare("
+            // 4. Insert reservation
+            $stmt3 = $conn->prepare("
+                INSERT INTO tbl_stock_reservations
+                (job_order_id, warehouse_id, product_id, quantity)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE 
+                    quantity = quantity + VALUES(quantity)
+            ");
+
+            $stmt3->bind_param(
+                "iiii",
+                $job_id,
+                $warehouse_id,
+                $product_id,
+                $qty_needed
+            );
+
+            $stmt3->execute();
+
+            // 🔥 5. GET FIFO boxes (ACTUAL reservation)
+            $stmt4 = $conn->prepare("
                 SELECT box_id
                 FROM tbl_stock_boxes
                 WHERE product_id = ?
@@ -354,37 +391,27 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
                 LIMIT $qty_needed
             ");
 
-            $stmt->bind_param("ii", $product_id, $warehouse_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            $stmt4->bind_param("ii", $product_id, $warehouse_id);
+            $stmt4->execute();
+            $boxes = $stmt4->get_result();
 
-            // ✅ STEP 3: RESERVE
-            while ($row = $result->fetch_assoc()) {
+            // 🔥 6. UPDATE to RESERVED
+            while ($box = $boxes->fetch_assoc()) {
 
-                $box_id = $row['box_id'];
+                $box_id = $box['box_id'];
 
-                // update status
                 $update = $conn->prepare("
                     UPDATE tbl_stock_boxes
                     SET status = 'reserved'
                     WHERE box_id = ?
                 ");
+
                 $update->bind_param("i", $box_id);
                 $update->execute();
-
-                // insert reservation
-                $insert = $conn->prepare("
-                    INSERT INTO tbl_stock_reservations
-                    (job_order_id, warehouse_id, product_id, box_id)
-                    VALUES (?, ?, ?, ?)
-                ");
-                $insert->bind_param("iiii", $job_id, $warehouse_id, $product_id, $box_id);
-                $insert->execute();
             }
         }
     }
 }
-
 function releaseStockReservation($conn, $job_id)
 {
     $stmt = $conn->prepare("
