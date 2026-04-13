@@ -31,11 +31,12 @@ if (!$product) {
 
 // Fetch additional data (you'll need to add these functions to products_model.php)
 $stats = getProductStats($databaseconn, $product_id);
-if ($stats['available'] <= 0) {
+
+if ($stats['available_boxes'] <= 0) {
     $stock_status = "Out of Stock";
 } elseif ($stats['expiring'] > 0) {
     $stock_status = "At Risk";
-} elseif ($stats['available'] < 10) {
+} elseif ($stats['available_boxes'] < 10) {
     $stock_status = "Low Stock";
 } else {
     $stock_status = "Healthy Stock";
