@@ -55,15 +55,14 @@ function getLowStockCount($conn) {
         SELECT COUNT(*) AS total
         FROM (
             SELECT 
-                p.PROD_TYPE_LIST,
-                SUM(i.QUANTITY) AS CURR_STOCK,
-                p.MIN_STOCK_LEVEL
-            FROM prod_type_table p
-            LEFT JOIN inbounditems_table i 
-                ON i.PROD_TYPE = p.PROD_TYPE_LIST
-                AND i.INV_STATUS = 'On Hand'
-            GROUP BY p.PROD_TYPE_LIST
-            HAVING CURR_STOCK < MIN_STOCK_LEVEL
+                p.product_id,
+                SUM(s.quantity_remaining) AS stock,
+                p.min_stock_level
+            FROM tbl_products p
+            LEFT JOIN tbl_stock_boxes s 
+                ON s.product_id = p.product_id
+            GROUP BY p.product_id
+            HAVING stock < p.min_stock_level
         ) AS low_items
     ");
 
@@ -74,7 +73,7 @@ function getLowStockCount($conn) {
 function getActiveDeliveries($conn) {
     $query = mysqli_query($conn, "
         SELECT COUNT(*) as total 
-        FROM tbl_job_orders 
+        FROM tbl_delivery_receipts
         WHERE status = 'in_transit'
     ");
     $row = mysqli_fetch_assoc($query);
@@ -135,5 +134,91 @@ function getTodayNotifications($conn) {
         SELECT DISTINCT notif_title, notif_desc, notif_time
         FROM tbl_notif
         WHERE notif_time = CURRENT_DATE
+    ");
+}
+
+function getStockMovement($conn) {
+
+    // STOCK IN (total weight from stock boxes)
+    $stockInQuery = mysqli_query($conn, "
+        SELECT SUM(box_weight) AS total_in
+        FROM tbl_stock_boxes
+    ");
+    $stockInRow = mysqli_fetch_assoc($stockInQuery);
+    $stock_in = $stockInRow['total_in'] ?? 0;
+
+    // STOCK OUT (total weight delivered)
+    $stockOutQuery = mysqli_query($conn, "
+        SELECT SUM(total_weight) AS total_out
+        FROM tbl_delivery_items
+    ");
+    $stockOutRow = mysqli_fetch_assoc($stockOutQuery);
+    $stock_out = $stockOutRow['total_out'] ?? 0;
+
+    return [
+        'stock_in' => (int)$stock_in,
+        'stock_out' => (int)$stock_out
+    ];
+}
+
+function getSalesTrendFromDeliveries($conn) {
+
+    $data = [];
+    $labels = [];
+
+    $query = mysqli_query($conn, "
+        SELECT 
+            DATE(created_at) as sale_date,
+            SUM(total_amount) as total
+        FROM tbl_delivery_receipts
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+        GROUP BY DATE(created_at)
+        ORDER BY sale_date ASC
+    ");
+
+    $results = [];
+    while ($row = mysqli_fetch_assoc($query)) {
+        $results[$row['sale_date']] = (float)$row['total'];
+    }
+
+    // Build last 7 days (including days with 0)
+    for ($i = 6; $i >= 0; $i--) {
+        $date = date('Y-m-d', strtotime("-$i days"));
+        $labels[] = date('D', strtotime($date)); // Tue, Wed, etc
+        $data[] = $results[$date] ?? 0;
+    }
+
+    return [
+        'labels' => $labels,
+        'data' => $data
+    ];
+}
+
+function getLowStockItems($conn) {
+    return mysqli_query($conn, "
+        SELECT 
+            p.product_name,
+            SUM(s.box_weight) AS stock,
+            p.min_stock_level
+        FROM tbl_products p
+        LEFT JOIN tbl_stock_boxes s 
+            ON s.product_id = p.product_id
+            AND s.status = 'available'
+        GROUP BY p.product_id
+        HAVING stock < p.min_stock_level
+        ORDER BY stock ASC
+        LIMIT 5
+    ");
+}
+
+function getRecentDeliveries($conn) {
+    return mysqli_query($conn, "
+        SELECT 
+            delivery_receipt_id,
+            status,
+            created_at
+        FROM tbl_delivery_receipts
+        ORDER BY created_at DESC
+        LIMIT 5
     ");
 }
