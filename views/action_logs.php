@@ -8,7 +8,7 @@ if (!isset($_SESSION['USER_ID'])) {
     exit();
 }
 
-include "../../config/database_conn.php";
+include "../config/database_conn.php";
 
 /* =========================
    PAGINATION SETTINGS
