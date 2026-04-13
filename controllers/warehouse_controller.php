@@ -110,6 +110,12 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
 
         $databaseconn->commit();
 
+        log_activity(
+            'stock_in',
+            'Boxes added for delivery item ID ' . $delivery_item_id . 
+            ' (Product ID: ' . $product_id . ', Warehouse ID: ' . $warehouse_id . ')'
+        );
+
         echo json_encode([
             "status" => "success"
         ]);

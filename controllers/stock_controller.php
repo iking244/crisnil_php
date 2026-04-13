@@ -199,6 +199,12 @@ if ($action === "add_delivery") {
 
         $databaseconn->commit();
 
+        log_activity(
+            'create_delivery',
+            'Created delivery DR: ' . $dr_number . 
+            ' (Warehouse ID: ' . $warehouse_id . ')'
+        );        
+
         jsonSuccess([
             "message" => "Delivery saved successfully"
         ]);
@@ -328,6 +334,12 @@ if ($action === "update_delivery") {
         }
 
         $databaseconn->commit();
+
+        log_activity(
+            'update_delivery',
+            'Updated delivery ID: ' . $delivery_id . 
+            ' (DR: ' . $dr_number . ')'
+        );
 
         jsonSuccess();
 

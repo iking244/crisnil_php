@@ -38,13 +38,19 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             'Successfully created user: ' . $data['username'] . 
             ' (' . $data['first_name'] . ' ' . $data['last_name'] . ', Role: ' . $data['role'] . ')'
         );
-        $_SESSION['success'] = "User created successfully!";
+        $_SESSION['toast'] = [
+            'message' => 'User created successfully!',
+            'type'    => 'success'
+        ];
     } else {
         log_activity(
             'create_user_failed',
             'Failed to create user: ' . $data['username'] . ' (duplicate or database error)'
         );
-        $_SESSION['error'] = "Failed to create user. Username or email may already exist.";
+        $_SESSION['toast'] = [
+            'message' => 'Failed to create user. Username or email already exists.',
+            'type'    => 'danger'   // or 'warning', 'info'
+        ];
     }
 
     header("Location: ../views/user_management.php");

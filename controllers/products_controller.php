@@ -70,7 +70,25 @@ if ($action) {
             $expiration_date
         );
 
-        if (!$result['success']) {
+        if ($result['success']) {
+            log_activity(
+                'create_product',
+                'Created product: ' . $name . ' (Code: ' . $code . ', Qty: ' . $qty . ', Warehouse ID: ' . $warehouse_id . ')'
+            );
+        
+            //Alert after successfull operation
+            $_SESSION['toast'] = [
+            'message' => 'Product created successfully!',
+            'type'    => 'success'
+        ];
+
+        } else {
+            // Optional: log failure too
+            log_activity(
+                'create_product_failed',
+                'Failed to create product "' . $name . '" → ' . $result['error']
+            );
+
             $_SESSION['error'] = $result['error'];
             $_SESSION['debug'] = "Error captured: " . $result['error'];
         }
@@ -101,6 +119,27 @@ if ($action) {
             $weight_per_unit,
             $units_per_pallet
         );
+        if ($result['success']) {
+            log_activity(
+                'update_product',
+                'Updated product ID ' . $id . ': ' . $name . ' (Code: ' . $code . ', New qty: ' . $qty . ')'
+            );
+
+            $_SESSION['toast'] = [
+            'message' => 'Product updated successfully!',
+            'type'    => 'success'
+            ];
+
+        } else {
+            log_activity(
+                'update_product_failed',
+                'Failed to update product ID ' . $id . ': ' . $result['error']
+            );
+        }
+            $_SESSION['toast'] = [
+            'message' => 'Failed to update product.',
+            'type'    => 'danger'   // or 'warning', 'info'
+        ];
 
         header("Location: ../views/product_management.php?warehouse_id=" . $warehouse_id);
         exit;
