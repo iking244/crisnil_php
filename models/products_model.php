@@ -345,13 +345,14 @@ function getProductById($conn, $id) {
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
 }
-
 function getProductStats($conn, $product_id)
 {
     $sql = "
         SELECT 
+            -- 🔢 TOTAL WEIGHT
             IFNULL(SUM(box_weight), 0) AS total_inventory,
 
+            -- 📦 AVAILABLE (WEIGHT)
             IFNULL(SUM(
                 CASE 
                     WHEN status = 'available' 
@@ -361,6 +362,7 @@ function getProductStats($conn, $product_id)
                 END
             ), 0) AS available,
 
+            -- 📦 RESERVED (WEIGHT)
             IFNULL(SUM(
                 CASE 
                     WHEN status = 'reserved' 
@@ -370,6 +372,7 @@ function getProductStats($conn, $product_id)
                 END
             ), 0) AS reserved,
 
+            -- ❌ SPOILED
             IFNULL(SUM(
                 CASE 
                     WHEN condition_status = 'damaged' 
@@ -378,6 +381,7 @@ function getProductStats($conn, $product_id)
                 END
             ), 0) AS spoiled,
 
+            -- ⚠️ EXPIRING
             IFNULL(SUM(
                 CASE 
                     WHEN expiry_date BETWEEN CURDATE() 
@@ -389,6 +393,7 @@ function getProductStats($conn, $product_id)
                 END
             ), 0) AS expiring,
 
+            -- ⛔ EXPIRED
             IFNULL(SUM(
                 CASE 
                     WHEN expiry_date < CURDATE()
@@ -396,7 +401,16 @@ function getProductStats($conn, $product_id)
                     THEN box_weight 
                     ELSE 0 
                 END
-            ), 0) AS expired
+            ), 0) AS expired,
+
+            -- 🔥 IMPORTANT: AVAILABLE BOX COUNT
+            COUNT(
+                CASE 
+                    WHEN status = 'available' 
+                    AND condition_status = 'good'
+                    THEN 1 
+                END
+            ) AS available_boxes
 
         FROM tbl_stock_boxes
         WHERE product_id = ?
@@ -408,7 +422,6 @@ function getProductStats($conn, $product_id)
 
     return $stmt->get_result()->fetch_assoc();
 }
-
 // Add similar functions for batches, movements, orders, expiring alerts
 function getProductBatches($conn, $product_id)
 {
