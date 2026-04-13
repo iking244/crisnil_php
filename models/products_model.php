@@ -350,22 +350,53 @@ function getProductStats($conn, $product_id)
 {
     $sql = "
         SELECT 
-            SUM(box_weight) AS total_inventory,
+            IFNULL(SUM(box_weight), 0) AS total_inventory,
 
-            SUM(CASE WHEN status = 'available' THEN box_weight ELSE 0 END) AS available,
-
-            SUM(CASE WHEN status = 'reserved' THEN box_weight ELSE 0 END) AS reserved,
-
-            SUM(CASE WHEN condition_status = 'damaged' THEN box_weight ELSE 0 END) AS spoiled,
-
-            SUM(
+            IFNULL(SUM(
                 CASE 
-                    WHEN expiry_date <= DATE_ADD(CURDATE(), INTERVAL 5 DAY) 
+                    WHEN status = 'available' 
+                    AND condition_status = 'good'
+                    THEN box_weight 
+                    ELSE 0 
+                END
+            ), 0) AS available,
+
+            IFNULL(SUM(
+                CASE 
+                    WHEN status = 'reserved' 
+                    AND condition_status = 'good'
+                    THEN box_weight 
+                    ELSE 0 
+                END
+            ), 0) AS reserved,
+
+            IFNULL(SUM(
+                CASE 
+                    WHEN condition_status = 'damaged' 
+                    THEN box_weight 
+                    ELSE 0 
+                END
+            ), 0) AS spoiled,
+
+            IFNULL(SUM(
+                CASE 
+                    WHEN expiry_date BETWEEN CURDATE() 
+                    AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)
+                    AND status = 'available'
+                    AND condition_status = 'good'
+                    THEN box_weight 
+                    ELSE 0 
+                END
+            ), 0) AS expiring,
+
+            IFNULL(SUM(
+                CASE 
+                    WHEN expiry_date < CURDATE()
                     AND status = 'available'
                     THEN box_weight 
                     ELSE 0 
                 END
-            ) AS expiring
+            ), 0) AS expired
 
         FROM tbl_stock_boxes
         WHERE product_id = ?
