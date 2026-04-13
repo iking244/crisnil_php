@@ -320,13 +320,49 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 {
     foreach ($product_ids as $index => $product_id) {
 
-        $product_id = (int)$product_id;
-        $qty = (int)$quantities[$index];
+        $product_id = (int)$product_ids[$index];
+        $qty_needed = (int)$quantities[$index];
 
-        if ($product_id > 0 && $qty > 0) {
+        if ($product_id > 0 && $qty_needed > 0) {
 
-            // Insert soft reservation (NO box updates)
+            // 1. Check AVAILABLE stock (excluding already reserved)
             $stmt = $conn->prepare("
+                SELECT COUNT(*) as available_boxes
+                FROM tbl_stock_boxes
+                WHERE product_id = ?
+                AND warehouse_id = ?
+                AND status = 'available'
+            ");
+
+            $stmt->bind_param("ii", $product_id, $warehouse_id);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+
+            $available = (int)$result['available_boxes'];
+
+            // 2. Check already reserved (soft reservations)
+            $stmt2 = $conn->prepare("
+                SELECT IFNULL(SUM(quantity), 0) as reserved_qty
+                FROM tbl_stock_reservations
+                WHERE product_id = ?
+                AND warehouse_id = ?
+            ");
+
+            $stmt2->bind_param("ii", $product_id, $warehouse_id);
+            $stmt2->execute();
+            $result2 = $stmt2->get_result()->fetch_assoc();
+
+            $reserved = (int)$result2['reserved_qty'];
+
+            $true_available = $available - $reserved;
+
+            // 3. Validate
+            if ($true_available < $qty_needed) {
+                throw new Exception("Not enough stock for product ID: $product_id");
+            }
+
+            // 4. Insert reservation
+            $stmt3 = $conn->prepare("
                 INSERT INTO tbl_stock_reservations
                 (job_order_id, warehouse_id, product_id, quantity)
                 VALUES (?, ?, ?, ?)
@@ -334,15 +370,15 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
                     quantity = quantity + VALUES(quantity)
             ");
 
-            $stmt->bind_param(
+            $stmt3->bind_param(
                 "iiii",
                 $job_id,
                 $warehouse_id,
                 $product_id,
-                $qty
+                $qty_needed
             );
 
-            $stmt->execute();
+            $stmt3->execute();
         }
     }
 }
