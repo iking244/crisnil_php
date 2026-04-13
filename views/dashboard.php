@@ -129,11 +129,20 @@ include "../controllers/dashboard_controller.php";
                                 </tr>
                             </thead>
                             <tbody>
+                            <?php if (mysqli_num_rows($lowStockItems) > 0): ?>
+                                <?php while ($row = mysqli_fetch_assoc($lowStockItems)): ?>
+                                    <tr>
+                                        <td><?= $row['product_name'] ?></td>
+                                        <td><?= number_format($row['stock'], 2) ?> kg</td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
                                 <tr>
                                     <td colspan="2" class="text-center text-muted">
                                         No low stock items
                                     </td>
                                 </tr>
+                            <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -154,11 +163,32 @@ include "../controllers/dashboard_controller.php";
                                 </tr>
                             </thead>
                             <tbody>
+                            <?php if (mysqli_num_rows($recentDeliveries) > 0): ?>
+                                <?php while ($row = mysqli_fetch_assoc($recentDeliveries)): ?>
+                                    <tr>
+                                        <td>#<?= $row['delivery_receipt_id'] ?></td>
+                                        <td>
+                                            <?php
+                                                $status = strtolower($row['status']);
+                                                $badge = 'secondary';
+
+                                                if ($status === 'delivered') $badge = 'success';
+                                                elseif ($status === 'in_transit') $badge = 'warning';
+                                                elseif ($status === 'pending') $badge = 'secondary';
+                                            ?>
+                                            <span class="badge bg-<?= $badge ?>">
+                                                <?= ucfirst($status) ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
                                 <tr>
                                     <td colspan="2" class="text-center text-muted">
                                         No recent deliveries
                                     </td>
                                 </tr>
+                            <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -185,6 +215,7 @@ include "../controllers/dashboard_controller.php";
                 type: 'line',
                 data: {
                     labels: <?= $salesTrendLabels ?>,
+                    data: <?= $salesTrendData ?>,
                     datasets: [{
                         label: 'Sales',
                         data: <?= $salesTrendData ?>,
@@ -204,7 +235,7 @@ include "../controllers/dashboard_controller.php";
                 data: {
                     labels: ['Stock In', 'Stock Out'],
                     datasets: [{
-                        data: [50, 32],
+                        data: [<?= $stockIn ?>, <?= $stockOut ?>],
                         backgroundColor: ['#2e7d32', '#d32f2f']
                     }]
                 }
