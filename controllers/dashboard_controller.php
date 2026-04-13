@@ -32,16 +32,31 @@ $pending_orders = $metrics['pending_orders'];
    SALES TREND (7 DAYS)
 ========================= */
 
-$salesTrend = $financialService->getSalesTrend();
+$salesTrend = getSalesTrendFromDeliveries($databaseconn);
 $salesComparison = $financialService->getSalesComparison();
 $salesTrendLabels = json_encode($salesTrend['labels']);
 $salesTrendData   = json_encode($salesTrend['data']);
 
+$lowStockItems = getLowStockItems($databaseconn);
+
+$recentDeliveries = getRecentDeliveries($databaseconn);
 
 $total_products = getTotalProducts($databaseconn);
 $product_distribution = getProductDistribution($databaseconn);
-$low_stock = getLowStockCount($databaseconn);
+$low_stock_count = getLowStockCount($databaseconn);
 $active_deliveries = getActiveDeliveries($databaseconn);
+$stockMovement = getStockMovement($databaseconn);
+$stockIn  = $stockMovement['stock_in'];
+$stockOut = $stockMovement['stock_out'];
 $delivery_distribution = getDeliveryDistribution($databaseconn);
 $activity_result = getRecentActivity($databaseconn);
 $today_notifications = getTodayNotifications($databaseconn);
+
+$query = mysqli_query($databaseconn, "
+    SELECT SUM(total_amount) as total 
+    FROM tbl_delivery_receipts
+    WHERE DATE(created_at) = CURDATE()
+");
+
+$row = mysqli_fetch_assoc($query);
+$sales_today = $row['total'] ?? 0;
