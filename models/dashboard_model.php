@@ -168,11 +168,13 @@ function getSalesTrendFromDeliveries($conn) {
 
     $query = mysqli_query($conn, "
         SELECT 
-            DATE(created_at) as sale_date,
-            SUM(total_amount) as total
-        FROM tbl_delivery_receipts
-        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
-        GROUP BY DATE(created_at)
+            DATE(dr.created_at) as sale_date,
+            SUM(di.total_amount) as total
+        FROM tbl_delivery_items di
+        INNER JOIN tbl_delivery_receipts dr 
+            ON dr.delivery_receipt_id = di.delivery_receipt_id
+        WHERE dr.created_at >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+        GROUP BY DATE(dr.created_at)
         ORDER BY sale_date ASC
     ");
 
@@ -181,10 +183,10 @@ function getSalesTrendFromDeliveries($conn) {
         $results[$row['sale_date']] = (float)$row['total'];
     }
 
-    // Build last 7 days (including days with 0)
+    // Fill missing days (important for smooth chart)
     for ($i = 6; $i >= 0; $i--) {
         $date = date('Y-m-d', strtotime("-$i days"));
-        $labels[] = date('D', strtotime($date)); // Tue, Wed, etc
+        $labels[] = date('D', strtotime($date));
         $data[] = $results[$date] ?? 0;
     }
 
