@@ -5,7 +5,6 @@ ini_set('display_startup_errors', 1);
 session_start();
 include "../config/database_conn.php";
 include "../models/products_model.php";
-require_once '../includes/helpers.php';
 
 if (!isset($_SESSION['USER_ID'])) {
     header("Location: ../index.php");
@@ -71,6 +70,7 @@ if ($action) {
             $expiration_date
         );
 
+<<<<<<< HEAD
         if ($result['success']) {
             log_activity(
                 'create_product',
@@ -90,13 +90,16 @@ if ($action) {
                 'Failed to create product "' . $name . '" → ' . $result['error']
             );
 
+=======
+        if (!$result['success']) {
+>>>>>>> e10621335e709762830a1a2e5a94827fff8ddea2
             $_SESSION['error'] = $result['error'];
             $_SESSION['debug'] = "Error captured: " . $result['error'];
         }
 
         header("Location: ../views/product_management.php?warehouse_id=" . $warehouse_id);
         exit;
-            }
+    }
 
     /* UPDATE PRODUCT */
     if ($action === 'update') {
@@ -120,6 +123,7 @@ if ($action) {
             $weight_per_unit,
             $units_per_pallet
         );
+<<<<<<< HEAD
         if ($result['success']) {
             log_activity(
                 'update_product',
@@ -141,6 +145,8 @@ if ($action) {
             'message' => 'Failed to update product.',
             'type'    => 'danger'   // or 'warning', 'info'
         ];
+=======
+>>>>>>> e10621335e709762830a1a2e5a94827fff8ddea2
 
         header("Location: ../views/product_management.php?warehouse_id=" . $warehouse_id);
         exit;

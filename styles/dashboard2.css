@@ -1350,7 +1350,10 @@ body {
     min-height: 220px;
 }
 
+<<<<<<< HEAD
 /* Product name as link */
+=======
+>>>>>>> e10621335e709762830a1a2e5a94827fff8ddea2
 .text-primary.hover-underline {
     transition: all 0.2s ease;
 }
@@ -1359,5 +1362,9 @@ body {
     text-decoration: underline;
     color: #0d6efd !important; /* Bootstrap primary blue */
     cursor: pointer;
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> e10621335e709762830a1a2e5a94827fff8ddea2

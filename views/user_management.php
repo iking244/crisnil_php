@@ -1,6 +1,6 @@
 <?php
 require_once "../models/user_model.php";
-include_once "../controllers/user_controller.php";
+// include_once "../controllers/user_controller.php";
 require_once '../config/database_conn.php';
 include_once "../includes/status_helper.php";  // If needed for badges, else remove
 

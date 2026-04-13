@@ -7,7 +7,7 @@ include "../controllers/logistics_orders_controller.php";
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logistics Orders Overview - CRISNIL</title>
+    <title>Sales Orders Overview - CRISNIL</title>
 
     <!-- Bootstrap FIRST -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,6 +23,21 @@ include "../controllers/logistics_orders_controller.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= $_SESSION['error'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php unset($_SESSION['error']);
+endif; ?>
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $_SESSION['success'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php unset($_SESSION['success']);
+endif; ?>
+
 <body>
 
     <?php include '../includes/header.php'; ?>
@@ -33,18 +48,19 @@ include "../controllers/logistics_orders_controller.php";
 
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="page-title">Job Orders Overview</h1>
+                <h1 class="page-title">Sales Orders Overview</h1>
 
 
 
                 <div class="d-flex gap-2">
                     <a href="logistics_orders.php" class="btn btn-outline-dark">
-                        <i class="fa fa-list"></i> View All Jobs
+                        <i class="fa fa-list"></i> View All Orders
                     </a>
                     <button class="btn btn-primary"
+                        style="display:none;"
                         data-bs-toggle="modal"
                         data-bs-target="#createOrderModal">
-                        <i class="fa fa-plus"></i> Create Job Order
+                        <i class="fa fa-plus"></i> Create Order
                     </button>
 
 
@@ -117,7 +133,7 @@ include "../controllers/logistics_orders_controller.php";
                         <div class="card-body">
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="mb-0">Recent Job Orders</h3>
+                                <h3 class="mb-0">Recent Orders</h3>
                             </div>
 
                             <table class="table table-sm align-middle mb-0">
@@ -291,16 +307,20 @@ include "../controllers/logistics_orders_controller.php";
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <select name="product_id[]" class="form-control">
+                                            <select name="product_id[]" class="form-control productSelect">
                                                 <?php
                                                 mysqli_data_seek($products, 0);
                                                 while ($p = $products->fetch_assoc()):
                                                 ?>
                                                     <option value="<?= $p['product_id'] ?>">
-                                                        <?= $p['product_name'] ?> (<?= $p['unit'] ?>)
+                                                        <?= $p['product_name'] ?> (<?= $p['available_boxes'] ?> available)
                                                     </option>
                                                 <?php endwhile; ?>
                                             </select>
+
+                                            <div class="stockLabel small text-muted mt-1">
+                                                Stock: -
+                                            </div>
                                         </td>
                                         <td>
                                             <input type="number"
@@ -335,6 +355,8 @@ include "../controllers/logistics_orders_controller.php";
     <!-- KEEP YOUR EXISTING MODAL AND SCRIPTS BELOW UNCHANGED -->
     <!-- ================= SCRIPTS ================= -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/table.js"></script>
+    <script src="../scripts/orders.js"></script>
     <script src="../scripts/notif.js"></script>
     <script src="../scripts/sidenav.js"></script>
     <script src="../scripts/dropdown2.js"></script>
@@ -361,6 +383,25 @@ include "../controllers/logistics_orders_controller.php";
                     addItemRow('createItemsTable');
                 }
             });
+    </script>
+    <script>
+        document.addEventListener("change", function(e) {
+
+            if (!e.target.classList.contains("productSelect")) return;
+
+            let productId = e.target.value;
+
+            let stockLabel = e.target.closest("td").querySelector(".stockLabel");
+
+            fetch(`../controllers/logistics_orders_controller.php?action=get_stock&product_id=${productId}`)
+                .then(res => res.json())
+                .then(data => {
+
+                    stockLabel.innerHTML = "Stock: " + data.quantity + " boxes";
+
+                });
+
+        });
     </script>
 
 </body>

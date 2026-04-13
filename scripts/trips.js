@@ -1,4 +1,5 @@
 let unassignedJobs = [];
+console.log("Dashboard JS loaded");
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -128,3 +129,103 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+
+const smartWarehouseSelect = document.getElementById("smartWarehouse");
+const runSmartAssignBtn = document.getElementById("runSmartAssign");
+const smartSummary = document.getElementById("smartSummary");
+
+if (smartWarehouseSelect && runSmartAssignBtn && smartSummary) {
+
+    runSmartAssignBtn.addEventListener("click", async function () {
+
+        runSmartAssignBtn.disabled = true;
+        runSmartAssignBtn.innerText = "Processing...";
+
+        try {
+
+            const response = await fetch(
+                "../api/logistics_order/auto_assign_clusters.php",
+                { method: "POST" }
+            );
+
+            if (!response.ok) {
+                throw new Error("Server error");
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+
+                alert("Smart assignment completed!");
+                window.location.href = "trips.php";
+
+            } else {
+                alert(data.error || "Smart assignment failed.");
+            }
+
+        } catch (error) {
+            console.error("Smart assignment error:", error);
+            alert("Something went wrong.");
+        }
+
+        runSmartAssignBtn.disabled = false;
+        runSmartAssignBtn.innerText = "Run Smart Assignment";
+
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadRecentTrips();
+});
+
+async function loadRecentTrips() {
+    
+
+    try {
+
+        console.log("Loading recent trips...");
+        const response = await fetch(
+            "../controllers/trips_controller.php?ajax=recent_trips"
+        );
+
+        const data = await response.json();
+
+        const tbody = document.getElementById("recentTripsTable");
+        tbody.innerHTML = "";
+
+        data.forEach(trip => {
+
+            const statusClass = trip.status.toLowerCase();
+            const formattedDate = trip.eta
+                ? new Date(trip.eta).toLocaleString()
+                : "-";
+
+            const row = `
+                <tr>
+                    <td><strong>#T${trip.trip_id}</strong></td>
+                    <td>${trip.stops}</td>
+                    <td>${trip.truck_plate_number ?? '-'}</td>
+                    <td>${trip.driver_name ?? '-'}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${formatStatus(trip.status)}
+                        </span>
+                    </td>
+                    <td>${formattedDate}</td>
+                </tr>
+            `;
+
+            tbody.insertAdjacentHTML("beforeend", row);
+        });
+
+    } catch (error) {
+        console.error("Failed to load trips:", error);
+    }
+}
+
+function formatStatus(status) {
+    return status
+        .replace("_", " ")
+        .replace(/\b\w/g, c => c.toUpperCase());
+}

@@ -4,7 +4,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include "../controllers/dashboard_controller.php";
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 

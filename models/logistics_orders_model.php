@@ -84,13 +84,30 @@ function getActiveProducts($conn)
         SELECT 
             p.product_id,
             p.product_name,
-            u.unit_name AS unit
+            u.unit_name AS unit,
+            COUNT(sb.box_id) AS available_boxes
         FROM tbl_products p
+
         LEFT JOIN tbl_units u
             ON p.unit_id = u.unit_id
+
+        LEFT JOIN tbl_stock_boxes sb
+            ON sb.product_id = p.product_id
+            AND sb.status = 'available'
+            AND sb.expiry_date >= CURDATE()
+
         WHERE p.is_active = 1
+
+        GROUP BY 
+            p.product_id,
+            p.product_name,
+            u.unit_name
+
+        HAVING available_boxes > 0
+
         ORDER BY p.product_name
     ";
+
     return $conn->query($sql);
 }
 
@@ -207,7 +224,6 @@ function createLogisticsOrder($conn, $warehouse_id, $client_id, $product_ids, $q
         mysqli_commit($conn);
 
         return $job_id;
-
     } catch (Exception $e) {
 
         mysqli_rollback($conn);
@@ -283,21 +299,16 @@ function checkStockAvailability($conn, $warehouse_id, $product_ids, $quantities)
 function getAvailableStock($conn, $warehouse_id, $product_id)
 {
     $query = mysqli_query($conn, "
-        SELECT 
-            IFNULL(SUM(ws.quantity), 0)
-            - IFNULL((
-                SELECT SUM(r.quantity)
-                FROM tbl_stock_reservations r
-                WHERE r.product_id = $product_id
-                AND r.warehouse_id = $warehouse_id
-            ), 0) AS available_stock
-        FROM tbl_warehouse_stock ws
-        WHERE ws.product_id = $product_id
-        AND ws.warehouse_id = $warehouse_id
-        AND ws.expiration_date >= CURDATE()
+        SELECT COUNT(*) AS available_stock
+        FROM tbl_stock_boxes
+        WHERE product_id = $product_id
+        AND warehouse_id = $warehouse_id
+        AND status = 'available'
+        AND expiry_date >= CURDATE()
     ");
 
     $row = mysqli_fetch_assoc($query);
+
     return $row['available_stock'] ?? 0;
 }
 
@@ -308,32 +319,29 @@ function getAvailableStock($conn, $warehouse_id, $product_id)
 function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 {
     foreach ($product_ids as $index => $product_id) {
+
         $product_id = (int)$product_id;
         $qty = (int)$quantities[$index];
 
         if ($product_id > 0 && $qty > 0) {
 
-            // Check available stock
-            $available = getAvailableStock($conn, $warehouse_id, $product_id);
-
-            if ($qty > $available) {
-                throw new Exception(
-                    "Insufficient stock for product ID: " . $product_id
-                );
-            }
-            // Insert reservation
+            // Insert soft reservation (NO box updates)
             $stmt = $conn->prepare("
                 INSERT INTO tbl_stock_reservations
-                (job_order_id, product_id, warehouse_id, quantity)
+                (job_order_id, warehouse_id, product_id, quantity)
                 VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE 
+                    quantity = quantity + VALUES(quantity)
             ");
+
             $stmt->bind_param(
                 "iiii",
                 $job_id,
-                $product_id,
                 $warehouse_id,
+                $product_id,
                 $qty
             );
+
             $stmt->execute();
         }
     }
@@ -478,6 +486,64 @@ function blockJobOrder($conn, $job_id, $reason = '')
 
 function completeJobOrder($conn, $job_id)
 {
+    $conn->begin_transaction();
+
+    try {
+
+        // 1. Update job order status
+        $stmt = $conn->prepare("
+            UPDATE tbl_job_orders
+            SET status = 'completed'
+            WHERE id = ?
+            AND status = 'in_transit'
+        ");
+        $stmt->bind_param("i", $job_id);
+        $stmt->execute();
+
+        if ($stmt->affected_rows === 0) {
+            throw new Exception("Job cannot be completed");
+        }
+
+        // 2. Mark boxes as SOLD
+        $boxes = $conn->prepare("
+            UPDATE tbl_stock_boxes
+            SET status = 'sold'
+            WHERE box_id IN (
+                SELECT box_id
+                FROM tbl_trip_picklist
+                WHERE job_order_id = ?
+            )
+        ");
+        $boxes->bind_param("i", $job_id);
+        $boxes->execute();
+
+        // 3. Insert log
+        $log = $conn->prepare("
+            INSERT INTO tbl_job_order_logs (job_id, action, notes)
+            VALUES (?, 'completed', 'Completed by driver')
+        ");
+        $log->bind_param("i", $job_id);
+        $log->execute();
+
+        $conn->commit();
+
+        return [
+            "success" => true,
+            "message" => "Job completed"
+        ];
+    } catch (Exception $e) {
+
+        $conn->rollback();
+
+        return [
+            "success" => false,
+            "message" => $e->getMessage()
+        ];
+    }
+}
+
+function completeJobOrderOld($conn, $job_id)
+{
     $stmt = $conn->prepare("
         UPDATE tbl_job_orders
         SET status = 'completed'
@@ -511,8 +577,44 @@ function completeJobOrder($conn, $job_id)
 /* =========================================================
    TRIP LOADING (FEFO STOCK DEDUCTION)
 ========================================================= */
-
 function confirmTripLoaded($conn, $trip_id)
+{
+    // 1. Check if trip has blocked job orders
+    $check = $conn->prepare("
+        SELECT COUNT(*) as total
+        FROM tbl_job_orders
+        WHERE trip_id = ?
+        AND status = 'blocked'
+    ");
+    $check->bind_param("i", $trip_id);
+    $check->execute();
+    $result = $check->get_result()->fetch_assoc();
+
+    if ($result['total'] > 0) {
+        return [
+            "success" => false,
+            "message" => "Trip has blocked job orders"
+        ];
+    }
+
+    // 2. Update trip status
+    $stmt = $conn->prepare("
+        UPDATE tbl_trips
+        SET status = 'ready_to_depart'
+        WHERE trip_id = ?
+        AND status NOT IN ('completed','cancelled')
+    ");
+
+    $stmt->bind_param("i", $trip_id);
+    $stmt->execute();
+
+    return [
+        "success" => true,
+        "message" => "Trip is ready to depart"
+    ];
+}
+
+function confirmTripLoadedOld($conn, $trip_id)
 {
     // 1. Check for blocked job orders
     $check = $conn->prepare("
@@ -642,7 +744,6 @@ function confirmTripLoaded($conn, $trip_id)
             "success" => true,
             "message" => "Trip is ready to depart"
         ];
-
     } catch (Exception $e) {
         $conn->rollback();
 
@@ -662,27 +763,37 @@ function confirmTripLoaded($conn, $trip_id)
 // temporary warehouse_id only
 function getLogisticsOrderItems($conn, $job_id)
 {
-    $query = "
-    SELECT 
-        joi.job_item_id,
-        joi.product_id,
-        p.product_name,
-        p.unit,
-        joi.quantity,
-        ws.quantity AS stock_qty
-    FROM tbl_job_order_items joi
-    LEFT JOIN tbl_products p 
-        ON joi.product_id = p.product_id
-    LEFT JOIN tbl_warehouse_stock ws
-        ON joi.product_id = ws.product_id
-    WHERE joi.job_order_id = $job_id
-    AND ws.warehouse_id = 1
-    ";
+    $job_id = intval($job_id);
 
-    $result = mysqli_query($conn, $query);
+    $stmt = $conn->prepare("
+        SELECT 
+            joi.job_item_id,
+            joi.product_id,
+            p.product_name,
+            joi.quantity,
+            COUNT(sb.box_id) AS stock_qty
+        FROM tbl_job_order_items joi
+        LEFT JOIN tbl_products p 
+            ON joi.product_id = p.product_id
+        LEFT JOIN tbl_stock_boxes sb
+            ON joi.product_id = sb.product_id
+            AND sb.status='available'
+        WHERE joi.job_order_id = ?
+        GROUP BY 
+            joi.job_item_id,
+            joi.product_id,
+            p.product_name,
+            joi.quantity
+    ");
+
+    $stmt->bind_param("i", $job_id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
 
     $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
+
+    while ($row = $result->fetch_assoc()) {
         $items[] = $row;
     }
 
@@ -742,9 +853,17 @@ function getLogisticsOverviewStats($conn)
     $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='pending'");
     $stats['pending'] = mysqli_fetch_assoc($result)['total'];
 
-    // In Transit
-    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='in_transit'");
-    $stats['in_transit'] = mysqli_fetch_assoc($result)['total'];
+    // Assigned
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='assigned'");
+    $stats['assigned'] = mysqli_fetch_assoc($result)['total'];
+
+    // Overdue
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='overdue'");
+    $stats['overdue'] = mysqli_fetch_assoc($result)['total'];
+
+    // Blocked
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_job_orders WHERE status='blocked'");
+    $stats['blocked'] = mysqli_fetch_assoc($result)['total'];
 
     // Completed Today
     $result = mysqli_query($conn, "

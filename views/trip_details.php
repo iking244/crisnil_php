@@ -47,6 +47,14 @@ include "../controllers/trip_details_controller.php";
                     <button type="submit" name="update_trip" class="primary-btn">
                         Save Trip Info
                     </button>
+
+                    <a href="trip_picklist/print_trip_picklist.php?trip_id=<?= $trip['trip_id'] ?>"
+                        target="_blank"
+                        class="btn btn-sm btn-dark">
+
+                        <i class="fa fa-print"></i> Print Pick List
+
+                    </a>
                 </form>
 
             </div>

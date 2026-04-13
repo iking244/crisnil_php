@@ -1,0 +1,30 @@
+.pallet-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f1f5f9;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.pallet-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--fill);
+    background: var(--color);
+    opacity: 0.2;
+    transition: width 0.3s ease;
+}
+
+.pallet-card-content {
+    position: relative;
+    z-index: 2;
+}
+
+.pallet-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}

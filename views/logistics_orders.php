@@ -179,25 +179,31 @@
                                  <tbody>
                                      <tr>
                                          <td>
-                                             <select name="product_id[]" class="form-control">
+                                             <select name="product_id[]" class="form-control product-select">
                                                  <?php
                                                     mysqli_data_seek($products, 0);
                                                     while ($p = $products->fetch_assoc()):
                                                     ?>
-                                                     <option value="<?= $p['product_id'] ?>">
+                                                     <option
+                                                         value="<?= $p['product_id'] ?>"
+                                                         data-stock="<?= $p['available_boxes'] ?>">
                                                          <?= $p['product_name'] ?> (<?= $p['unit'] ?>)
                                                      </option>
                                                  <?php endwhile; ?>
                                              </select>
                                          </td>
+                                         
+                                         <td class="stock-cell">0</td>
+
                                          <td>
                                              <input type="number"
                                                  name="quantity[]"
                                                  class="form-control"
                                                  value="1" min="1">
                                          </td>
+
                                          <td class="text-center">
-                                             <button type="button" class="btn btn-sm btn-danger remove-row" title="Remove">
+                                             <button type="button" class="btn btn-sm btn-danger remove-row">
                                                  <i class="fas fa-trash-alt"></i>
                                              </button>
                                          </td>
@@ -223,10 +229,10 @@
      <!-- =========================
      EDIT JOB ORDER MODAL
 ========================= -->
-     <div class="modal fade" id="editOrderModal" tabindex="-1">
-         <div class="modal-dialog modal-lg">
-             <br><br><br><br><br>
+     <div class="modal fade" id="editOrderModal" tabindex="-1" aria-hidden="true">
+         <div class="modal-dialog modal-lg modal-dialog-centered">
              <div class="modal-content">
+
                  <div class="modal-header">
                      <h5 class="modal-title">
                          Edit Job Order #<span id="editJobIdDisplay"></span>
@@ -236,6 +242,7 @@
                  </div>
 
                  <div class="modal-body">
+
                      <form action="../controllers/logistics_orders_controller.php?action=update"
                          method="POST">
 
@@ -247,6 +254,7 @@
                                  <input type="text" id="editOrigin"
                                      class="form-control" readonly>
                              </div>
+
                              <div class="col-md-6 mb-3">
                                  <label class="form-label">Destination</label>
                                  <input type="text" id="editDestination"
@@ -282,38 +290,46 @@
                          </div>
 
                          <hr>
+
                          <h6 class="mb-3">Job Order Items</h6>
 
                          <div class="table-responsive">
-                             <table class="table table-bordered" id="itemsTable">
+                             <table class="table table-bordered align-middle"
+                                 id="itemsTable">
+
                                  <thead class="table-light">
                                      <tr>
                                          <th>Product</th>
-                                         <th>Available Stock</th>
+                                         <th width="150">Available Stock</th>
                                          <th width="120">Quantity</th>
-                                         <th width="80">Action</th>
+                                         <th width="80" class="text-center">Action</th>
                                      </tr>
                                  </thead>
+
                                  <tbody></tbody>
+
                              </table>
                          </div>
 
-                         <button type="button"
-                             class="btn btn-sm btn-primary"
-                             onclick="addItemRow()">
-                             + Add Item
-                         </button>
+                         <div class="d-flex justify-content-between mt-2">
+                             <button type="button"
+                                 class="btn btn-sm btn-outline-primary"
+                                 onclick="addItemRow()">
+                                 + Add Item
+                             </button>
 
-                         <button type="submit"
-                             class="btn btn-primary w-100 mt-3">
-                             Save Changes
-                         </button>
+                             <button type="submit"
+                                 class="btn btn-primary">
+                                 Save Changes
+                             </button>
+                         </div>
+
                      </form>
+
                  </div>
              </div>
          </div>
      </div>
-
      <!-- =========================
      PRODUCT LIST FOR JS
 ========================= -->

@@ -1,16 +1,18 @@
-<div class="modal fade" id="addStockModal" tabindex="-1">
+<div class="modal fade" id="deliveryModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
 
-            <form class="auto-loading-form" id="deliveryForm" action="../controllers/stock_controller.php?action=add_delivery" method="POST">
-
+            <form class="auto-loading-form" id="deliveryForm" action="../controllers/stock_controller.php?action=save_delivery" method="POST">
+                <input type="hidden" name="mode" id="delivery_mode" value="create">
+                <input type="hidden" name="delivery_receipt_id" id="delivery_receipt_id">
                 <div class="modal-header">
-                    <h5 class="modal-title">
+                    <h5 class="modal-title" id="deliveryModalTitle">
                         <i class="fa fa-truck me-2 text-success"></i>
                         Receive Delivery
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
 
                 <div class="modal-body">
                     <div id="deliveryError" class="alert alert-danger d-none"></div>
@@ -33,14 +35,31 @@
 
                         <!-- Delivery Receipt -->
                         <div class="col-md-6 mb-3">
+
                             <label class="form-label">Delivery Receipt (DR)</label>
-                            <input type="text" name="dr_number"
-                                class="form-control"
-                                placeholder="Example: 23741"
-                                required
-                                autocomplete="off"
-                                pattern="\d+"
-                                title="Please enter a valid DR number (digits only)">
+
+                            <div class="input-group">
+
+                                <input type="text"
+                                    name="dr_number"
+                                    id="dr_number"
+                                    class="form-control"
+                                    placeholder="Example: 23741"
+                                    required
+                                    autocomplete="off"
+                                    pattern="\d+"
+                                    title="Please enter a valid DR number (digits only)">
+
+                                <button type="button"
+                                    class="btn btn-secondary d-none"
+                                    id="loadDRBtn">
+
+                                    <i class="fa fa-search"></i> Load
+
+                                </button>
+
+                            </div>
+
                         </div>
 
                         <h6 class="mt-3">Delivery Items</h6>
@@ -81,7 +100,7 @@
                                         </td>
 
                                         <td>
-                                            <input type="text" name="unit[]" class="form-control unit-field" value="BOX" readonly>
+                                            <input type="text" name="unit[]" class="form-control" value="BOX" readonly>
                                         </td>
 
                                         <td>

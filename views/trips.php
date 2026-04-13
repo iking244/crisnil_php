@@ -1,12 +1,4 @@
 <?php
-// TEMP PLACEHOLDER DATA (we replace with controller logic later)
-$dispatchStats = [
-    'active_trips' => 3,
-    'overdue_trips' => 1,
-    'unassigned_trips' => 2,
-    'fleet_utilization' => 75,
-    'available_trucks' => 5,
-    'completed_today' => 4
 include "../controllers/trips_controller.php";
 
 // TEMP PLACEHOLDER DATA (replace with controller later)
@@ -20,7 +12,7 @@ $dispatchStats = [
     'drivers_available' => $available_drivers ?? 0,
     'drivers_assigned' => 0,
     'trucks_available' => $available_trucks_count ?? 0,
-    'trucks_in_use' =>$navailable_trucks_count ?? 0,
+    'trucks_in_use' => $navailable_trucks_count ?? 0,
     'fleet_utilization' => 0
 ];
 ?>
@@ -48,159 +40,6 @@ $dispatchStats = [
 
 <body>
 
-<?php include '../includes/header.php'; ?>
-<?php include '../includes/sidenav.php'; ?>
-
-<div class="main">
-<div class="container-fluid">
-
-<!-- Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="page-title">Dispatch Overview</h1>
-
-    <div class="d-flex gap-2">
-        <a href="dispatch_trips.php" class="btn btn-outline-dark">
-            <i class="fa fa-road"></i> View All Trips
-        </a>
-
-        <button class="btn btn-primary">
-            <i class="fa fa-plus"></i> Create Trip
-        </button>
-    </div>
-</div>
-
-<!-- KPI CARDS -->
-<div class="row g-3 mb-4">
-
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="kpi-card blue">
-            <h6>Active Trips</h6>
-            <h3><?= $dispatchStats['active_trips'] ?></h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="kpi-card red">
-            <h6>Overdue Trips</h6>
-            <h3><?= $dispatchStats['overdue_trips'] ?></h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="kpi-card orange">
-            <h6>Unassigned Trips</h6>
-            <h3><?= $dispatchStats['unassigned_trips'] ?></h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="kpi-card green">
-            <h6>Fleet Utilization</h6>
-            <h3><?= $dispatchStats['fleet_utilization'] ?>%</h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="kpi-card gray">
-            <h6>Available Trucks</h6>
-            <h3><?= $dispatchStats['available_trucks'] ?></h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="kpi-card dark">
-            <h6>Completed Today</h6>
-            <h3><?= $dispatchStats['completed_today'] ?></h3>
-        </div>
-    </div>
-
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="row g-4">
-
-<!-- Active Trips -->
-<div class="col-lg-8">
-    <div class="card">
-        <div class="card-body">
-
-            <h3 class="mb-3">Active Trips</h3>
-
-            <table class="table table-sm align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>Trip ID</th>
-                        <th>Truck</th>
-                        <th>Driver</th>
-                        <th>Status</th>
-                        <th>ETA</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <!-- Placeholder Rows -->
-                    <tr>
-                        <td><strong>#T001</strong></td>
-                        <td>Mitsubishi L300 CXU 913</td>
-                        <td>Kevin Santos</td>
-                        <td><span class="status-badge in_transit">In Transit</span></td>
-                        <td>Jun 21, 2026 14:00</td>
-                    </tr>
-
-                    <tr class="table-danger fw-semibold">
-                        <td><strong>#T002</strong></td>
-                        <td>Mitsubishi L300 BYK 123</td>
-                        <td>Rodney Mullen</td>
-                        <td>
-                            <span class="status-badge delayed">Delayed</span>
-                            <span class="badge bg-danger ms-1">Overdue</span>
-                        </td>
-                        <td>Jun 21, 2026 10:00</td>
-                    </tr>
-
-                </tbody>
-            </table>
-
-        </div>
-    </div>
-</div>
-
-<!-- ACTION REQUIRED -->
-<div class="col-lg-4">
-    <div class="card">
-        <div class="card-body">
-
-            <h3 class="mb-3">Dispatch Alerts</h3>
-
-            <ul class="list-group list-group-flush">
-
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Trips Without Driver</span>
-                    <span class="text-danger fw-bold">2</span>
-                </li>
-
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Trips Missing ETA</span>
-                    <span class="text-warning fw-bold">1</span>
-                </li>
-
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Low Fleet Availability</span>
-                    <span class="text-warning fw-bold">1</span>
-                </li>
-
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Overdue Trips</span>
-                    <span class="text-danger fw-bold">
-                        <?= $dispatchStats['overdue_trips'] ?>
-                    </span>
-                </li>
-
-            </ul>
-
-        </div>
-    </div>
-</div>
     <?php include '../includes/header.php'; ?>
     <?php include '../includes/sidenav.php'; ?>
 
@@ -313,62 +152,34 @@ $dispatchStats = [
             <!-- ===================== -->
 
             <div class="row g-4">
+<!-- Recent Dispatch Trips -->
+<div class="col-lg-8">
+    <div class="card">
+        <div class="card-body">
 
-                <!-- Recent Dispatch Trips -->
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-body">
+            <h3 class="mb-3">Recent Dispatch Trips</h3>
 
-                            <h3 class="mb-3">Recent Dispatch Trips</h3>
+            <table class="table table-sm align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Trip ID</th>
+                        <th>Stops</th>
+                        <th>Truck</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th>ETA</th>
+                    </tr>
+                </thead>
 
-                            <table class="table table-sm align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Trip ID</th>
-                                        <th>Stops</th>
-                                        <th>Truck</th>
-                                        <th>Driver</th>
-                                        <th>Status</th>
-                                        <th>ETA</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                <tbody id="recentTripsTable">
+                    <!-- JS will insert rows here -->
+                </tbody>
 
-                                    <tr>
-                                        <td><strong>#T001</strong></td>
-                                        <td>3</td>
-                                        <td>Mitsubishi L300 CXU 913</td>
-                                        <td>Kevin Santos</td>
-                                        <td>
-                                            <span class="status-badge in_transit">
-                                                In Transit
-                                            </span>
-                                        </td>
-                                        <td>Jun 21, 2026 14:00</td>
-                                    </tr>
+            </table>
 
-                                    <tr class="table-danger fw-semibold">
-                                        <td><strong>#T002</strong></td>
-                                        <td>2</td>
-                                        <td>Mitsubishi L300 BYK 123</td>
-                                        <td>Rodney Mullen</td>
-                                        <td>
-                                            <span class="status-badge delayed">
-                                                Delayed
-                                            </span>
-                                            <span class="badge bg-danger ms-1">
-                                                Overdue
-                                            </span>
-                                        </td>
-                                        <td>Jun 21, 2026 10:00</td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Dispatch Alerts -->
                 <div class="col-lg-4">
@@ -416,6 +227,7 @@ $dispatchStats = [
 
     <!-- =========================
      DISPATCH ACTION CENTER
+========================= -->
 
     <div class="modal fade" id="dispatchActionModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -582,10 +394,11 @@ $dispatchStats = [
 
                             <h6 class="mb-3">Automated Smart Assignment</h6>
 
-                            <div class="mb-3">
+                            <div class="mb-3 d-none">
                                 <label class="form-label">Warehouse</label>
-                                <select class="form-select">
-                                    <option>Select Warehouse</option>
+                                <select class="form-select" id="smartWarehouse">
+                                    <option value="">Select Warehouse</option>
+                                    <!-- populate dynamically -->
                                 </select>
                             </div>
 
@@ -594,7 +407,7 @@ $dispatchStats = [
                                 into optimized trips.
                             </div>
 
-                            <button class="btn btn-dark">
+                            <button class="btn btn-dark" id="runSmartAssign">
                                 Run Smart Assignment
                             </button>
 
@@ -602,10 +415,10 @@ $dispatchStats = [
 
                             <div class="mt-3">
                                 <strong>Last Run Summary</strong>
-                                <ul class="mt-2">
-                                    <li>Jobs Grouped: 5</li>
-                                    <li>Trips Created: 2</li>
-                                    <li>Unassigned Remaining: 1</li>
+                                <ul class="mt-2" id="smartSummary">
+                                    <li>Jobs Grouped: 0</li>
+                                    <li>Trips Created: 0</li>
+                                    <li>Unassigned Remaining: 0</li>
                                 </ul>
                             </div>
 
@@ -626,14 +439,6 @@ $dispatchStats = [
     <script src="../scripts/dropdown2.js"></script>
     <script src="../scripts/trips.js"></script>
 
-</div>
-</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../scripts/notif.js"></script>
-<script src="../scripts/sidenav.js"></script>
-<script src="../scripts/dropdown2.js"></script>
-
 </body>
+
 </html>
