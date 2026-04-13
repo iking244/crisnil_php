@@ -238,6 +238,7 @@ include "../controllers/dashboard_controller.php";
                 data: {
                     labels: ['Stock In', 'Stock Out'],
                     datasets: [{
+                        label: 'Stock Movement',
                         data: [<?= $stockIn ?>, <?= $stockOut ?>],
                         backgroundColor: ['#2e7d32', '#d32f2f']
                     }]
