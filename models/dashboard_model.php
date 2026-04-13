@@ -201,13 +201,13 @@ function getLowStockItems($conn) {
         SELECT 
             p.product_name,
             SUM(s.box_weight) AS stock,
-            p.min_stock_level
+            p.units_per_pallet
         FROM tbl_products p
         LEFT JOIN tbl_stock_boxes s 
             ON s.product_id = p.product_id
             AND s.status = 'available'
         GROUP BY p.product_id
-        HAVING stock < p.min_stock_level
+        HAVING stock < (p.units_per_pallet * p.weight_per_unit)
         ORDER BY stock ASC
         LIMIT 5
     ");
@@ -216,11 +216,16 @@ function getLowStockItems($conn) {
 function getRecentDeliveries($conn) {
     return mysqli_query($conn, "
         SELECT 
-            delivery_receipt_id,
-            status,
-            created_at
-        FROM tbl_delivery_receipts
-        ORDER BY created_at DESC
+            dr.dr_number,
+            dr.status,
+            dr.created_at,
+            SUM(di.total_weight) AS total_weight,
+            SUM(di.total_amount) AS total_amount
+        FROM tbl_delivery_receipts dr
+        LEFT JOIN tbl_delivery_items di 
+            ON dr.delivery_receipt_id = di.delivery_receipt_id
+        GROUP BY dr.delivery_receipt_id
+        ORDER BY dr.created_at DESC
         LIMIT 5
     ");
 }
