@@ -200,14 +200,14 @@ function getLowStockItems($conn) {
     return mysqli_query($conn, "
         SELECT 
             p.product_name,
-            SUM(s.box_weight) AS stock,
-            p.units_per_pallet
+            COALESCE(SUM(s.box_weight), 0) AS stock,
+            (p.units_per_pallet * p.weight_per_unit) AS threshold
         FROM tbl_products p
         LEFT JOIN tbl_stock_boxes s 
             ON s.product_id = p.product_id
             AND s.status = 'available'
         GROUP BY p.product_id
-        HAVING stock < (p.units_per_pallet * p.weight_per_unit)
+        HAVING stock < threshold
         ORDER BY stock ASC
         LIMIT 5
     ");
