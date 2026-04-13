@@ -5,22 +5,19 @@
 ========================= */
 function getAllWarehouses($conn)
 {
-    $query = "
+    return mysqli_query($conn, "
         SELECT warehouse_id, warehouse_name
         FROM tbl_warehouses
         ORDER BY warehouse_name ASC
-    ";
-
-    return mysqli_query($conn, $query);
+    ");
 }
-
 
 /* =========================
    GET ALL PRODUCTS
 ========================= */
 function getAllProducts($conn)
 {
-    $query = "
+    return mysqli_query($conn, "
         SELECT 
             p.product_id,
             p.product_code,
@@ -30,126 +27,62 @@ function getAllProducts($conn)
             IFNULL(SUM(ws.quantity) * p.weight_per_unit, 0) AS weight,
             IFNULL(FLOOR(SUM(ws.quantity) / p.units_per_pallet), 0) AS pallets
         FROM tbl_products p
-        LEFT JOIN tbl_units u
-            ON p.unit_id = u.unit_id
-        LEFT JOIN tbl_warehouse_stock ws 
-            ON p.product_id = ws.product_id
+        LEFT JOIN tbl_units u ON p.unit_id = u.unit_id
+        LEFT JOIN tbl_warehouse_stock ws ON p.product_id = ws.product_id
         GROUP BY p.product_id
         ORDER BY p.product_name ASC
-    ";
-
-    return mysqli_query($conn, $query);
+    ");
 }
 
 function getAllProductsName($conn)
 {
-    $sql = "SELECT product_id, product_name FROM tbl_products ORDER BY product_name ASC";
-    return mysqli_query($conn, $sql);
+    return mysqli_query($conn, "
+        SELECT product_id, product_name 
+        FROM tbl_products 
+        ORDER BY product_name ASC
+    ");
 }
-
-
 
 /* =========================
    COUNT PRODUCTS
 ========================= */
 function countAllProducts($conn)
 {
-    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_products");
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'];
+    $res = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_products");
+    return mysqli_fetch_assoc($res)['total'];
 }
 
-
 /* =========================
-   PAGINATED PRODUCTS
+   PAGINATED PRODUCTS (BOX-BASED)
 ========================= */
-function getProductsPaginated_0218($conn, $warehouse_id, $limit, $offset)
+function getProductsPaginated($conn, $warehouse_id, $limit, $offset)
 {
-    $query = "
+    $warehouseFilter = ($warehouse_id == 0)
+        ? ""
+        : "AND sb.warehouse_id = $warehouse_id";
+
+    return mysqli_query($conn, "
         SELECT 
             p.product_id,
             p.product_code,
             p.product_name,
-            p.unit_id,
-            p.weight_per_unit,
-            p.units_per_pallet,
-            u.unit_name AS unit,
-            IFNULL(SUM(ws.quantity), 0) AS quantity,
-            IFNULL(SUM(ws.quantity) * p.weight_per_unit, 0) AS weight,
-            IFNULL(FLOOR(SUM(ws.quantity) / p.units_per_pallet), 0) AS pallets
+
+            COUNT(sb.box_id) AS quantity,
+            COALESCE(SUM(sb.box_weight), 0) AS weight
+
         FROM tbl_products p
-        LEFT JOIN tbl_units u
-            ON p.unit_id = u.unit_id
-        LEFT JOIN tbl_warehouse_stock ws 
-            ON p.product_id = ws.product_id
-            AND ws.warehouse_id = $warehouse_id
-        GROUP BY p.product_id
+
+        LEFT JOIN tbl_stock_boxes sb
+            ON p.product_id = sb.product_id
+            AND sb.status = 'available'
+            AND sb.condition_status = 'good'
+            $warehouseFilter
+
+        GROUP BY p.product_id, p.product_code, p.product_name
         ORDER BY p.product_name ASC
         LIMIT $limit OFFSET $offset
-    ";
-
-    return mysqli_query($conn, $query);
+    ");
 }
-
-function getProductsPaginated($conn, $warehouse_id, $limit, $offset)
-{
-
-    // If warehouse_id = 0 → show all warehouses
-    if ($warehouse_id == 0) {
-
-        $query = "
-    SELECT 
-        p.product_id,
-        p.product_code,
-        p.product_name,
-
-        COUNT(sb.box_id) AS quantity,
-        COALESCE(SUM(sb.box_weight), 0) AS weight
-
-    FROM tbl_products p
-
-    LEFT JOIN tbl_stock_boxes sb
-        ON p.product_id = sb.product_id
-
-    GROUP BY 
-        p.product_id,
-        p.product_code,
-        p.product_name
-
-    ORDER BY p.product_name ASC
-    LIMIT $limit OFFSET $offset
-        ";
-    } else {
-
-        $query = "
-    SELECT 
-        p.product_id,
-        p.product_code,
-        p.product_name,
-
-        COUNT(sb.box_id) AS quantity,
-        COALESCE(SUM(sb.box_weight), 0) AS weight
-
-    FROM tbl_products p
-
-    LEFT JOIN tbl_stock_boxes sb
-        ON p.product_id = sb.product_id
-        AND ($warehouse_id = 0 OR sb.warehouse_id = $warehouse_id)
-
-    GROUP BY 
-        p.product_id,
-        p.product_code,
-        p.product_name
-
-    ORDER BY p.product_name ASC
-    LIMIT $limit OFFSET $offset
-";
-    }
-
-    return mysqli_query($conn, $query);
-}
-
-
 
 /* =========================
    CREATE PRODUCT
@@ -159,54 +92,41 @@ function createProduct($conn, $warehouse_id, $code, $name, $unit_id, $qty, $weig
     mysqli_begin_transaction($conn);
 
     try {
-        // Check if product code already exists
         $check = mysqli_query($conn, "
-            SELECT product_id 
-            FROM tbl_products 
-            WHERE product_code = '$code'
-            LIMIT 1
+            SELECT product_id FROM tbl_products 
+            WHERE product_code = '$code' LIMIT 1
         ");
 
         if (mysqli_num_rows($check) > 0) {
             throw new Exception("duplicate_code");
         }
 
-        // Insert product
-        $productQuery = "
+        mysqli_query($conn, "
             INSERT INTO tbl_products 
             (product_code, product_name, unit_id, weight_per_unit, units_per_pallet)
-            VALUES 
-            ('$code', '$name', $unit_id, $weight_per_unit, $units_per_pallet)
-        ";
-
-        if (!mysqli_query($conn, $productQuery)) {
-            throw new Exception(mysqli_error($conn));
-        }
+            VALUES ('$code', '$name', $unit_id, $weight_per_unit, $units_per_pallet)
+        ");
 
         $product_id = mysqli_insert_id($conn);
 
-        // Insert initial stock batch
-        $stockQuery = "
+        mysqli_query($conn, "
             INSERT INTO tbl_warehouse_stock
             (warehouse_id, product_id, quantity, production_date, expiration_date)
             VALUES
             ($warehouse_id, $product_id, $qty, '$production_date', '$expiration_date')
-        ";
-
-        if (!mysqli_query($conn, $stockQuery)) {
-            throw new Exception(mysqli_error($conn));
-        }
+        ");
 
         mysqli_commit($conn);
         return ["success" => true];
+
     } catch (Exception $e) {
         mysqli_rollback($conn);
 
-        if ($e->getMessage() === "duplicate_code") {
-            return ["success" => false, "error" => "Product code already exists."];
-        }
-
-        return ["success" => false, "error" => $e->getMessage()];
+        return ["success" => false, "error" =>
+            $e->getMessage() === "duplicate_code"
+                ? "Product code already exists."
+                : $e->getMessage()
+        ];
     }
 }
 
@@ -215,16 +135,13 @@ function createProduct($conn, $warehouse_id, $code, $name, $unit_id, $qty, $weig
 ========================= */
 function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, $weight_per_unit, $units_per_pallet)
 {
-
     mysqli_begin_transaction($conn);
 
     try {
-        // Escape strings
         $code = mysqli_real_escape_string($conn, $code);
         $name = mysqli_real_escape_string($conn, $name);
 
-        // Update product
-        $query1 = "
+        mysqli_query($conn, "
             UPDATE tbl_products
             SET 
                 product_code = '$code',
@@ -233,91 +150,145 @@ function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, 
                 weight_per_unit = $weight_per_unit,
                 units_per_pallet = $units_per_pallet
             WHERE product_id = $id
-        ";
+        ");
 
-        if (!mysqli_query($conn, $query1)) {
-            throw new Exception(mysqli_error($conn));
-        }
-
-        // Update stock
-        $query2 = "
+        mysqli_query($conn, "
             UPDATE tbl_warehouse_stock
             SET quantity = $qty
             WHERE product_id = $id
             AND warehouse_id = $warehouse_id
-        ";
-
-        if (!mysqli_query($conn, $query2)) {
-            throw new Exception(mysqli_error($conn));
-        }
+        ");
 
         mysqli_commit($conn);
+
     } catch (Exception $e) {
         mysqli_rollback($conn);
-        die("Product update failed: " . $e->getMessage());
+        die("Update failed: " . $e->getMessage());
     }
 }
 
-
 /* =========================
-   STOCK FUNCTIONS (BATCH)
+   LOW STOCK (FIXED)
 ========================= */
-function addStockBatch($conn, $warehouse_id, $product_id, $quantity, $production_date, $expiration_date)
+function getLowStockProducts($conn)
 {
+    return mysqli_query($conn, "
+        SELECT
+            p.product_id,
+            p.product_name,
 
-    $query = "
-        INSERT INTO tbl_warehouse_stock
-        (warehouse_id, product_id, quantity, production_date, expiration_date)
-        VALUES
-        ($warehouse_id, $product_id, $quantity, '$production_date', '$expiration_date')
-    ";
+            COUNT(
+                CASE 
+                    WHEN sb.status = 'available' 
+                    AND sb.condition_status = 'good'
+                    THEN 1
+                END
+            ) AS quantity
 
-    return mysqli_query($conn, $query);
+        FROM tbl_products p
+        LEFT JOIN tbl_stock_boxes sb
+            ON p.product_id = sb.product_id
+
+        GROUP BY p.product_id, p.product_name
+        HAVING quantity <= 10
+        ORDER BY quantity ASC
+        LIMIT 5
+    ");
 }
 
+/* =========================
+   PRODUCT STATS (FINAL)
+========================= */
+function getProductStats($conn, $product_id)
+{
+    $stmt = $conn->prepare("
+        SELECT 
+            IFNULL(SUM(box_weight), 0) AS total_inventory,
+
+            IFNULL(SUM(CASE 
+                WHEN status = 'available' AND condition_status = 'good'
+                THEN box_weight END), 0) AS available,
+
+            IFNULL(SUM(CASE 
+                WHEN status = 'reserved' AND condition_status = 'good'
+                THEN box_weight END), 0) AS reserved,
+
+            IFNULL(SUM(CASE 
+                WHEN condition_status = 'damaged'
+                THEN box_weight END), 0) AS spoiled,
+
+            IFNULL(SUM(CASE 
+                WHEN expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)
+                AND status = 'available' AND condition_status = 'good'
+                THEN box_weight END), 0) AS expiring,
+
+            IFNULL(SUM(CASE 
+                WHEN expiry_date < CURDATE()
+                THEN box_weight END), 0) AS expired,
+
+            COUNT(CASE 
+                WHEN status = 'available' AND condition_status = 'good'
+                THEN 1 END) AS available_boxes
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+    ");
+
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+/* =========================
+   PRODUCTS STATS (DASHBOARD)
+========================= */
 function getProductsStats($conn)
 {
     $query = "
-SELECT
-    COUNT(*) AS total_products,
-    SUM(quantity) AS total_stock,
-    SUM(weight) AS total_weight,
-    SUM(CASE WHEN quantity <= 10 THEN 1 ELSE 0 END) AS low_stock
-FROM (
-    SELECT
-        p.product_id,
-        COUNT(sb.box_id) AS quantity,
-        COALESCE(SUM(sb.box_weight), 0) AS weight
-    FROM tbl_products p
-    LEFT JOIN tbl_stock_boxes sb
-        ON p.product_id = sb.product_id
-    GROUP BY p.product_id
-) AS product_totals
+        SELECT
+            COUNT(*) AS total_products,
+            SUM(quantity) AS total_stock,
+            SUM(weight) AS total_weight,
+            SUM(CASE WHEN quantity <= 10 THEN 1 ELSE 0 END) AS low_stock
+        FROM (
+            SELECT
+                p.product_id,
+
+                -- ✅ Only count usable boxes
+                COUNT(
+                    CASE 
+                        WHEN sb.status = 'available'
+                        AND sb.condition_status = 'good'
+                        THEN 1
+                    END
+                ) AS quantity,
+
+                -- ✅ Only sum usable weight
+                COALESCE(SUM(
+                    CASE 
+                        WHEN sb.status = 'available'
+                        AND sb.condition_status = 'good'
+                        THEN sb.box_weight
+                        ELSE 0
+                    END
+                ), 0) AS weight
+
+            FROM tbl_products p
+
+            LEFT JOIN tbl_stock_boxes sb
+                ON p.product_id = sb.product_id
+
+            GROUP BY p.product_id
+        ) AS product_totals
     ";
 
     $result = mysqli_query($conn, $query);
     return mysqli_fetch_assoc($result);
 }
 
-function getLowStockProducts($conn)
-{
-    $query = "
-        SELECT
-            p.product_id,
-            p.product_name,
-            IFNULL(SUM(ws.quantity), 0) AS quantity
-        FROM tbl_products p
-        LEFT JOIN tbl_warehouse_stock ws
-            ON p.product_id = ws.product_id
-        GROUP BY p.product_id
-        HAVING quantity <= 10
-        ORDER BY quantity ASC
-        LIMIT 5
-    ";
-
-    return mysqli_query($conn, $query);
-}
-
+/* =========================
+   RECENT ACTIVITY (MERGED FIX)
+========================= */
 function getRecentStockActivity($conn, $limit = 5)
 {
     $query = "
@@ -477,36 +448,6 @@ function getProductInventoryMovements($conn, $product_id)
         WHERE product_id = ?
 
         ORDER BY created_at DESC
-        LIMIT 50
-    ";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $product_id);
-    $stmt->execute();
-
-    return $stmt->get_result();
-}
-
-function getActiveOrdersForProduct($conn, $product_id)
-{
-    $sql = "
-        SELECT 
-            delivery_item_id,
-            batch_code,
-            SUM(box_weight) AS reserved_weight,
-            COUNT(box_id) AS total_boxes
-
-        FROM tbl_stock_boxes
-        WHERE product_id = ?
-        AND status = 'reserved'
-
-        GROUP BY delivery_item_id, batch_code
-        ORDER BY delivery_item_id DESC
-    ";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $product_id);
-    $stmt->execute();
-
-    return $stmt->get_result();
+        LIMIT $limit
+    ");
 }

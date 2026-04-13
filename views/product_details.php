@@ -35,6 +35,16 @@ if (!$product) {
 
 // Fetch additional data (you'll need to add these functions to products_model.php)
 $stats = getProductStats($databaseconn, $product_id);
+
+if ($stats['available_boxes'] <= 0) {
+    $stock_status = "Out of Stock";
+} elseif ($stats['expiring'] > 0) {
+    $stock_status = "At Risk";
+} elseif ($stats['available_boxes'] < 10) {
+    $stock_status = "Low Stock";
+} else {
+    $stock_status = "Healthy Stock";
+}
 $batches = getProductBatches($databaseconn, $product_id);
 <<<<<<< HEAD
 $inventory_movements = getProductInventoryMovements($databaseconn, $product_id);
@@ -314,7 +324,12 @@ $expiring_alerts = getExpiringBatches($databaseconn, $product_id);
                     <div class="flex-grow-1">
                         <h3 class="mb-1">
                             <?= htmlspecialchars($product['product_name']) ?>
-                            <span class="badge bg-success ms-2">Healthy Stock</span>
+                            <span class="badge 
+    <?= $stock_status == 'Healthy Stock' ? 'bg-success' : 
+        ($stock_status == 'Low Stock' ? 'bg-warning' : 
+        ($stock_status == 'Out of Stock' ? 'bg-danger' : 'bg-secondary')) ?>">
+    <?= $stock_status ?>
+</span>
                         </h3>
                         <p class="text-muted mb-2">
                             SKU: <?= htmlspecialchars($product['product_code']) ?>
