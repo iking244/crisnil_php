@@ -31,6 +31,7 @@ if (!$product) {
 
 // Fetch additional data (you'll need to add these functions to products_model.php)
 $stats = getProductStats($databaseconn, $product_id);
+var_dump($stats);
 if ($stats['available'] <= 0) {
     $stock_status = "Out of Stock";
 } elseif ($stats['expiring'] > 0) {
