@@ -35,7 +35,7 @@ if ($stats['available'] <= 0) {
     $stock_status = "Out of Stock";
 } elseif ($stats['expiring'] > 0) {
     $stock_status = "At Risk";
-} elseif ($stats['available'] < $product['min_stock_level']) {
+} elseif ($stats['available'] < 10) {
     $stock_status = "Low Stock";
 } else {
     $stock_status = "Healthy Stock";
