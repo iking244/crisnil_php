@@ -69,7 +69,13 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 </td>
 
 <td>
-<input type="date" name="expiry[]" value="${box.expiry_date}" class="form-control">
+    <input 
+        type="text" 
+        name="expiry[]" 
+        value="${formatDate(box.expiry_date)}"
+        placeholder="DD/MM/YYYY"
+        class="form-control expiry-input"
+    >
 </td>
 
 </tr>
@@ -118,6 +124,19 @@ document.querySelectorAll(".assignBtn").forEach(btn => {
 
     });
 
+});
+
+document.addEventListener('input', function (e) {
+    if (!e.target.classList.contains('expiry-input')) return;
+
+    let value = e.target.value.replace(/\D/g, '');
+
+    if (value.length >= 2 && value.length <= 4)
+        value = value.slice(0, 2) + '/' + value.slice(2);
+    else if (value.length > 4)
+        value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4, 8);
+
+    e.target.value = value;
 });
 
 
