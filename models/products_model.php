@@ -306,17 +306,30 @@ FROM (
 function getLowStockProducts($conn)
 {
     $query = "
-        SELECT
-            p.product_id,
-            p.product_name,
-            IFNULL(SUM(ws.quantity), 0) AS quantity
-        FROM tbl_products p
-        LEFT JOIN tbl_warehouse_stock ws
-            ON p.product_id = ws.product_id
-        GROUP BY p.product_id
-        HAVING quantity <= 10
-        ORDER BY quantity ASC
-        LIMIT 5
+SELECT
+    p.product_id,
+    p.product_name,
+
+    COUNT(
+        CASE 
+            WHEN sb.status = 'available' 
+            AND sb.condition_status = 'good'
+            THEN 1
+        END
+    ) AS quantity
+
+FROM tbl_products p
+
+LEFT JOIN tbl_stock_boxes sb
+    ON p.product_id = sb.product_id
+
+GROUP BY p.product_id, p.product_name
+
+HAVING quantity <= 10
+
+ORDER BY quantity ASC
+
+LIMIT 5
     ";
 
     return mysqli_query($conn, $query);
