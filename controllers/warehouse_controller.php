@@ -112,21 +112,22 @@ if (isset($_GET['action']) && $_GET['action'] == "assign_boxes") {
 
         log_activity(
             'stock_in',
-            'Boxes added for delivery item ID ' . $delivery_item_id . 
-            ' (Product ID: ' . $product_id . ', Warehouse ID: ' . $warehouse_id . ')'
+            'Boxes added for delivery item ID ' . $delivery_item_id .
+                ' (Product ID: ' . $product_id . ', Warehouse ID: ' . $warehouse_id . ')'
         );
 
-        echo json_encode([
-            "status" => "success"
-        ]);
+        // ✅ SUCCESS → redirect to view
+        $_SESSION['success'] = "Boxes successfully assigned.";
+        header("Location: ../views/warehouse_receiving.php");
+        exit();
     } catch (Exception $e) {
 
         $databaseconn->rollback();
 
-        echo json_encode([
-            "status" => "error",
-            "message" => $e->getMessage()
-        ]);
+        // ❌ ERROR → redirect with message
+        $_SESSION['error'] = $e->getMessage();
+        header("Location: ../views/warehouse_receiving.php");
+        exit();
     }
 
     exit();
