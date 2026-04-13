@@ -1,5 +1,6 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 /* =========================================================
    JOB ORDER LISTING & SEARCH
 ========================================================= */
@@ -325,7 +326,10 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 
         if ($product_id > 0 && $qty_needed > 0) {
 
-            // 1. Get FIFO available boxes
+            // DEBUG
+            echo "Processing product: $product_id | Qty: $qty_needed <br>";
+
+            // 1. Get FIFO boxes
             $stmt = $conn->prepare("
                 SELECT box_id
                 FROM tbl_stock_boxes
@@ -336,46 +340,63 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
                 LIMIT ?
             ");
 
-            $stmt->bind_param("iii", $product_id, $warehouse_id, $qty_needed);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            // Check if enough stock
-            if ($result->num_rows < $qty_needed) {
-                throw new Exception("Not enough stock for product ID: $product_id");
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error);
             }
 
-            // 2. Reserve each box
+            $stmt->bind_param("iii", $product_id, $warehouse_id, $qty_needed);
+
+            if (!$stmt->execute()) {
+                die("Execute failed: " . $stmt->error);
+            }
+
+            $result = $stmt->get_result();
+
+            echo "Found boxes: " . $result->num_rows . "<br>";
+
+            if ($result->num_rows < $qty_needed) {
+                die("Not enough stock for product ID: $product_id");
+            }
+
             while ($row = $result->fetch_assoc()) {
 
                 $box_id = $row['box_id'];
 
-                // Update box status to RESERVED
+                echo "Reserving box: $box_id <br>";
+
+                // 2. Update box
                 $update = $conn->prepare("
                     UPDATE tbl_stock_boxes
                     SET status = 'reserved'
                     WHERE box_id = ?
                 ");
 
-                $update->bind_param("i", $box_id);
-                $update->execute();
+                if (!$update) {
+                    die("Update prepare failed: " . $conn->error);
+                }
 
-                // 3. (IMPORTANT) Track reservation per box
+                $update->bind_param("i", $box_id);
+
+                if (!$update->execute()) {
+                    die("Update execute failed: " . $update->error);
+                }
+
+                // 3. Insert reservation
                 $insert = $conn->prepare("
                     INSERT INTO tbl_stock_reservations
                     (job_order_id, warehouse_id, product_id, box_id)
                     VALUES (?, ?, ?, ?)
                 ");
 
-                $insert->bind_param(
-                    "iiii",
-                    $job_id,
-                    $warehouse_id,
-                    $product_id,
-                    $box_id
-                );
+                if (!$insert) {
+                    die("Insert prepare failed: " . $conn->error);
+                }
 
-                $insert->execute();
+                $insert->bind_param("iiii", $job_id, $warehouse_id, $product_id, $box_id);
+
+                if (!$insert->execute()) {
+                    die("Insert execute failed: " . $insert->error);
+                }
             }
         }
     }
