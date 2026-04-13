@@ -325,60 +325,58 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 
         if ($product_id > 0 && $qty_needed > 0) {
 
-            // 1. Check AVAILABLE stock (excluding already reserved)
+            // 1. Get FIFO available boxes
             $stmt = $conn->prepare("
-                SELECT COUNT(*) as available_boxes
+                SELECT box_id
                 FROM tbl_stock_boxes
                 WHERE product_id = ?
                 AND warehouse_id = ?
                 AND status = 'available'
+                ORDER BY expiry_date ASC, box_id ASC
+                LIMIT ?
             ");
 
-            $stmt->bind_param("ii", $product_id, $warehouse_id);
+            $stmt->bind_param("iii", $product_id, $warehouse_id, $qty_needed);
             $stmt->execute();
-            $result = $stmt->get_result()->fetch_assoc();
+            $result = $stmt->get_result();
 
-            $available = (int)$result['available_boxes'];
-
-            // 2. Check already reserved (soft reservations)
-            $stmt2 = $conn->prepare("
-                SELECT IFNULL(SUM(quantity), 0) as reserved_qty
-                FROM tbl_stock_reservations
-                WHERE product_id = ?
-                AND warehouse_id = ?
-            ");
-
-            $stmt2->bind_param("ii", $product_id, $warehouse_id);
-            $stmt2->execute();
-            $result2 = $stmt2->get_result()->fetch_assoc();
-
-            $reserved = (int)$result2['reserved_qty'];
-
-            $true_available = $available - $reserved;
-
-            // 3. Validate
-            if ($true_available < $qty_needed) {
+            // Check if enough stock
+            if ($result->num_rows < $qty_needed) {
                 throw new Exception("Not enough stock for product ID: $product_id");
             }
 
-            // 4. Insert reservation
-            $stmt3 = $conn->prepare("
-                INSERT INTO tbl_stock_reservations
-                (job_order_id, warehouse_id, product_id, quantity)
-                VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE 
-                    quantity = quantity + VALUES(quantity)
-            ");
+            // 2. Reserve each box
+            while ($row = $result->fetch_assoc()) {
 
-            $stmt3->bind_param(
-                "iiii",
-                $job_id,
-                $warehouse_id,
-                $product_id,
-                $qty_needed
-            );
+                $box_id = $row['box_id'];
 
-            $stmt3->execute();
+                // Update box status to RESERVED
+                $update = $conn->prepare("
+                    UPDATE tbl_stock_boxes
+                    SET status = 'reserved'
+                    WHERE box_id = ?
+                ");
+
+                $update->bind_param("i", $box_id);
+                $update->execute();
+
+                // 3. (IMPORTANT) Track reservation per box
+                $insert = $conn->prepare("
+                    INSERT INTO tbl_stock_reservations
+                    (job_order_id, warehouse_id, product_id, box_id)
+                    VALUES (?, ?, ?, ?)
+                ");
+
+                $insert->bind_param(
+                    "iiii",
+                    $job_id,
+                    $warehouse_id,
+                    $product_id,
+                    $box_id
+                );
+
+                $insert->execute();
+            }
         }
     }
 }
