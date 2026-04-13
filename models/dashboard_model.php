@@ -56,13 +56,14 @@ function getLowStockCount($conn) {
         FROM (
             SELECT 
                 p.product_id,
-                SUM(s.quantity_remaining) AS stock,
-                p.min_stock_level
+                COALESCE(SUM(s.box_weight), 0) AS stock,
+                (p.units_per_pallet * p.weight_per_unit) AS threshold
             FROM tbl_products p
             LEFT JOIN tbl_stock_boxes s 
                 ON s.product_id = p.product_id
+                AND s.status = 'available'
             GROUP BY p.product_id
-            HAVING stock < p.min_stock_level
+            HAVING stock < threshold
         ) AS low_items
     ");
 
