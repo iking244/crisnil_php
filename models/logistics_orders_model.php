@@ -1,5 +1,6 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 /* =========================================================
    JOB ORDER LISTING & SEARCH
 ========================================================= */
@@ -320,29 +321,66 @@ function reserveStock($conn, $job_id, $warehouse_id, $product_ids, $quantities)
 {
     foreach ($product_ids as $index => $product_id) {
 
-        $product_id = (int)$product_id;
-        $qty = (int)$quantities[$index];
+        $product_id = (int)$product_ids[$index];
+        $qty_needed = (int)$quantities[$index];
 
-        if ($product_id > 0 && $qty > 0) {
+        if ($product_id > 0 && $qty_needed > 0) {
 
-            // Insert soft reservation (NO box updates)
-            $stmt = $conn->prepare("
-                INSERT INTO tbl_stock_reservations
-                (job_order_id, warehouse_id, product_id, quantity)
-                VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE 
-                    quantity = quantity + VALUES(quantity)
+            // ✅ STEP 1: COUNT available stock FIRST
+            $check = $conn->prepare("
+                SELECT COUNT(*) as total
+                FROM tbl_stock_boxes
+                WHERE product_id = ?
+                AND warehouse_id = ?
+                AND status = 'available'
             ");
 
-            $stmt->bind_param(
-                "iiii",
-                $job_id,
-                $warehouse_id,
-                $product_id,
-                $qty
-            );
+            $check->bind_param("ii", $product_id, $warehouse_id);
+            $check->execute();
+            $count = $check->get_result()->fetch_assoc()['total'];
 
+            if ($count < $qty_needed) {
+                die("Not enough stock for product ID: $product_id");
+            }
+
+            // ✅ STEP 2: GET FIFO boxes
+            $stmt = $conn->prepare("
+                SELECT box_id
+                FROM tbl_stock_boxes
+                WHERE product_id = ?
+                AND warehouse_id = ?
+                AND status = 'available'
+                ORDER BY expiry_date ASC, box_id ASC
+                LIMIT $qty_needed
+            ");
+
+            $stmt->bind_param("ii", $product_id, $warehouse_id);
             $stmt->execute();
+            $result = $stmt->get_result();
+
+            // ✅ STEP 3: RESERVE
+            while ($row = $result->fetch_assoc()) {
+
+                $box_id = $row['box_id'];
+
+                // update status
+                $update = $conn->prepare("
+                    UPDATE tbl_stock_boxes
+                    SET status = 'reserved'
+                    WHERE box_id = ?
+                ");
+                $update->bind_param("i", $box_id);
+                $update->execute();
+
+                // insert reservation
+                $insert = $conn->prepare("
+                    INSERT INTO tbl_stock_reservations
+                    (job_order_id, warehouse_id, product_id, box_id)
+                    VALUES (?, ?, ?, ?)
+                ");
+                $insert->bind_param("iiii", $job_id, $warehouse_id, $product_id, $box_id);
+                $insert->execute();
+            }
         }
     }
 }

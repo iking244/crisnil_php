@@ -166,7 +166,10 @@ include "../controllers/dashboard_controller.php";
                             <?php if (mysqli_num_rows($recentDeliveries) > 0): ?>
                                 <?php while ($row = mysqli_fetch_assoc($recentDeliveries)): ?>
                                     <tr>
-                                        <td>#<?= $row['delivery_receipt_id'] ?></td>
+                                        <td>
+                                            <strong><?= $row['dr_number'] ?></strong><br>
+                                            <small><?= number_format($row['total_weight'], 2) ?> kg</small>
+                                        </td>
                                         <td>
                                             <?php
                                                 $status = strtolower($row['status']);
@@ -235,6 +238,7 @@ include "../controllers/dashboard_controller.php";
                 data: {
                     labels: ['Stock In', 'Stock Out'],
                     datasets: [{
+                        label: 'Stock Movement',
                         data: [<?= $stockIn ?>, <?= $stockOut ?>],
                         backgroundColor: ['#2e7d32', '#d32f2f']
                     }]

@@ -321,27 +321,41 @@ function getLowStockProducts($conn)
 function getRecentStockActivity($conn, $limit = 5)
 {
     $query = "
-        SELECT
+        -- STOCK IN (boxes added)
+        SELECT 
+            'IN' AS type,
             p.product_name,
-            ws.quantity,
-            ws.created_at
-        FROM tbl_warehouse_stock ws
-        JOIN tbl_products p
-            ON ws.product_id = p.product_id
-        ORDER BY ws.created_at DESC
+            COUNT(s.box_id) AS quantity,
+            SUM(s.box_weight) AS weight,
+            s.created_at
+        FROM tbl_stock_boxes s
+        JOIN tbl_products p ON p.product_id = s.product_id
+        GROUP BY s.created_at, p.product_id
+
+        UNION ALL
+
+        -- STOCK OUT (deliveries)
+        SELECT 
+            'OUT' AS type,
+            p.product_name,
+            di.qty AS quantity,
+            di.total_weight AS weight,
+            di.created_at
+        FROM tbl_delivery_items di
+        JOIN tbl_products p ON p.product_id = di.product_id
+
+        ORDER BY created_at DESC
         LIMIT $limit
     ";
 
     return mysqli_query($conn, $query);
 }
-
 function getProductById($conn, $id) {
     $stmt = $conn->prepare("SELECT * FROM tbl_products WHERE product_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
 }
-<<<<<<< HEAD
 
 function getProductStats($conn, $product_id) {
     // Run multiple queries or one big one to get totals
@@ -353,8 +367,6 @@ function getProductStats($conn, $product_id) {
 
 // Add similar functions for batches, movements, orders, expiring alerts
 
-=======
->>>>>>> e10621335e709762830a1a2e5a94827fff8ddea2
 
 function getProductStats($conn, $product_id)
 {

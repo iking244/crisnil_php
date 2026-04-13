@@ -53,9 +53,11 @@ $activity_result = getRecentActivity($databaseconn);
 $today_notifications = getTodayNotifications($databaseconn);
 
 $query = mysqli_query($databaseconn, "
-    SELECT SUM(total_amount) as total 
-    FROM tbl_delivery_receipts
-    WHERE DATE(created_at) = CURDATE()
+    SELECT SUM(di.total_amount) as total 
+    FROM tbl_delivery_items di
+    INNER JOIN tbl_delivery_receipts dr
+        ON dr.delivery_receipt_id = di.delivery_receipt_id
+    WHERE DATE(dr.created_at) = CURDATE()
 ");
 
 $row = mysqli_fetch_assoc($query);

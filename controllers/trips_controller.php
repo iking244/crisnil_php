@@ -186,6 +186,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $databaseconn->commit();
 
+                log_activity(
+                    'create_trip',
+                    'Created trip ID ' . $trip_id . 
+                    ' with truck ' . $plate_num
+                );
+
                 header("Location: ../views/trips.php");
                 exit();
             } catch (Exception $e) {
@@ -215,6 +221,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ");
             $stmt->bind_param("i", $truck_id);
             $stmt->execute();
+
+            log_activity(
+                'update_trip',
+                'Updated trip ID ' . $trip_id
+            );
+
             $truck = $stmt->get_result()->fetch_assoc();
             $stmt->close();
 

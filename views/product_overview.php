@@ -385,9 +385,17 @@ include "../controllers/products_controller.php";
 
                                             <span><?= htmlspecialchars($row['product_name']) ?></span>
 
-                                            <span class="text-success fw-semibold">
-                                                +<?= $row['quantity'] ?>
+                                            <?php
+                                            $type = $row['type'];
+                                            $class = $type === 'IN' ? 'text-success' : 'text-danger';
+                                            $sign = $type === 'IN' ? '+' : '-';
+                                            ?>
+
+                                            <span class="<?= $class ?> fw-semibold">
+                                                <?= $sign . $row['quantity'] ?> boxes
                                             </span>
+                                            <br>
+                                            <small><?= number_format($row['weight'], 2) ?> kg</small>
 
                                         </li>
 
