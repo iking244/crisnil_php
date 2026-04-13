@@ -5,16 +5,16 @@
  * Logs an action using the ActionLog model
  * Usage: log_activity('create_product', 'Created XYZ (ID 123)');
  */
-function log_activity($action, $description = '', $user_id = null) {
-    global $databaseconn;  // your connection variable
+function log_activity($action, $description = '', $reference_id = null) {
+    global $databaseconn;
 
-    if ($user_id === null && isset($_SESSION['USER_ID'])) {
-        $user_id = (int)$_SESSION['USER_ID'];
-    }
+    $user_id = $_SESSION['USER_ID'] ?? null;
 
-    require_once '../models/ActionLogModel.php';
+    $stmt = $databaseconn->prepare("
+        INSERT INTO tbl_system_logs (user_id, action, description, reference_id)
+        VALUES (?, ?, ?, ?)
+    ");
 
-    $logger = new ActionLog($databaseconn);
-
-    return $logger->create($user_id, $action, $description);
+    $stmt->bind_param("issi", $user_id, $action, $description, $reference_id);
+    $stmt->execute();
 }
