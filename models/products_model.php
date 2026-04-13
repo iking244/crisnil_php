@@ -110,6 +110,8 @@ function getProductsPaginated($conn, $warehouse_id, $limit, $offset)
 
     LEFT JOIN tbl_stock_boxes sb
         ON p.product_id = sb.product_id
+        AND sb.status = 'available'
+        AND sb.condition_status = 'good'   
 
     GROUP BY 
         p.product_id,
@@ -134,6 +136,8 @@ function getProductsPaginated($conn, $warehouse_id, $limit, $offset)
 
     LEFT JOIN tbl_stock_boxes sb
         ON p.product_id = sb.product_id
+        AND sb.status = 'available'
+        AND sb.condition_status = 'good'       
         AND ($warehouse_id = 0 OR sb.warehouse_id = $warehouse_id)
 
     GROUP BY 
