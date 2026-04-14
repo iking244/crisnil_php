@@ -51,21 +51,9 @@ if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'status'     => $_POST['status'] ?? 'ACTIVATED',
     ];
 
-    log_activity('update_user_attempt', 'Attempted to update user ID ' . $data['user_id']);
 
-    $success = updateUser($databaseconn, $data);
+  updateUser($databaseconn, $data);
 
-    if ($success) {
-        log_activity(
-            'update_user',
-            'Updated user ID ' . $data['user_id'] . 
-            ' (' . $data['first_name'] . ' ' . $data['last_name'] . ', Role: ' . $data['role'] . ', Status: ' . $data['status'] . ')'
-        );
-        $_SESSION['success'] = "User updated successfully!";
-    } else {
-        log_activity('update_user_failed', 'Failed to update user ID ' . $data['user_id']);
-        $_SESSION['error'] = "Failed to update user.";
-    }
 
     header("Location: ../views/user_management.php");
     exit;
