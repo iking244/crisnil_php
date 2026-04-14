@@ -28,31 +28,8 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'address'    => trim($_POST['address'] ?? ''),
     ];
 
-    log_activity('create_user_attempt', 'Attempted to create user: ' . $data['username']);
 
     $success = createUser($databaseconn, $data);
-
-    if ($success) {
-        log_activity(
-            'create_user',
-            'Successfully created user: ' . $data['username'] . 
-            ' (' . $data['first_name'] . ' ' . $data['last_name'] . ', Role: ' . $data['role'] . ')'
-        );
-        $_SESSION['toast'] = [
-            'message' => 'User created successfully!',
-            'type'    => 'success'
-        ];
-    } else {
-        log_activity(
-            'create_user_failed',
-            'Failed to create user: ' . $data['username'] . ' (duplicate or database error)'
-        );
-        $_SESSION['toast'] = [
-            'message' => 'Failed to create user. Username or email already exists.',
-            'type'    => 'danger'   // or 'warning', 'info'
-        ];
-    }
-
     header("Location: ../views/user_management.php");
     exit;
 }
@@ -101,17 +78,9 @@ if ($action === 'archive' && isset($_GET['id'])) {
 
     $user_id = (int)$_GET['id'];
 
-    log_activity('archive_user_attempt', 'Attempted to archive user ID ' . $user_id);
+
 
     $success = archiveUser($databaseconn, $user_id);
-
-    if ($success) {
-        log_activity('archive_user', 'Archived user ID ' . $user_id);
-        $_SESSION['success'] = "User archived successfully.";
-    } else {
-        log_activity('archive_user_failed', 'Failed to archive user ID ' . $user_id);
-        $_SESSION['error'] = "Failed to archive user.";
-    }
 
     header("Location: ../views/user_management.php");
     exit;
