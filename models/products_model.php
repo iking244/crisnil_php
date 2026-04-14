@@ -240,53 +240,6 @@ function getProductStats($conn, $product_id)
 }
 
 /* =========================
-   PRODUCTS STATS (DASHBOARD)
-========================= */
-function getProductsStats($conn)
-{
-    $query = "
-        SELECT
-            COUNT(*) AS total_products,
-            SUM(quantity) AS total_stock,
-            SUM(weight) AS total_weight,
-            SUM(CASE WHEN quantity <= 10 THEN 1 ELSE 0 END) AS low_stock
-        FROM (
-            SELECT
-                p.product_id,
-
-                -- ✅ Only count usable boxes
-                COUNT(
-                    CASE 
-                        WHEN sb.status = 'available'
-                        AND sb.condition_status = 'good'
-                        THEN 1
-                    END
-                ) AS quantity,
-
-                -- ✅ Only sum usable weight
-                COALESCE(SUM(
-                    CASE 
-                        WHEN sb.status = 'available'
-                        AND sb.condition_status = 'good'
-                        THEN sb.box_weight
-                        ELSE 0
-                    END
-                ), 0) AS weight
-
-            FROM tbl_products p
-
-            LEFT JOIN tbl_stock_boxes sb
-                ON p.product_id = sb.product_id
-
-            GROUP BY p.product_id
-        ) AS product_totals
-    ";
-
-    $result = mysqli_query($conn, $query);
-    return mysqli_fetch_assoc($result);
-}
-
-/* =========================
    RECENT ACTIVITY (MERGED FIX)
 ========================= */
 function getRecentStockActivity($conn, $limit = 5)
