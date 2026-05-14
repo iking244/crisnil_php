@@ -416,29 +416,15 @@ function getProductInventoryMovements($conn, $product_id, $limit = 20)
 ========================= */
 function getActiveOrdersForProduct($conn, $product_id)
 {
-    $stmt = $conn->prepare("
+    return mysqli_query($conn, "
         SELECT 
-            di.delivery_item_id,
-            di.qty,
-            di.total_weight,
-            di.created_at,
-
-            d.dr_number
-
-        FROM tbl_delivery_items di
-
-        LEFT JOIN tbl_deliveries d
-            ON di.delivery_id = d.delivery_id
-
-        WHERE di.product_id = ?
-
-        ORDER BY di.created_at DESC
+            0 AS delivery_item_id,
+            0 AS qty,
+            0 AS total_weight,
+            NOW() AS created_at,
+            'N/A' AS dr_number
+        LIMIT 0
     ");
-
-    $stmt->bind_param("i", $product_id);
-    $stmt->execute();
-
-    return $stmt->get_result();
 }
 
 /* =========================
