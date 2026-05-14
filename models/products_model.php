@@ -320,3 +320,153 @@ function getRecentStockActivity($conn, $limit = 5)
         LIMIT $limit
     ");
 }
+
+/* =========================
+   GET PRODUCT BY ID
+========================= */
+function getProductById($conn, $product_id)
+{
+    $stmt = $conn->prepare("
+        SELECT 
+            p.*,
+            u.unit_name AS unit
+        FROM tbl_products p
+        LEFT JOIN tbl_units u 
+            ON p.unit_id = u.unit_id
+        WHERE p.product_id = ?
+        LIMIT 1
+    ");
+
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc();
+}
+
+/* =========================
+   PRODUCT BATCHES
+========================= */
+function getProductBatches($conn, $product_id)
+{
+    $stmt = $conn->prepare("
+        SELECT 
+            batch_code AS batch_id,
+            DATE(created_at) AS prod_date,
+            DATE(created_at) AS arr_date,
+            expiry_date AS expiration_date,
+
+            COUNT(box_id) AS qty,
+
+            CASE
+                WHEN expiry_date < CURDATE() THEN 'Expired'
+                WHEN expiry_date <= DATE_ADD(CURDATE(), INTERVAL 5 DAY) THEN 'Expiring'
+                ELSE 'Safe'
+            END AS status,
+
+            CONCAT('Pallet ', pallet_id) AS storage_info
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+
+        GROUP BY batch_code, expiry_date, pallet_id
+        ORDER BY expiry_date ASC
+    ");
+
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+/* =========================
+   INVENTORY MOVEMENTS
+========================= */
+function getProductInventoryMovements($conn, $product_id, $limit = 20)
+{
+    $stmt = $conn->prepare("
+        SELECT 
+            box_id,
+            delivery_item_id,
+            batch_code,
+            box_weight,
+            status,
+            created_at,
+
+            CASE 
+                WHEN status = 'available' THEN 'IN'
+                WHEN status = 'reserved' THEN 'OUT'
+                ELSE status
+            END AS movement_type
+
+        FROM tbl_stock_boxes
+        WHERE product_id = ?
+
+        ORDER BY created_at DESC
+        LIMIT $limit
+    ");
+
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result();
+}
+
+/* =========================
+   ACTIVE ORDERS
+========================= */
+function getActiveOrdersForProduct($conn, $product_id)
+{
+    $stmt = $conn->prepare("
+        SELECT 
+            di.delivery_item_id,
+            di.qty,
+            di.total_weight,
+            di.created_at,
+
+            d.dr_number
+
+        FROM tbl_delivery_items di
+
+        LEFT JOIN tbl_deliveries d
+            ON di.delivery_id = d.delivery_id
+
+        WHERE di.product_id = ?
+
+        ORDER BY di.created_at DESC
+    ");
+
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result();
+}
+
+/* =========================
+   EXPIRING BATCHES
+========================= */
+function getExpiringBatches($conn, $product_id)
+{
+    $stmt = $conn->prepare("
+        SELECT 
+            batch_code AS batch_id,
+
+            COUNT(box_id) AS qty,
+
+            DATEDIFF(expiry_date, CURDATE()) AS days_left
+
+        FROM tbl_stock_boxes
+
+        WHERE product_id = ?
+        AND expiry_date BETWEEN CURDATE() 
+        AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)
+
+        GROUP BY batch_code, expiry_date
+
+        ORDER BY expiry_date ASC
+    ");
+
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
