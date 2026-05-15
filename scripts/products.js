@@ -1,4 +1,5 @@
 // products.js ─ product-specific logic
+
 document.addEventListener('DOMContentLoaded', () => {
 
 
@@ -59,6 +60,7 @@ if (fabMain) {
 }
 
 let currentPage = 1;
+let currentViewMode = 'product';
 
 function loadProducts(page = 1) {
     const pageSize = document.getElementById("pageSize").value;
@@ -66,7 +68,7 @@ function loadProducts(page = 1) {
     const warehouseSelect = document.querySelector('select[name="warehouse_id"]');
     const warehouse_id = warehouseSelect ? warehouseSelect.value : 0;
 
-    fetch(`../controllers/products_controller_ajax.php?page=${page}&pageSize=${pageSize}&warehouse_id=${warehouse_id}`)
+    fetch(`../controllers/products_controller_ajax.php?page=${page}&pageSize=${pageSize}&warehouse_id=${warehouse_id}&viewMode=${currentViewMode}`)
         .then(res => res.text())
         .then(html => {
             document.getElementById("productsTableContainer").innerHTML = html;
@@ -89,8 +91,11 @@ document.addEventListener("DOMContentLoaded", function () {
 // get table body
 const tableBody = document.querySelector("#itemsTable tbody");
 
-// store template row
-const templateRow = tableBody.querySelector("tr").cloneNode(true);
+let templateRow = null;
+
+if (tableBody) {
+    templateRow = tableBody.querySelector("tr").cloneNode(true);
+}
 
 // ADD ITEM
 function addItemRow(templateRow, tableBody, container) {
@@ -377,4 +382,35 @@ function setupCloseConfirmation(modal) {
             }
         });
     });
+}
+
+function switchView(mode) {
+
+    console.log("Switching to:", mode);
+
+    currentViewMode = mode;
+
+    const productBtn = document.getElementById("productViewBtn");
+    const batchBtn = document.getElementById("batchViewBtn");
+
+    if (mode === 'product') {
+
+        productBtn.classList.add("btn-primary", "active");
+        productBtn.classList.remove("btn-outline-primary");
+
+        batchBtn.classList.remove("btn-primary", "active");
+        batchBtn.classList.add("btn-outline-primary");
+
+    } else {
+
+        batchBtn.classList.add("btn-primary", "active");
+        batchBtn.classList.remove("btn-outline-primary");
+
+        productBtn.classList.remove("btn-primary", "active");
+        productBtn.classList.add("btn-outline-primary");
+
+    }
+
+    loadProducts(1);
+
 }

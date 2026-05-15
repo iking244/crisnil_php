@@ -118,11 +118,12 @@ function createProduct($conn, $warehouse_id, $code, $name, $unit_id, $qty, $weig
 
         mysqli_commit($conn);
         return ["success" => true];
-
     } catch (Exception $e) {
         mysqli_rollback($conn);
 
-        return ["success" => false, "error" =>
+        return [
+            "success" => false,
+            "error" =>
             $e->getMessage() === "duplicate_code"
                 ? "Product code already exists."
                 : $e->getMessage()
@@ -160,7 +161,6 @@ function updateProduct($conn, $warehouse_id, $id, $code, $name, $unit_id, $qty, 
         ");
 
         mysqli_commit($conn);
-
     } catch (Exception $e) {
         mysqli_rollback($conn);
         die("Update failed: " . $e->getMessage());
@@ -455,4 +455,56 @@ function getExpiringBatches($conn, $product_id)
     $stmt->execute();
 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+function getBatchInventoryPaginated($conn, $warehouse_id, $limit, $offset)
+{
+    $warehouseFilter = ($warehouse_id == 0)
+        ? ""
+        : "AND sb.warehouse_id = $warehouse_id";
+
+    return mysqli_query($conn, "
+        SELECT
+            sb.batch_code,
+
+            p.product_id,
+            p.product_name,
+
+            pal.pallet_code,
+
+            sb.expiry_date,
+
+            COUNT(sb.box_id) AS quantity,
+
+            SUM(sb.box_weight) AS weight,
+                
+            CASE
+                WHEN sb.expiry_date < CURDATE()
+                    THEN 'Expired'
+                WHEN sb.expiry_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+                    THEN 'Expiring Soon'
+                ELSE 'Safe'
+                END AS batch_status
+
+        FROM tbl_stock_boxes sb
+
+        LEFT JOIN tbl_products p
+            ON sb.product_id = p.product_id
+
+        LEFT JOIN tbl_pallets pal
+            ON sb.pallet_id = pal.pallet_id
+
+        WHERE 1=1
+        $warehouseFilter
+
+        GROUP BY 
+            sb.batch_code,
+            p.product_name,
+            pal.pallet_code,
+            sb.expiry_date
+
+        ORDER BY sb.created_at DESC
+
+        LIMIT $limit OFFSET $offset
+    ");
 }

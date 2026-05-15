@@ -118,24 +118,27 @@ include "../controllers/products_controller.php";
                 </div>
             </div>
 
-            <div class="d-flex align-items-center gap-2 mt-3">
-
-                <span class="fw-semibold">View Mode:</span>
+            <div class="btn-group ms-auto" role="group">
 
                 <button type="button"
-                    class="btn btn-sm btn-primary"
-                    id="productViewBtn">
-                    Product View
+                    class="btn btn-primary active"
+                    id="productViewBtn"
+                    onclick="switchView('product')">
+
+                    <i class="fa fa-box"></i> Inventory Summary
+
                 </button>
 
                 <button type="button"
-                    class="btn btn-sm btn-outline-primary"
-                    id="batchViewBtn">
-                    Batch View
+                    class="btn btn-outline-primary"
+                    id="batchViewBtn"
+                    onclick="switchView('batch')">
+
+                    <i class="fa fa-barcode"></i> Batch Traceability
+
                 </button>
 
             </div>
-
             <!-- TABLE CARD -->
             <div class="card">
                 <div class="card-body">

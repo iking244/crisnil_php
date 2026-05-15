@@ -19,71 +19,198 @@ $offset = ($page - 1) * $limit;
 ========================= */
 $totalProducts = countAllProducts($databaseconn);
 $totalPages = ceil($totalProducts / $limit);
+$viewMode = $_GET['viewMode'] ?? 'product';
 
 /* =========================
    LOAD PRODUCTS
 ========================= */
-$products = getProductsPaginated(
-    $databaseconn,
-    $warehouse_id,
-    $limit,
-    $offset
-);
+if ($viewMode === 'batch') {
+
+    $products = getBatchInventoryPaginated(
+        $databaseconn,
+        $warehouse_id,
+        $limit,
+        $offset
+    );
+} else {
+
+    $products = getProductsPaginated(
+        $databaseconn,
+        $warehouse_id,
+        $limit,
+        $offset
+    );
+}
 ?>
 
 <div class="table-container">
     <table class="orders-table modern-table" id="ordersTable">
         <thead>
             <tr>
+
                 <th><input type="checkbox" id="selectAll"></th>
-                <th>Product Code</th>
-                <th>Product Name</th>
-                <th class="text-end">Quantity</th>
-                <th class="text-end">Weight</th>
-                <th>Status</th>
-                <th class="text-center">Action</th>
+
+                <?php if ($viewMode === 'batch'): ?>
+
+                    <th>Batch Code</th>
+                    <th>Product</th>
+                    <th>Pallet</th>
+                    <th>Expiry</th>
+                    <th class="text-end">Quantity</th>
+                    <th class="text-end">Weight</th>
+                    <th>Status</th>
+                    <th class="text-center">Action</th>
+
+                <?php else: ?>
+
+                    <th>Product Code</th>
+                    <th>Product Name</th>
+                    <th class="text-end">Quantity</th>
+                    <th class="text-end">Weight</th>
+                    <th>Status</th>
+                    <th class="text-center">Action</th>
+
+                <?php endif; ?>
+
             </tr>
         </thead>
 
         <tbody>
+
             <?php while ($row = mysqli_fetch_assoc($products)): ?>
+
                 <tr>
+
                     <td><input type="checkbox" class="row-check"></td>
 
-                    <td><strong><?= $row['product_code'] ?></strong></td>
-                    <td><?= htmlspecialchars($row['product_name']) ?></td>
+                    <?php if ($viewMode === 'batch'): ?>
 
-                    <td class="text-end fw-semibold">
-                        <?= number_format($row['quantity']) ?>
-                    </td>
+                        <td>
+                            <strong><?= htmlspecialchars($row['batch_code']) ?></strong>
+                        </td>
 
-                    <td class="text-end text-muted">
-                        <?= number_format($row['weight'], 2) ?>
-                    </td>
+                        <td>
+                            <?= htmlspecialchars($row['product_name']) ?>
+                        </td>
 
+                        <td>
+                            <?= htmlspecialchars($row['pallet_code']) ?>
+                        </td>
+
+                        <td>
+                            <?= htmlspecialchars($row['expiry_date']) ?>
+                        </td>
+
+                        <td class="text-end fw-semibold">
+                            <?= number_format($row['quantity']) ?>
+                        </td>
+
+                        <td class="text-end text-muted">
+                            <?= number_format($row['weight'], 2) ?>
+                        </td>
+
+                    <?php else: ?>
+
+                        <td>
+                            <strong><?= $row['product_code'] ?></strong>
+                        </td>
+
+                        <td>
+                            <?= htmlspecialchars($row['product_name']) ?>
+                        </td>
+
+                        <td class="text-end fw-semibold">
+                            <?= number_format($row['quantity']) ?>
+                        </td>
+
+                        <td class="text-end text-muted">
+                            <?= number_format($row['weight'], 2) ?>
+                        </td>
+
+                    <?php endif; ?>
+
+                    <!-- STATUS -->
                     <td>
-                        <?php if ($row['quantity'] == 0): ?>
-                            <span class="status-badge danger">Out of Stock</span>
-                        <?php elseif ($row['quantity'] <= 10): ?>
-                            <span class="status-badge pending">Low Stock</span>
+
+                        <?php if ($viewMode === 'batch'): ?>
+
+                            <?php if ($row['batch_status'] === 'Expired'): ?>
+
+                                <span class="status-badge danger">
+                                    Expired
+                                </span>
+
+                            <?php elseif ($row['batch_status'] === 'Expiring Soon'): ?>
+
+                                <span class="status-badge pending">
+                                    Expiring Soon
+                                </span>
+
+                            <?php else: ?>
+
+                                <span class="status-badge available">
+                                    Safe
+                                </span>
+
+                            <?php endif; ?>
+
                         <?php else: ?>
-                            <span class="status-badge available">Available</span>
+
+                            <?php if ($row['quantity'] == 0): ?>
+
+                                <span class="status-badge danger">
+                                    Out of Stock
+                                </span>
+
+                            <?php elseif ($row['quantity'] <= 10): ?>
+
+                                <span class="status-badge pending">
+                                    Low Stock
+                                </span>
+
+                            <?php else: ?>
+
+                                <span class="status-badge available">
+                                    Available
+                                </span>
+
+                            <?php endif; ?>
+
                         <?php endif; ?>
+
                     </td>
 
+                    <!-- ACTION -->
                     <td class="text-center">
 
-                        <a href="product_details.php?id=<?= $row['product_id'] ?>" title="View Details">
+                        <a href="product_details.php?id=<?= $row['product_id'] ?>"
+                            title="View Details">
+
                             <i class="fa fa-eye action-icon"></i>
+
                         </a>
-                        <i class="fa fa-pencil edit-product action-icon" data-id="<?= $row['product_id'] ?>"
-                            data-code="<?= $row['product_code'] ?>"
-                            data-name="<?= htmlspecialchars($row['product_name']) ?>" data-qty="<?= $row['quantity'] ?>"
-                            title="Edit">
-                        </i>
+
+                        <?php if ($viewMode !== 'batch'): ?>
+
+                            <i class="fa fa-pencil edit-product action-icon"
+
+                                data-id="<?= $row['product_id'] ?>"
+                                data-code="<?= $row['product_code'] ?>"
+                                data-name="<?= htmlspecialchars($row['product_name']) ?>"
+                                data-qty="<?= $row['quantity'] ?>"
+
+                                title="Edit">
+
+                            </i>
+
+                        <?php endif; ?>
+
                     </td>
+
                 </tr>
+
             <?php endwhile; ?>
+
         </tbody>
     </table>
 </div>
