@@ -2,7 +2,7 @@
      id="batchDetailsModal"
      tabindex="-1">
 
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
 
         <div class="modal-content">
 
@@ -26,119 +26,215 @@
 
                 <div class="row g-3">
 
-                    <!-- BATCH CODE -->
-                    <div class="col-md-6">
+                    <!-- LEFT COLUMN -->
+                    <div class="col-lg-8">
 
-                        <div class="batch-detail-card">
+                        <div class="row g-3">
 
-                            <div class="batch-detail-label">
-                                Batch Code
+                            <!-- BATCH CODE -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Batch Code
+                                    </div>
+
+                                    <div class="batch-detail-value"
+                                         id="batchCode">
+                                    </div>
+
+                                </div>
+
                             </div>
 
-                            <div class="batch-detail-value"
-                                 id="batchCode">
+                            <!-- STATUS -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Batch Status
+                                    </div>
+
+                                    <div id="batchCondition">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- PRODUCT -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Product
+                                    </div>
+
+                                    <div class="batch-detail-value"
+                                         id="batchProduct">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- PALLET -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Pallet Location
+                                    </div>
+
+                                    <div class="batch-detail-value"
+                                         id="batchPallet">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- EXPIRY -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Expiry Date
+                                    </div>
+
+                                    <div class="batch-detail-value"
+                                         id="batchExpiry">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- DAYS LEFT -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Shelf Life
+                                    </div>
+
+                                    <div class="batch-detail-value"
+                                         id="batchShelfLife">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- QUANTITY -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Quantity
+                                    </div>
+
+                                    <div class="batch-detail-value"
+                                         id="batchQuantity">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- WEIGHT -->
+                            <div class="col-md-6">
+
+                                <div class="batch-detail-card">
+
+                                    <div class="batch-detail-label">
+                                        Total Weight
+                                    </div>
+
+                                    <div class="batch-detail-value"
+                                         id="batchWeight">
+                                    </div>
+
+                                </div>
+
                             </div>
 
                         </div>
 
                     </div>
 
-                    <!-- PRODUCT -->
-                    <div class="col-md-6">
+                    <!-- RIGHT COLUMN -->
+                    <div class="col-lg-4">
 
-                        <div class="batch-detail-card">
+                        <div class="batch-detail-card h-100">
 
-                            <div class="batch-detail-label">
-                                Product
+                            <div class="batch-detail-label mb-3">
+                                Traceability Timeline
                             </div>
 
-                            <div class="batch-detail-value"
-                                 id="batchProduct">
-                            </div>
+                            <div class="batch-timeline">
 
-                        </div>
+                                <div class="timeline-item">
 
-                    </div>
+                                    <div class="timeline-dot"></div>
 
-                    <!-- PALLET -->
-                    <div class="col-md-6">
+                                    <div class="timeline-content">
 
-                        <div class="batch-detail-card">
+                                        <div class="timeline-title">
+                                            Received in Warehouse
+                                        </div>
 
-                            <div class="batch-detail-label">
-                                Pallet
-                            </div>
+                                        <div class="timeline-date">
+                                            Apr 14, 2026
+                                        </div>
 
-                            <div class="batch-detail-value"
-                                 id="batchPallet">
-                            </div>
+                                    </div>
 
-                        </div>
+                                </div>
 
-                    </div>
+                                <div class="timeline-item">
 
-                    <!-- EXPIRY -->
-                    <div class="col-md-6">
+                                    <div class="timeline-dot"></div>
 
-                        <div class="batch-detail-card">
+                                    <div class="timeline-content">
 
-                            <div class="batch-detail-label">
-                                Expiry Date
-                            </div>
+                                        <div class="timeline-title">
+                                            Assigned to Pallet
+                                        </div>
 
-                            <div class="batch-detail-value"
-                                 id="batchExpiry">
-                            </div>
+                                        <div class="timeline-date">
+                                            Apr 14, 2026
+                                        </div>
 
-                        </div>
+                                    </div>
 
-                    </div>
+                                </div>
 
-                    <!-- QUANTITY -->
-                    <div class="col-md-6">
+                                <div class="timeline-item">
 
-                        <div class="batch-detail-card">
+                                    <div class="timeline-dot"></div>
 
-                            <div class="batch-detail-label">
-                                Quantity
-                            </div>
+                                    <div class="timeline-content">
 
-                            <div class="batch-detail-value"
-                                 id="batchQuantity">
-                            </div>
+                                        <div class="timeline-title">
+                                            Inventory Updated
+                                        </div>
 
-                        </div>
+                                        <div class="timeline-date">
+                                            Apr 15, 2026
+                                        </div>
 
-                    </div>
+                                    </div>
 
-                    <!-- WEIGHT -->
-                    <div class="col-md-6">
+                                </div>
 
-                        <div class="batch-detail-card">
-
-                            <div class="batch-detail-label">
-                                Weight
-                            </div>
-
-                            <div class="batch-detail-value"
-                                 id="batchWeight">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- CONDITION -->
-                    <div class="col-md-6">
-
-                        <div class="batch-detail-card">
-
-                            <div class="batch-detail-label">
-                                Condition
-                            </div>
-
-                            <div class="batch-detail-value"
-                                 id="batchCondition">
                             </div>
 
                         </div>
