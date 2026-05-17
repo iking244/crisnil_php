@@ -1,5 +1,6 @@
 <?php
 include "../controllers/products_controller.php";
+include 'modals/batch_details_modal.php';
 ?>
 
 <!DOCTYPE html>
