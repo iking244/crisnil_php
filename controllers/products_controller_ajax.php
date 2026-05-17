@@ -206,7 +206,7 @@ if ($viewMode === 'batch') {
                                 data-expiry="<?= $row['expiry_date'] ?>"
                                 data-quantity="<?= $row['quantity'] ?>"
                                 data-weight="<?= $row['weight'] ?>"
-                                data-condition="<?= $row['condition_status'] ?>"
+                                data-condition="<?= $row['batch_status'] ?>"
 
                                 title="View Batch Details">
 
