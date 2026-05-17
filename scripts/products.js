@@ -125,25 +125,37 @@ function addItemRow(templateRow, tableBody, container) {
 
 }
 
-document.getElementById("addRow").addEventListener("click", function () {
+const addRowBtn = document.getElementById("addRow");
 
-    addItemRow(
-        templateRow,
-        document.querySelector("#itemsTable tbody"),
-        document.querySelector(".items-container")
-    );
+if (addRowBtn) {
 
-});
+    addRowBtn.addEventListener("click", function () {
 
-document.getElementById("editAddRow").addEventListener("click", function () {
+        addItemRow(
+            templateRow,
+            document.querySelector("#itemsTable tbody"),
+            document.querySelector(".items-container")
+        );
 
-    addItemRow(
-        templateRow,
-        document.querySelector("#editItemsTable tbody"),
-        document.querySelector(".edit-items-container")
-    );
+    });
 
-});
+}
+
+const editAddRowBtn = document.getElementById("editAddRow");
+
+if (editAddRowBtn) {
+
+    editAddRowBtn.addEventListener("click", function () {
+
+        addItemRow(
+            templateRow,
+            document.querySelector("#editItemsTable tbody"),
+            document.querySelector(".edit-items-container")
+        );
+
+    });
+
+}
 
 
 // REMOVE ITEM
@@ -183,7 +195,10 @@ document.addEventListener("input", function (e) {
 
 });
 
-document.getElementById("deliveryForm").addEventListener("submit", function (e) {
+const deliveryForm = document.getElementById("deliveryForm");
+
+if (deliveryForm) {
+    deliveryForm.addEventListener("submit", function (e) {
     console.log("Submitting delivery form...");
 
     e.preventDefault();
@@ -221,6 +236,7 @@ document.getElementById("deliveryForm").addEventListener("submit", function (e) 
         });
 
 });
+}
 
 function productOptions(products, selectedId) {
     return products.map(p => `
@@ -275,7 +291,11 @@ function createDeliveryRow(item) {
 
 }
 
-document.getElementById("loadDRBtn").addEventListener("click", function () {
+const loadDRBtn = document.getElementById("loadDRBtn");
+
+if (loadDRBtn) {
+
+    loadDRBtn.addEventListener("click", function () {
 
     let dr = document.getElementById("edit_dr_number").value;
 
@@ -304,6 +324,7 @@ document.getElementById("loadDRBtn").addEventListener("click", function () {
         });
 
 });
+}
 
 function resetModal(modal) {
 
