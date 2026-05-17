@@ -146,6 +146,18 @@ if ($viewMode === 'batch') {
                                     Expiring Soon
                                 </span>
 
+                             <?php elseif ($row['batch_status'] === 'Damaged'): ?>
+
+                                <span class="status-badge danger">
+                                    Damaged
+                                </span>
+
+                            <?php elseif ($row['batch_status'] === 'Defective'): ?>
+
+                                <span class="status-badge danger">
+                                    Defective
+                                </span>
+
                             <?php else: ?>
 
                                 <span class="status-badge available">

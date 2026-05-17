@@ -464,47 +464,41 @@ function getBatchInventoryPaginated($conn, $warehouse_id, $limit, $offset)
         : "AND sb.warehouse_id = $warehouse_id";
 
     return mysqli_query($conn, "
-        SELECT
-            sb.batch_code,
+  SELECT
+    sb.batch_code,
+    p.product_id,       -- Fixed: Included in GROUP BY below
+    p.product_name,
+    pal.pallet_code,
+    sb.expiry_date,
+    COUNT(sb.box_id) AS quantity,
+    SUM(sb.box_weight) AS weight,
+    
+    -- Fixed: Evaluates the batch condition as a whole without breaking the GROUP BY
+    CASE
+        WHEN SUM(CASE WHEN sb.condition_status = 'defective' THEN 1 ELSE 0 END) > 0 THEN 'Contains Defects'
+        WHEN SUM(CASE WHEN sb.condition_status = 'damaged' THEN 1 ELSE 0 END) > 0 THEN 'Contains Damaged'
+        WHEN sb.expiry_date < CURDATE() THEN 'Expired'
+        WHEN sb.expiry_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) THEN 'Expiring Soon'
+        ELSE 'Safe'
+    END AS batch_status
 
-            p.product_id,
-            p.product_name,
+FROM tbl_stock_boxes sb
+LEFT JOIN tbl_products p 
+    ON sb.product_id = p.product_id
+LEFT JOIN tbl_pallets pal 
+    ON sb.pallet_id = pal.pallet_id
+WHERE 1=1
+$warehouseFilter
 
-            pal.pallet_code,
+GROUP BY 
+    sb.batch_code,
+    p.product_id,       -- Added to match SELECT
+    p.product_name,
+    pal.pallet_code,
+    sb.expiry_date      -- Removed sb.condition_status so boxes group together properly
 
-            sb.expiry_date,
+ORDER BY MAX(sb.created_at) DESC -- Fixed: Aggregated so it works seamlessly with GROUP BY
 
-            COUNT(sb.box_id) AS quantity,
-
-            SUM(sb.box_weight) AS weight,
-                
-            CASE
-                WHEN sb.expiry_date < CURDATE()
-                    THEN 'Expired'
-                WHEN sb.expiry_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
-                    THEN 'Expiring Soon'
-                ELSE 'Safe'
-                END AS batch_status
-
-        FROM tbl_stock_boxes sb
-
-        LEFT JOIN tbl_products p
-            ON sb.product_id = p.product_id
-
-        LEFT JOIN tbl_pallets pal
-            ON sb.pallet_id = pal.pallet_id
-
-        WHERE 1=1
-        $warehouseFilter
-
-        GROUP BY 
-            sb.batch_code,
-            p.product_name,
-            pal.pallet_code,
-            sb.expiry_date
-
-        ORDER BY sb.created_at DESC
-
-        LIMIT $limit OFFSET $offset
+LIMIT $limit OFFSET $offset
     ");
 }
