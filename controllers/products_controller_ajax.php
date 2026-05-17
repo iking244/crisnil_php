@@ -146,7 +146,7 @@ if ($viewMode === 'batch') {
                                     Expiring Soon
                                 </span>
 
-                             <?php elseif ($row['batch_status'] === 'Damaged'): ?>
+                            <?php elseif ($row['batch_status'] === 'Damaged'): ?>
 
                                 <span class="status-badge danger">
                                     Damaged
@@ -195,14 +195,33 @@ if ($viewMode === 'batch') {
                     <!-- ACTION -->
                     <td class="text-center">
 
-                        <a href="product_details.php?id=<?= $row['product_id'] ?>"
-                            title="View Details">
+                        <?php if ($viewMode === 'batch'): ?>
 
-                            <i class="fa fa-eye action-icon"></i>
+                            <a href="#"
+                                class="view-batch action-icon"
 
-                        </a>
+                                data-batch="<?= $row['batch_code'] ?>"
+                                data-product="<?= htmlspecialchars($row['product_name']) ?>"
+                                data-pallet="<?= htmlspecialchars($row['pallet_code']) ?>"
+                                data-expiry="<?= $row['expiry_date'] ?>"
+                                data-quantity="<?= $row['quantity'] ?>"
+                                data-weight="<?= $row['weight'] ?>"
+                                data-condition="<?= $row['condition_status'] ?>"
 
-                        <?php if ($viewMode !== 'batch'): ?>
+                                title="View Batch Details">
+
+                                <i class="fa fa-eye"></i>
+
+                            </a>
+
+                        <?php else: ?>
+
+                            <a href="product_details.php?id=<?= $row['product_id'] ?>"
+                                title="View Details">
+
+                                <i class="fa fa-eye action-icon"></i>
+
+                            </a>
 
                             <i class="fa fa-pencil edit-product action-icon"
 

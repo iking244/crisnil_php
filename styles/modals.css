@@ -101,3 +101,29 @@
     }
 }
 
+/* =========================
+   BATCH DETAILS DISPLAY
+========================= */
+
+.batch-detail-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 16px 18px;
+    height: 100%;
+}
+
+.batch-detail-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.batch-detail-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+    word-break: break-word;
+}

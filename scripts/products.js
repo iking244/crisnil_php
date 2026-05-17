@@ -414,3 +414,38 @@ function switchView(mode) {
     loadProducts(1);
 
 }
+
+document.addEventListener("click", function (e) {
+
+    const btn = e.target.closest(".view-batch");
+
+    if (!btn) return;
+
+    // SET VALUES
+    document.getElementById("batchCode").innerText =
+        btn.dataset.batch;
+
+    document.getElementById("batchProduct").innerText =
+        btn.dataset.product;
+
+    document.getElementById("batchPallet").innerText =
+        btn.dataset.pallet;
+
+    document.getElementById("batchExpiry").innerText =
+        btn.dataset.expiry;
+
+    document.getElementById("batchQuantity").innerText =
+        btn.dataset.quantity;
+
+    document.getElementById("batchWeight").innerText =
+        btn.dataset.weight;
+
+    document.getElementById("batchCondition").innerText =
+        btn.dataset.condition;
+
+    // OPEN MODAL
+    new bootstrap.Modal(
+        document.getElementById("batchDetailsModal")
+    ).show();
+
+});
